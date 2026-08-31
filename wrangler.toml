@@ -1,5 +1,4 @@
 name = "attendance75calculator"
 compatibility_date = "2026-01-01"
 
-[pages]
-build_output_dir = "dist"
+pages_build_output_dir = "./dist"
