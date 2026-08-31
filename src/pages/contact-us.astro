@@ -1,0 +1,563 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="Contact Us - Attendance 75 Calculator"
+	description="Get in touch with Attendance 75 Calculator. Send us your feedback, feature requests, or report bugs."
+	keywords="contact us, feedback, support, attendance calculator contact"
+>
+	<div class="page-container">
+		<div class="content-wrapper">
+			<!-- Top Bar with Brand Badge & Theme Toggle -->
+			<nav class="top-nav">
+				<div class="inline-badge">
+					<span class="badge-dot"></span>
+					<a href="/" class="badge-link">Attendance 75 Calculator</a>
+				</div>
+
+				<!-- Theme Toggle Button -->
+				<button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+					<span id="theme-icon" class="theme-icon">🌙</span>
+					<span id="theme-label" class="theme-label">Dark</span>
+				</button>
+			</nav>
+
+			<!-- Header -->
+			<header class="text-center mb-6">
+				<h1 class="page-title">Contact Us</h1>
+				<p class="page-subtitle">We'd love to hear from you!</p>
+			</header>
+
+			<!-- Main Content -->
+			<main class="legal-card">
+				<section class="legal-section">
+					<h2 class="legal-h2">Get in Touch</h2>
+					<p>
+						Have feedback, feature requests, bug reports, or just want to say hi? We're here to listen! While Attendance 75 Calculator is a free, privacy-first tool built by students for students, we're always looking to improve and expand based on user feedback.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">What We'd Love to Hear About</h2>
+					<ul class="legal-list">
+						<li><strong>Feature Requests:</strong> Ideas for new calculations, forecasting modes, or additional tools</li>
+						<li><strong>Bug Reports:</strong> Calculation errors, display issues, or unexpected behavior</li>
+						<li><strong>Design Feedback:</strong> UI/UX suggestions or accessibility improvements</li>
+						<li><strong>Institution-Specific Rules:</strong> Unique attendance policies we should account for</li>
+						<li><strong>General Feedback:</strong> What you love, what could be better, or suggestions for improvement</li>
+						<li><strong>Collaboration:</strong> Partnership opportunities, integrations, or student org collaborations</li>
+					</ul>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Contact Methods</h2>
+
+					<div class="contact-card">
+						<div class="contact-icon">📧</div>
+						<h3 class="contact-title">Email Us</h3>
+						<p class="contact-desc">
+							For detailed feedback, bug reports, or general inquiries, email us at:
+						</p>
+						<a href="mailto:hello@attendance75calculator.com" class="contact-link">hello@attendance75calculator.com</a>
+					</div>
+
+					<div class="contact-card">
+						<div class="contact-icon">🐛</div>
+						<h3 class="contact-title">Report a Bug</h3>
+						<p class="contact-desc">
+							Found a calculation error or technical issue? Send us:
+						</p>
+						<ul class="contact-list">
+							<li>A description of the problem</li>
+							<li>The inputs you used (attended, total, target %)</li>
+							<li>What you expected vs. what you got</li>
+							<li>Your browser and device (if relevant)</li>
+						</ul>
+					</div>
+
+					<div class="contact-card">
+						<div class="contact-icon">💡</div>
+						<h3 class="contact-title">Request a Feature</h3>
+						<p class="contact-desc">
+							Have an idea that could make the calculator better? We're all ears! Tell us:
+						</p>
+						<ul class="contact-list">
+							<li>What problem the feature would solve</li>
+							<li>How you'd like it to work</li>
+							<li>Why it would be useful for students</li>
+						</ul>
+					</div>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Response Time</h2>
+					<p>
+						We're a small team and this is a passion project, so response times may vary. We typically respond to emails within <strong>3-5 business days</strong>. For urgent issues (especially critical bugs affecting calculations), we'll prioritize as quickly as possible.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">FAQ: Common Questions</h2>
+					<div class="faq-simple">
+						<div class="faq-item-simple">
+							<strong>Q: Is this service free?</strong>
+							<p>Yes, 100% free. No premium tiers, no paywalls, no ads.</p>
+						</div>
+						<div class="faq-item-simple">
+							<strong>Q: Do you store my attendance data?</strong>
+							<p>No. All calculations happen in your browser. We never see or store your data.</p>
+						</div>
+						<div class="faq-item-simple">
+							<strong>Q: Can I integrate this into my college's student portal?</strong>
+							<p>Potentially! Reach out via email to discuss integration options.</p>
+						</div>
+						<div class="faq-item-simple">
+							<strong>Q: My college has different rounding rules. Can you support them?</strong>
+							<p>Yes! Email us the details and we'll consider adding configurable rounding options.</p>
+						</div>
+						<div class="faq-item-simple">
+							<strong>Q: Can I contribute to the project?</strong>
+							<p>We appreciate the interest! Email us to discuss contribution opportunities.</p>
+						</div>
+					</div>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Stay Updated</h2>
+					<p>
+						We occasionally push updates with new features, bug fixes, and improvements. Since we don't collect emails or track users, the best way to stay updated is to bookmark this site and check back periodically!
+					</p>
+				</section>
+
+				<div class="back-home-section">
+					<a href="/" class="btn-back-home">← Back to Calculator</a>
+				</div>
+			</main>
+
+			<!-- Footer -->
+			<footer class="footer text-center">
+				<nav class="footer-nav">
+					<a href="/about-us" class="footer-link">About Us</a>
+					<span class="footer-separator">•</span>
+					<a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+					<span class="footer-separator">•</span>
+					<a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+					<span class="footer-separator">•</span>
+					<a href="/contact-us" class="footer-link">Contact Us</a>
+				</nav>
+				<p class="footer-note">
+					© {new Date().getFullYear()} Attendance 75 Calculator • Free Online College Attendance Tracker
+				</p>
+			</footer>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	/* Inherit theme variables from main page */
+	:root {
+		--bg-canvas: #fafafa;
+		--bg-card: #ffffff;
+		--bg-subtle: #fafafa;
+		--text-ink: #171717;
+		--text-body: #4d4d4d;
+		--text-muted: #8f8f8f;
+		--border-hairline: #ebebeb;
+		--border-focus: #171717;
+		--shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+		--link-color: #0070f3;
+		--link-hover: #0051cc;
+		--contact-card-bg: #fafafa;
+	}
+
+	html.dark {
+		--bg-canvas: #0a0a0a;
+		--bg-card: #121212;
+		--bg-subtle: #171717;
+		--text-ink: #ededed;
+		--text-body: #a1a1a1;
+		--text-muted: #707070;
+		--border-hairline: #262626;
+		--border-focus: #ffffff;
+		--shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+		--link-color: #52a8ff;
+		--link-hover: #80c0ff;
+		--contact-card-bg: #1a1a1a;
+	}
+
+	.page-container {
+		min-height: 100vh;
+		background-color: var(--bg-canvas);
+		color: var(--text-ink);
+		display: flex;
+		justify-content: center;
+		padding: 28px 16px;
+		font-family: 'Geist', Arial, sans-serif;
+		box-sizing: border-box;
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.content-wrapper {
+		width: 100%;
+		max-width: 740px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.top-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+	}
+
+	.inline-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-body);
+		box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+	}
+
+	.badge-dot {
+		width: 6px;
+		height: 6px;
+		background-color: #00c851;
+		border-radius: 50%;
+	}
+
+	.badge-link {
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.badge-link:hover {
+		color: var(--text-ink);
+	}
+
+	.theme-toggle-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-ink);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.theme-toggle-btn:hover {
+		background: var(--bg-subtle);
+		border-color: var(--text-muted);
+	}
+
+	.theme-icon {
+		font-size: 14px;
+		line-height: 1;
+	}
+
+	.theme-label {
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	.page-title {
+		font-size: 32px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 6px 0;
+		letter-spacing: -0.8px;
+		line-height: 1.2;
+	}
+
+	.page-subtitle {
+		font-size: 14px;
+		color: var(--text-muted);
+		margin: 4px 0;
+	}
+
+	.legal-card {
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 16px;
+		padding: 32px 28px;
+		margin-bottom: 24px;
+		box-shadow: var(--shadow-card);
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.legal-section {
+		margin-bottom: 28px;
+	}
+
+	.legal-section:last-child {
+		margin-bottom: 0;
+	}
+
+	.legal-h2 {
+		font-size: 20px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 12px 0;
+		letter-spacing: -0.4px;
+	}
+
+	.legal-card p {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin: 0 0 12px 0;
+	}
+
+	.legal-card p:last-child {
+		margin-bottom: 0;
+	}
+
+	.legal-list {
+		margin: 10px 0 14px 20px;
+		padding: 0;
+		list-style: disc;
+	}
+
+	.legal-list li {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin-bottom: 8px;
+	}
+
+	.contact-card {
+		background: var(--contact-card-bg);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 18px;
+		margin-bottom: 14px;
+		transition: all 0.15s ease;
+	}
+
+	.contact-card:hover {
+		border-color: var(--border-focus);
+	}
+
+	.contact-icon {
+		font-size: 32px;
+		margin-bottom: 8px;
+	}
+
+	.contact-title {
+		font-size: 17px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 8px 0;
+	}
+
+	.contact-desc {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin: 0 0 10px 0;
+	}
+
+	.contact-link {
+		display: inline-block;
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--link-color);
+		text-decoration: none;
+		padding: 8px 14px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 6px;
+		transition: all 0.15s ease;
+	}
+
+	.contact-link:hover {
+		color: var(--link-hover);
+		border-color: var(--border-focus);
+	}
+
+	.contact-list {
+		margin: 8px 0 0 20px;
+		padding: 0;
+		list-style: disc;
+	}
+
+	.contact-list li {
+		font-size: 13px;
+		color: var(--text-body);
+		line-height: 1.5;
+		margin-bottom: 4px;
+	}
+
+	.faq-simple {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.faq-item-simple {
+		padding-bottom: 14px;
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.faq-item-simple:last-child {
+		border-bottom: none;
+		padding-bottom: 0;
+	}
+
+	.faq-item-simple strong {
+		display: block;
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--text-ink);
+		margin-bottom: 6px;
+	}
+
+	.faq-item-simple p {
+		font-size: 13px;
+		color: var(--text-body);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	.back-home-section {
+		margin-top: 32px;
+		padding-top: 24px;
+		border-top: 1px solid var(--border-hairline);
+		text-align: center;
+	}
+
+	.btn-back-home {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 10px 18px;
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 8px;
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--text-ink);
+		text-decoration: none;
+		transition: all 0.15s ease;
+	}
+
+	.btn-back-home:hover {
+		background: var(--bg-canvas);
+		border-color: var(--border-focus);
+	}
+
+	.footer {
+		padding: 12px 0 24px 0;
+	}
+
+	.footer-nav {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.footer-link {
+		font-size: 13px;
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.footer-link:hover {
+		color: var(--text-ink);
+		text-decoration: underline;
+	}
+
+	.footer-separator {
+		color: var(--text-muted);
+		font-size: 13px;
+	}
+
+	.footer-note {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	@media (max-width: 640px) {
+		.page-container {
+			padding: 16px 12px;
+		}
+
+		.page-title {
+			font-size: 26px;
+		}
+
+		.legal-card {
+			padding: 24px 20px;
+		}
+
+		.legal-h2 {
+			font-size: 18px;
+		}
+
+		.footer-nav {
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.footer-separator {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	// Theme toggle logic
+	const themeToggleBtn = document.getElementById('theme-toggle');
+	const themeIcon = document.getElementById('theme-icon');
+	const themeLabel = document.getElementById('theme-label');
+
+	function updateThemeUI(isDark: boolean) {
+		if (themeIcon && themeLabel) {
+			if (isDark) {
+				themeIcon.textContent = '☀️';
+				themeLabel.textContent = 'Light';
+			} else {
+				themeIcon.textContent = '🌙';
+				themeLabel.textContent = 'Dark';
+			}
+		}
+	}
+
+	const isInitiallyDark = document.documentElement.classList.contains('dark');
+	updateThemeUI(isInitiallyDark);
+
+	themeToggleBtn?.addEventListener('click', () => {
+		const isCurrentlyDark = document.documentElement.classList.contains('dark');
+		const newThemeIsDark = !isCurrentlyDark;
+
+		if (newThemeIsDark) {
+			document.documentElement.classList.add('dark');
+			localStorage.setItem('theme', 'dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+			localStorage.setItem('theme', 'light');
+		}
+
+		updateThemeUI(newThemeIsDark);
+	});
+</script>

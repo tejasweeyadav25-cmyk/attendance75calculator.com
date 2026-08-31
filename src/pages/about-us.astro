@@ -1,0 +1,531 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="About Us - Attendance 75 Calculator"
+	description="Learn about Attendance 75 Calculator - a free, privacy-first tool helping college students manage their attendance and plan their semester smartly."
+	keywords="about us, attendance calculator, college tool, student resource"
+>
+	<div class="page-container">
+		<div class="content-wrapper">
+			<!-- Top Bar with Brand Badge & Theme Toggle -->
+			<nav class="top-nav">
+				<div class="inline-badge">
+					<span class="badge-dot"></span>
+					<a href="/" class="badge-link">Attendance 75 Calculator</a>
+				</div>
+
+				<!-- Theme Toggle Button -->
+				<button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+					<span id="theme-icon" class="theme-icon">🌙</span>
+					<span id="theme-label" class="theme-label">Dark</span>
+				</button>
+			</nav>
+
+			<!-- Header -->
+			<header class="text-center mb-6">
+				<h1 class="page-title">About Us</h1>
+				<p class="page-subtitle">Built by students, for students</p>
+			</header>
+
+			<!-- Main Content -->
+			<main class="legal-card">
+				<section class="legal-section">
+					<h2 class="legal-h2">Our Story</h2>
+					<p>
+						Attendance 75 Calculator was born from a simple frustration shared by college students everywhere: <strong>the constant anxiety of tracking attendance percentages and avoiding the dreaded 75% threshold.</strong>
+					</p>
+					<p>
+						We've all been there—sitting in class doing mental math, trying to figure out if we can afford to skip tomorrow's 8 AM lecture, or frantically calculating how many classes we need to attend in a row to recover from a shortage. Spreadsheets were clunky, manual calculations were error-prone, and existing tools either lacked features or compromised privacy.
+					</p>
+					<p>
+						So we built something better: a fast, accurate, privacy-first attendance calculator that gives you instant answers without the guesswork.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Our Mission</h2>
+					<p>
+						Our mission is simple: <strong>help students make informed decisions about their attendance</strong> with transparent, accurate calculations and zero privacy concerns.
+					</p>
+					<p>
+						We believe students should have access to free, reliable tools that empower them to balance academics, mental health, and personal time effectively. Whether you're planning safe bunks, recovering from a shortage, or forecasting your end-of-semester standing, we've got your back.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">What Makes Us Different</h2>
+					<ul class="legal-list">
+						<li><strong>100% Client-Side & Private:</strong> All calculations happen in your browser. We never see, store, or transmit your attendance data. No servers, no databases, no tracking.</li>
+						<li><strong>Instant Real-Time Results:</strong> No submit buttons, no delays. Every input updates your attendance status, safe bunk limit, and recovery target in real-time.</li>
+						<li><strong>Semester Forecasting:</strong> Plan ahead with our unique semester projection feature. See exactly how many classes you can afford to miss over the entire term.</li>
+						<li><strong>Student-Friendly Language:</strong> We speak your language—no corporate jargon, just straightforward, relatable guidance with a touch of college humor.</li>
+						<li><strong>Mobile-First Design:</strong> Works beautifully on phones, tablets, and desktops. Dark mode included for late-night attendance anxiety sessions.</li>
+						<li><strong>Always Free:</strong> No premium tiers, no paywalls, no ads. Just a simple, effective tool that does one thing really well.</li>
+					</ul>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">The Math Behind the Magic</h2>
+					<p>
+						We use precise mathematical formulas to calculate your attendance status:
+					</p>
+					<ul class="legal-list">
+						<li><strong>Current Percentage:</strong> Simple division with proper rounding</li>
+						<li><strong>Safe Bunk Limit:</strong> Floor function to ensure you never accidentally drop below your target</li>
+						<li><strong>Recovery Classes:</strong> Ceiling function to give you the exact number of consecutive classes needed</li>
+						<li><strong>Semester Forecast:</strong> Forward-looking projection accounting for classes already held and remaining classes</li>
+					</ul>
+					<p>
+						Every formula is transparent, tested, and designed to match common institutional attendance policies. That said, always verify with your college's specific rules—some institutions have unique rounding or condonation policies.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Built With Modern Technology</h2>
+					<p>
+						Attendance 75 Calculator is built with modern web technologies to ensure speed, reliability, and accessibility:
+					</p>
+					<ul class="legal-list">
+						<li><strong>Astro:</strong> Fast, content-focused static site generation</li>
+						<li><strong>Vanilla JavaScript:</strong> Zero framework overhead, maximum performance</li>
+						<li><strong>Responsive CSS:</strong> Adaptive design that works on any screen size</li>
+						<li><strong>Progressive Enhancement:</strong> Works even on slower connections or older devices</li>
+					</ul>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Our Values</h2>
+					<div class="values-grid">
+						<div class="value-card">
+							<div class="value-icon">🔒</div>
+							<h3 class="value-title">Privacy First</h3>
+							<p class="value-desc">Your data stays on your device. Always.</p>
+						</div>
+						<div class="value-card">
+							<div class="value-icon">⚡</div>
+							<h3 class="value-title">Speed Matters</h3>
+							<p class="value-desc">Instant results, no waiting, no friction.</p>
+						</div>
+						<div class="value-card">
+							<div class="value-icon">🎯</div>
+							<h3 class="value-title">Accuracy Counts</h3>
+							<p class="value-desc">Precise math, reliable calculations.</p>
+						</div>
+						<div class="value-card">
+							<div class="value-icon">🆓</div>
+							<h3 class="value-title">Always Free</h3>
+							<p class="value-desc">No hidden costs, no premium tiers.</p>
+						</div>
+					</div>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Disclaimer</h2>
+					<p>
+						While we strive for accuracy, Attendance 75 Calculator is an <strong>informational tool</strong>, not an official institutional system. Always verify your attendance status with your college's academic office or student portal. Different institutions may have varying policies on rounding, condonation, or calculation methods.
+					</p>
+					<p>
+						Use this tool to plan and estimate, but rely on your institution's official records for final decisions.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">Get in Touch</h2>
+					<p>
+						Have feedback, feature requests, or found a bug? We'd love to hear from you! Visit our <a href="/contact-us" class="legal-link">Contact Us</a> page to reach out.
+					</p>
+				</section>
+
+				<div class="back-home-section">
+					<a href="/" class="btn-back-home">← Back to Calculator</a>
+				</div>
+			</main>
+
+			<!-- Footer -->
+			<footer class="footer text-center">
+				<nav class="footer-nav">
+					<a href="/about-us" class="footer-link">About Us</a>
+					<span class="footer-separator">•</span>
+					<a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+					<span class="footer-separator">•</span>
+					<a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+					<span class="footer-separator">•</span>
+					<a href="/contact-us" class="footer-link">Contact Us</a>
+				</nav>
+				<p class="footer-note">
+					© {new Date().getFullYear()} Attendance 75 Calculator • Free Online College Attendance Tracker
+				</p>
+			</footer>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	/* Inherit theme variables from main page */
+	:root {
+		--bg-canvas: #fafafa;
+		--bg-card: #ffffff;
+		--bg-subtle: #fafafa;
+		--text-ink: #171717;
+		--text-body: #4d4d4d;
+		--text-muted: #8f8f8f;
+		--border-hairline: #ebebeb;
+		--border-focus: #171717;
+		--shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+		--link-color: #0070f3;
+		--link-hover: #0051cc;
+		--value-card-bg: #fafafa;
+	}
+
+	html.dark {
+		--bg-canvas: #0a0a0a;
+		--bg-card: #121212;
+		--bg-subtle: #171717;
+		--text-ink: #ededed;
+		--text-body: #a1a1a1;
+		--text-muted: #707070;
+		--border-hairline: #262626;
+		--border-focus: #ffffff;
+		--shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+		--link-color: #52a8ff;
+		--link-hover: #80c0ff;
+		--value-card-bg: #1a1a1a;
+	}
+
+	.page-container {
+		min-height: 100vh;
+		background-color: var(--bg-canvas);
+		color: var(--text-ink);
+		display: flex;
+		justify-content: center;
+		padding: 28px 16px;
+		font-family: 'Geist', Arial, sans-serif;
+		box-sizing: border-box;
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.content-wrapper {
+		width: 100%;
+		max-width: 740px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.top-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+	}
+
+	.inline-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-body);
+		box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+	}
+
+	.badge-dot {
+		width: 6px;
+		height: 6px;
+		background-color: #00c851;
+		border-radius: 50%;
+	}
+
+	.badge-link {
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.badge-link:hover {
+		color: var(--text-ink);
+	}
+
+	.theme-toggle-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-ink);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.theme-toggle-btn:hover {
+		background: var(--bg-subtle);
+		border-color: var(--text-muted);
+	}
+
+	.theme-icon {
+		font-size: 14px;
+		line-height: 1;
+	}
+
+	.theme-label {
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	.page-title {
+		font-size: 32px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 6px 0;
+		letter-spacing: -0.8px;
+		line-height: 1.2;
+	}
+
+	.page-subtitle {
+		font-size: 14px;
+		color: var(--text-muted);
+		margin: 4px 0;
+	}
+
+	.legal-card {
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 16px;
+		padding: 32px 28px;
+		margin-bottom: 24px;
+		box-shadow: var(--shadow-card);
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.legal-section {
+		margin-bottom: 28px;
+	}
+
+	.legal-section:last-child {
+		margin-bottom: 0;
+	}
+
+	.legal-h2 {
+		font-size: 20px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 12px 0;
+		letter-spacing: -0.4px;
+	}
+
+	.legal-card p {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin: 0 0 12px 0;
+	}
+
+	.legal-card p:last-child {
+		margin-bottom: 0;
+	}
+
+	.legal-list {
+		margin: 10px 0 14px 20px;
+		padding: 0;
+		list-style: disc;
+	}
+
+	.legal-list li {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin-bottom: 8px;
+	}
+
+	.legal-link {
+		color: var(--link-color);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.legal-link:hover {
+		color: var(--link-hover);
+		text-decoration: underline;
+	}
+
+	.values-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+		margin-top: 12px;
+	}
+
+	.value-card {
+		background: var(--value-card-bg);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 16px;
+		text-align: center;
+		transition: all 0.15s ease;
+	}
+
+	.value-card:hover {
+		border-color: var(--border-focus);
+	}
+
+	.value-icon {
+		font-size: 32px;
+		margin-bottom: 8px;
+	}
+
+	.value-title {
+		font-size: 15px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 4px 0;
+	}
+
+	.value-desc {
+		font-size: 13px;
+		color: var(--text-body);
+		margin: 0;
+		line-height: 1.4;
+	}
+
+	.back-home-section {
+		margin-top: 32px;
+		padding-top: 24px;
+		border-top: 1px solid var(--border-hairline);
+		text-align: center;
+	}
+
+	.btn-back-home {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 10px 18px;
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 8px;
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--text-ink);
+		text-decoration: none;
+		transition: all 0.15s ease;
+	}
+
+	.btn-back-home:hover {
+		background: var(--bg-canvas);
+		border-color: var(--border-focus);
+	}
+
+	.footer {
+		padding: 12px 0 24px 0;
+	}
+
+	.footer-nav {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.footer-link {
+		font-size: 13px;
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.footer-link:hover {
+		color: var(--text-ink);
+		text-decoration: underline;
+	}
+
+	.footer-separator {
+		color: var(--text-muted);
+		font-size: 13px;
+	}
+
+	.footer-note {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	@media (max-width: 640px) {
+		.page-container {
+			padding: 16px 12px;
+		}
+
+		.page-title {
+			font-size: 26px;
+		}
+
+		.legal-card {
+			padding: 24px 20px;
+		}
+
+		.legal-h2 {
+			font-size: 18px;
+		}
+
+		.values-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.footer-nav {
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.footer-separator {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	// Theme toggle logic
+	const themeToggleBtn = document.getElementById('theme-toggle');
+	const themeIcon = document.getElementById('theme-icon');
+	const themeLabel = document.getElementById('theme-label');
+
+	function updateThemeUI(isDark: boolean) {
+		if (themeIcon && themeLabel) {
+			if (isDark) {
+				themeIcon.textContent = '☀️';
+				themeLabel.textContent = 'Light';
+			} else {
+				themeIcon.textContent = '🌙';
+				themeLabel.textContent = 'Dark';
+			}
+		}
+	}
+
+	const isInitiallyDark = document.documentElement.classList.contains('dark');
+	updateThemeUI(isInitiallyDark);
+
+	themeToggleBtn?.addEventListener('click', () => {
+		const isCurrentlyDark = document.documentElement.classList.contains('dark');
+		const newThemeIsDark = !isCurrentlyDark;
+
+		if (newThemeIsDark) {
+			document.documentElement.classList.add('dark');
+			localStorage.setItem('theme', 'dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+			localStorage.setItem('theme', 'light');
+		}
+
+		updateThemeUI(newThemeIsDark);
+	});
+</script>

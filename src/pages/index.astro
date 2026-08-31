@@ -31,86 +31,100 @@ import Layout from '../layouts/Layout.astro';
 				<p class="page-subtitle">
 					The smart <strong>75 attendance calculator</strong> for college students. Know your exact attendance percentage, calculate safe bunks, or plan your recovery.
 				</p>
+
+				<!-- Quick Links -->
+				<nav class="hero-links">
+					<a href="/about-us" class="hero-link">About Us</a>
+					<a href="/privacy-policy" class="hero-link">Privacy Policy</a>
+					<a href="/terms-and-conditions" class="hero-link">Terms & Conditions</a>
+					<a href="/contact-us" class="hero-link">Contact Us</a>
+				</nav>
 			</header>
 
 			<!-- Main Calculator Card -->
 			<main class="calculator-card">
-				<!-- 1. Target Percentage Selector -->
-				<div class="form-group mb-5">
-					<div class="flex-between mb-2">
-						<label class="field-label">Target Attendance Requirement</label>
-						<span class="target-indicator" id="target-indicator">Target: 75%</span>
-					</div>
-					<div class="pills-grid" id="target-pills">
-						<button type="button" class="target-btn" data-value="60">60%</button>
-						<button type="button" class="target-btn" data-value="65">65%</button>
-						<button type="button" class="target-btn" data-value="70">70%</button>
-						<button type="button" class="target-btn active" data-value="75">75%</button>
-						<button type="button" class="target-btn" data-value="80">80%</button>
-						<button type="button" class="target-btn" data-value="85">85%</button>
-						<button type="button" class="target-btn" data-value="90">90%</button>
-						<div class="custom-target-wrap">
-							<input
-								type="number"
-								id="custom-target"
-								min="1"
-								max="100"
-								placeholder="Custom"
-								class="custom-target-input"
-								aria-label="Custom target attendance percentage"
-							/>
-							<span class="custom-target-unit">%</span>
+				<div class="calculator-inner-grid">
+					<!-- Left Column: Inputs -->
+					<div class="calculator-left">
+						<!-- 1. Target Percentage Selector -->
+						<div class="form-group mb-5">
+							<div class="flex-between mb-2">
+								<label class="field-label">Target Attendance Requirement</label>
+								<span class="target-indicator" id="target-indicator">Target: 75%</span>
+							</div>
+							<div class="pills-grid" id="target-pills">
+								<button type="button" class="target-btn" data-value="60">60%</button>
+								<button type="button" class="target-btn" data-value="65">65%</button>
+								<button type="button" class="target-btn" data-value="70">70%</button>
+								<button type="button" class="target-btn active" data-value="75">75%</button>
+								<button type="button" class="target-btn" data-value="80">80%</button>
+								<button type="button" class="target-btn" data-value="85">85%</button>
+								<button type="button" class="target-btn" data-value="90">90%</button>
+								<div class="custom-target-wrap">
+									<input
+										type="number"
+										id="custom-target"
+										min="1"
+										max="100"
+										placeholder="Custom"
+										class="custom-target-input"
+										aria-label="Custom target attendance percentage"
+									/>
+									<span class="custom-target-unit">%</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- 2. Inputs Grid (Attended, Total Held, Total in Semester) -->
+						<div class="inputs-grid mb-6">
+							<div class="input-block">
+								<label for="classes-attended" class="field-label">
+									Classes Attended <span class="label-muted">(Present)</span>
+								</label>
+								<input
+									type="number"
+									id="classes-attended"
+									min="0"
+									value="30"
+									placeholder="e.g. 30"
+									class="text-input"
+								/>
+							</div>
+
+							<div class="input-block">
+								<label for="total-classes" class="field-label">
+									Total Classes Held <span class="label-muted">(To Date)</span>
+								</label>
+								<input
+									type="number"
+									id="total-classes"
+									min="0"
+									value="40"
+									placeholder="e.g. 40"
+									class="text-input"
+								/>
+							</div>
+
+							<div class="input-block full-width-sm">
+								<label for="total-semester-classes" class="field-label">
+									Total Classes in Semester <span class="label-optional">(Optional)</span>
+								</label>
+								<input
+									type="number"
+									id="total-semester-classes"
+									min="0"
+									value="100"
+									placeholder="e.g. 100 expected classes"
+									class="text-input"
+								/>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<!-- 2. Inputs Grid (Attended, Total Held, Total in Semester) -->
-				<div class="inputs-grid mb-6">
-					<div class="input-block">
-						<label for="classes-attended" class="field-label">
-							Classes Attended <span class="label-muted">(Present)</span>
-						</label>
-						<input
-							type="number"
-							id="classes-attended"
-							min="0"
-							value="30"
-							placeholder="e.g. 30"
-							class="text-input"
-						/>
-					</div>
-
-					<div class="input-block">
-						<label for="total-classes" class="field-label">
-							Total Classes Held <span class="label-muted">(To Date)</span>
-						</label>
-						<input
-							type="number"
-							id="total-classes"
-							min="0"
-							value="40"
-							placeholder="e.g. 40"
-							class="text-input"
-						/>
-					</div>
-
-					<div class="input-block full-width-sm">
-						<label for="total-semester-classes" class="field-label">
-							Total Classes in Semester <span class="label-optional">(Optional)</span>
-						</label>
-						<input
-							type="number"
-							id="total-semester-classes"
-							min="0"
-							value="100"
-							placeholder="e.g. 100 expected classes"
-							class="text-input"
-						/>
-					</div>
-				</div>
-
-				<!-- 3. Dynamic Results Box -->
-				<div id="results-box" class="results-box">
+					<!-- Right Column: Results -->
+					<div class="calculator-right">
+						<!-- 3. Dynamic Results Box -->
+						<div id="results-box" class="results-box">
 					<!-- Header Status & Percentage -->
 					<div class="results-header">
 						<div>
@@ -159,15 +173,17 @@ import Layout from '../layouts/Layout.astro';
 						</div>
 					</div>
 
-					<!-- Quick Copy Status Button -->
-					<div class="mt-4">
-						<button type="button" id="copy-summary-btn" class="btn-copy">
-							<span id="copy-icon">📋</span>
-							<span id="copy-btn-text">Copy Attendance Vibe Check</span>
-						</button>
+						<!-- Quick Copy Status Button -->
+						<div class="mt-4">
+							<button type="button" id="copy-summary-btn" class="btn-copy">
+								<span id="copy-icon">📋</span>
+								<span id="copy-btn-text">Copy Attendance Vibe Check</span>
+							</button>
+						</div>
 					</div>
 				</div>
-			</main>
+			</div>
+		</main>
 
 			<!-- Comprehensive SEO Guide & Information Section (800 - 1200 words) -->
 			<article class="seo-article">
@@ -392,8 +408,17 @@ import Layout from '../layouts/Layout.astro';
 				</section>
 			</article>
 
-			<!-- Simple Footer -->
+			<!-- Footer -->
 			<footer class="footer text-center">
+				<nav class="footer-nav">
+					<a href="/about-us" class="footer-link">About Us</a>
+					<span class="footer-separator">•</span>
+					<a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+					<span class="footer-separator">•</span>
+					<a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+					<span class="footer-separator">•</span>
+					<a href="/contact-us" class="footer-link">Contact Us</a>
+				</nav>
 				<p class="footer-note">
 					© {new Date().getFullYear()} Attendance 75 Calculator • Free Online College Attendance Tracker • Client-side math & 100% private
 				</p>
@@ -507,6 +532,21 @@ import Layout from '../layouts/Layout.astro';
 		flex-direction: column;
 	}
 
+	/* Desktop: wider container and better spacing */
+	@media (min-width: 1024px) {
+		.content-wrapper {
+			max-width: 1200px;
+		}
+
+		.page-container {
+			padding: 40px 24px;
+		}
+
+		.calculator-card {
+			padding: 40px;
+		}
+	}
+
 	/* Top Nav Bar with Theme Toggle */
 	.top-nav {
 		display: flex;
@@ -582,8 +622,35 @@ import Layout from '../layouts/Layout.astro';
 		font-size: 14px;
 		color: var(--text-body);
 		line-height: 1.5;
-		margin: 0 auto;
+		margin: 0 auto 16px auto;
 		max-width: 520px;
+	}
+
+	.hero-links {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 16px;
+	}
+
+	.hero-link {
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--text-body);
+		text-decoration: none;
+		padding: 6px 14px;
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		background: var(--bg-card);
+		transition: all 0.15s ease;
+	}
+
+	.hero-link:hover {
+		color: var(--text-ink);
+		border-color: var(--border-focus);
+		background: var(--bg-subtle);
 	}
 
 	/* Card */
@@ -732,6 +799,35 @@ import Layout from '../layouts/Layout.astro';
 	.results-box {
 		border-top: 1px solid var(--border-hairline);
 		padding-top: 24px;
+	}
+
+	/* Desktop: Remove border-top in two-column layout */
+	@media (min-width: 1024px) {
+		.calculator-inner-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 40px;
+			align-items: start;
+		}
+
+		.calculator-left {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.calculator-right {
+			position: sticky;
+			top: 24px;
+		}
+
+		.results-box {
+			border-top: none;
+			padding-top: 0;
+			background: var(--bg-subtle);
+			border: 1px solid var(--border-hairline);
+			border-radius: 12px;
+			padding: 24px;
+		}
 	}
 
 	.results-header {
@@ -965,6 +1061,13 @@ import Layout from '../layouts/Layout.astro';
 		transition: background-color 0.2s ease, border-color 0.2s ease;
 	}
 
+	/* Desktop: Better spacing for SEO content */
+	@media (min-width: 1024px) {
+		.seo-article {
+			padding: 48px 64px;
+		}
+	}
+
 	.seo-section {
 		margin-bottom: 28px;
 	}
@@ -1129,6 +1232,32 @@ import Layout from '../layouts/Layout.astro';
 		padding: 12px 0 24px 0;
 	}
 
+	.footer-nav {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.footer-link {
+		font-size: 13px;
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.footer-link:hover {
+		color: var(--text-ink);
+		text-decoration: underline;
+	}
+
+	.footer-separator {
+		color: var(--text-muted);
+		font-size: 13px;
+	}
+
 	.footer-note {
 		font-size: 12px;
 		color: var(--text-muted);
@@ -1175,6 +1304,17 @@ import Layout from '../layouts/Layout.astro';
 		.page-subtitle {
 			font-size: 13px;
 			padding: 0 4px;
+			margin-bottom: 12px;
+		}
+
+		.hero-links {
+			gap: 8px;
+			margin-top: 12px;
+		}
+
+		.hero-link {
+			font-size: 12px;
+			padding: 6px 12px;
 		}
 
 		.calculator-card,
@@ -1289,6 +1429,15 @@ import Layout from '../layouts/Layout.astro';
 
 		.seo-h2 {
 			font-size: 18px;
+		}
+
+		.footer-nav {
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.footer-separator {
+			display: none;
 		}
 
 		.toast {

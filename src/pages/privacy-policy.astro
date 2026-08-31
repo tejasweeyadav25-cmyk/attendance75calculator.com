@@ -1,0 +1,460 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="Privacy Policy - Attendance 75 Calculator"
+	description="Privacy policy for Attendance 75 Calculator. Learn how we handle your data with 100% client-side processing and zero data collection."
+	keywords="privacy policy, data protection, attendance calculator privacy"
+>
+	<div class="page-container">
+		<div class="content-wrapper">
+			<!-- Top Bar with Brand Badge & Theme Toggle -->
+			<nav class="top-nav">
+				<div class="inline-badge">
+					<span class="badge-dot"></span>
+					<a href="/" class="badge-link">Attendance 75 Calculator</a>
+				</div>
+
+				<!-- Theme Toggle Button -->
+				<button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+					<span id="theme-icon" class="theme-icon">🌙</span>
+					<span id="theme-label" class="theme-label">Dark</span>
+				</button>
+			</nav>
+
+			<!-- Header -->
+			<header class="text-center mb-6">
+				<h1 class="page-title">Privacy Policy</h1>
+				<p class="page-subtitle">Last Updated: August 31, 2026</p>
+			</header>
+
+			<!-- Main Content -->
+			<main class="legal-card">
+				<section class="legal-section">
+					<h2 class="legal-h2">1. Introduction</h2>
+					<p>
+						Welcome to Attendance 75 Calculator ("we," "our," or "us"). We are committed to protecting your privacy and ensuring that your personal information remains secure. This Privacy Policy explains how our attendance calculator application handles data.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">2. No Data Collection</h2>
+					<p>
+						<strong>Attendance 75 Calculator operates with a privacy-first approach:</strong>
+					</p>
+					<ul class="legal-list">
+						<li><strong>Zero Server-Side Data Storage:</strong> All calculations are performed entirely within your browser using client-side JavaScript. No attendance data, personal information, or calculation results are ever transmitted to our servers.</li>
+						<li><strong>No Account Required:</strong> Our service does not require registration, login, or any form of user authentication.</li>
+						<li><strong>No Cookies for Tracking:</strong> We do not use cookies or any tracking technologies to monitor your behavior or collect personal data.</li>
+						<li><strong>No Third-Party Analytics:</strong> We do not use Google Analytics, Facebook Pixel, or any other third-party analytics or advertising services that track users.</li>
+					</ul>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">3. Local Storage</h2>
+					<p>
+						The only data stored locally on your device is:
+					</p>
+					<ul class="legal-list">
+						<li><strong>Theme Preference:</strong> Your light/dark mode selection is stored in your browser's localStorage to remember your preference on future visits.</li>
+					</ul>
+					<p>
+						This data never leaves your device and can be cleared at any time by clearing your browser's local storage or cache.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">4. Information We Do Not Collect</h2>
+					<p>We explicitly do not collect:</p>
+					<ul class="legal-list">
+						<li>Names, email addresses, or contact information</li>
+						<li>IP addresses or device identifiers</li>
+						<li>Attendance data or calculation results</li>
+						<li>Browsing history or behavioral data</li>
+						<li>Location data</li>
+						<li>Any personally identifiable information (PII)</li>
+					</ul>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">5. Third-Party Services</h2>
+					<p>
+						Our website is hosted on a third-party hosting provider. While we do not collect any data, the hosting provider may collect standard server logs (such as IP addresses, browser types, and access times) for security and operational purposes. We do not have access to or control over this data.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">6. Security</h2>
+					<p>
+						Since we do not collect or store any personal data on our servers, there is no risk of your attendance information being compromised through our service. All calculations happen locally in your browser, ensuring maximum privacy and security.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">7. Children's Privacy</h2>
+					<p>
+						Our service is intended for college and university students. We do not knowingly collect personal information from anyone, including children under the age of 13. Since we do not collect any data, there is no risk of inadvertent collection of children's information.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">8. Changes to This Privacy Policy</h2>
+					<p>
+						We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated "Last Updated" date. We encourage you to review this Privacy Policy periodically for any changes.
+					</p>
+				</section>
+
+				<section class="legal-section">
+					<h2 class="legal-h2">9. Contact Us</h2>
+					<p>
+						If you have any questions or concerns about this Privacy Policy, please contact us through our <a href="/contact-us" class="legal-link">Contact Us</a> page.
+					</p>
+				</section>
+
+				<div class="back-home-section">
+					<a href="/" class="btn-back-home">← Back to Calculator</a>
+				</div>
+			</main>
+
+			<!-- Footer -->
+			<footer class="footer text-center">
+				<nav class="footer-nav">
+					<a href="/about-us" class="footer-link">About Us</a>
+					<span class="footer-separator">•</span>
+					<a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+					<span class="footer-separator">•</span>
+					<a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+					<span class="footer-separator">•</span>
+					<a href="/contact-us" class="footer-link">Contact Us</a>
+				</nav>
+				<p class="footer-note">
+					© {new Date().getFullYear()} Attendance 75 Calculator • Free Online College Attendance Tracker
+				</p>
+			</footer>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	/* Inherit theme variables from main page */
+	:root {
+		--bg-canvas: #fafafa;
+		--bg-card: #ffffff;
+		--bg-subtle: #fafafa;
+		--text-ink: #171717;
+		--text-body: #4d4d4d;
+		--text-muted: #8f8f8f;
+		--border-hairline: #ebebeb;
+		--border-focus: #171717;
+		--shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+		--link-color: #0070f3;
+		--link-hover: #0051cc;
+	}
+
+	html.dark {
+		--bg-canvas: #0a0a0a;
+		--bg-card: #121212;
+		--bg-subtle: #171717;
+		--text-ink: #ededed;
+		--text-body: #a1a1a1;
+		--text-muted: #707070;
+		--border-hairline: #262626;
+		--border-focus: #ffffff;
+		--shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+		--link-color: #52a8ff;
+		--link-hover: #80c0ff;
+	}
+
+	.page-container {
+		min-height: 100vh;
+		background-color: var(--bg-canvas);
+		color: var(--text-ink);
+		display: flex;
+		justify-content: center;
+		padding: 28px 16px;
+		font-family: 'Geist', Arial, sans-serif;
+		box-sizing: border-box;
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.content-wrapper {
+		width: 100%;
+		max-width: 740px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.top-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+	}
+
+	.inline-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-body);
+		box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+	}
+
+	.badge-dot {
+		width: 6px;
+		height: 6px;
+		background-color: #00c851;
+		border-radius: 50%;
+	}
+
+	.badge-link {
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.badge-link:hover {
+		color: var(--text-ink);
+	}
+
+	.theme-toggle-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-ink);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.theme-toggle-btn:hover {
+		background: var(--bg-subtle);
+		border-color: var(--text-muted);
+	}
+
+	.theme-icon {
+		font-size: 14px;
+		line-height: 1;
+	}
+
+	.theme-label {
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	.page-title {
+		font-size: 32px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 6px 0;
+		letter-spacing: -0.8px;
+		line-height: 1.2;
+	}
+
+	.page-subtitle {
+		font-size: 14px;
+		color: var(--text-muted);
+		margin: 4px 0;
+	}
+
+	.legal-card {
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 16px;
+		padding: 32px 28px;
+		margin-bottom: 24px;
+		box-shadow: var(--shadow-card);
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.legal-section {
+		margin-bottom: 28px;
+	}
+
+	.legal-section:last-child {
+		margin-bottom: 0;
+	}
+
+	.legal-h2 {
+		font-size: 20px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 12px 0;
+		letter-spacing: -0.4px;
+	}
+
+	.legal-card p {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin: 0 0 12px 0;
+	}
+
+	.legal-card p:last-child {
+		margin-bottom: 0;
+	}
+
+	.legal-list {
+		margin: 10px 0 14px 20px;
+		padding: 0;
+		list-style: disc;
+	}
+
+	.legal-list li {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin-bottom: 8px;
+	}
+
+	.legal-link {
+		color: var(--link-color);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.legal-link:hover {
+		color: var(--link-hover);
+		text-decoration: underline;
+	}
+
+	.back-home-section {
+		margin-top: 32px;
+		padding-top: 24px;
+		border-top: 1px solid var(--border-hairline);
+		text-align: center;
+	}
+
+	.btn-back-home {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 10px 18px;
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 8px;
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--text-ink);
+		text-decoration: none;
+		transition: all 0.15s ease;
+	}
+
+	.btn-back-home:hover {
+		background: var(--bg-canvas);
+		border-color: var(--border-focus);
+	}
+
+	.footer {
+		padding: 12px 0 24px 0;
+	}
+
+	.footer-nav {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.footer-link {
+		font-size: 13px;
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.footer-link:hover {
+		color: var(--text-ink);
+		text-decoration: underline;
+	}
+
+	.footer-separator {
+		color: var(--text-muted);
+		font-size: 13px;
+	}
+
+	.footer-note {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	@media (max-width: 640px) {
+		.page-container {
+			padding: 16px 12px;
+		}
+
+		.page-title {
+			font-size: 26px;
+		}
+
+		.legal-card {
+			padding: 24px 20px;
+		}
+
+		.legal-h2 {
+			font-size: 18px;
+		}
+
+		.footer-nav {
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.footer-separator {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	// Theme toggle logic
+	const themeToggleBtn = document.getElementById('theme-toggle');
+	const themeIcon = document.getElementById('theme-icon');
+	const themeLabel = document.getElementById('theme-label');
+
+	function updateThemeUI(isDark: boolean) {
+		if (themeIcon && themeLabel) {
+			if (isDark) {
+				themeIcon.textContent = '☀️';
+				themeLabel.textContent = 'Light';
+			} else {
+				themeIcon.textContent = '🌙';
+				themeLabel.textContent = 'Dark';
+			}
+		}
+	}
+
+	const isInitiallyDark = document.documentElement.classList.contains('dark');
+	updateThemeUI(isInitiallyDark);
+
+	themeToggleBtn?.addEventListener('click', () => {
+		const isCurrentlyDark = document.documentElement.classList.contains('dark');
+		const newThemeIsDark = !isCurrentlyDark;
+
+		if (newThemeIsDark) {
+			document.documentElement.classList.add('dark');
+			localStorage.setItem('theme', 'dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+			localStorage.setItem('theme', 'light');
+		}
+
+		updateThemeUI(newThemeIsDark);
+	});
+</script>
