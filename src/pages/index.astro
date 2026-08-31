@@ -3,8 +3,9 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout
-	title="Attendance 75 Calculator | Bunk Budget & Semester Projection"
-	description="Calculate how many classes you can safely bunk, what you need to recover, or check if you're cooked for the semester."
+	title="Attendance Calculator - Free 75% College Attendance Calculator App"
+	description="Free online attendance calculator to check 75% criteria. Calculate safe bunks, classes needed to reach 75 percent attendance, and semester projections instantly."
+	keywords="attendance calculator, 75 attendance calculator, attendance calculator 75, attendance calculator app, 75 percent attendance calculator, college attendance calculator, attendance calculator college"
 >
 	<div class="page-container">
 		<div class="content-wrapper">
@@ -25,10 +26,10 @@ import Layout from '../layouts/Layout.astro';
 			<!-- Header -->
 			<header class="text-center mb-6">
 				<h1 class="page-title">
-					Attendance & Bunk Calculator
+					Attendance Calculator & 75% Bunk Planner
 				</h1>
 				<p class="page-subtitle">
-					Know exactly how many classes you can skip, how many you gotta attend, or if you're cooked.
+					The smart <strong>75 attendance calculator</strong> for college students. Know your exact attendance percentage, calculate safe bunks, or plan your recovery.
 				</p>
 			</header>
 
@@ -56,6 +57,7 @@ import Layout from '../layouts/Layout.astro';
 								max="100"
 								placeholder="Custom"
 								class="custom-target-input"
+								aria-label="Custom target attendance percentage"
 							/>
 							<span class="custom-target-unit">%</span>
 						</div>
@@ -167,10 +169,233 @@ import Layout from '../layouts/Layout.astro';
 				</div>
 			</main>
 
+			<!-- Comprehensive SEO Guide & Information Section (800 - 1200 words) -->
+			<article class="seo-article">
+				<!-- Section 1: Overview -->
+				<section class="seo-section">
+					<h2 class="seo-h2">What is an Attendance Calculator and Why Do You Need It?</h2>
+					<p>
+						An <strong>attendance calculator</strong> is an essential academic utility designed to help students track, calculate, and manage their lecture attendance with mathematical accuracy. In universities and colleges worldwide, maintaining a minimum attendance percentage—most commonly <strong>75 percent attendance</strong>—is a mandatory requirement to appear for final semester examinations.
+					</p>
+					<p>
+						Whether you want to calculate how many lectures you can safely skip, figure out how many consecutive classes you must attend to overcome an attendance shortage, or forecast your end-of-semester standing, this <strong>75 attendance calculator</strong> eliminates guesswork. Instead of doing complex mental arithmetic or relying on confusing spreadsheets, our <strong>attendance calculator app</strong> provides instant, real-time insights with just two numbers: the classes you have attended and the total classes held so far.
+					</p>
+				</section>
+
+				<!-- Section 2: Why 75% Attendance is Mandatory -->
+				<section class="seo-section">
+					<h2 class="seo-h2">Why is 75% Attendance Mandatory in College?</h2>
+					<p>
+						Higher education regulatory bodies (such as the UGC, AICTE, Bar Council of India, Medical Council, and global university boards) enforce a strict 75% attendance rule. Colleges implement this rule to ensure consistent classroom engagement, practical laboratory participation, and academic discipline.
+					</p>
+					<p>
+						Falling below the required threshold leads to serious academic repercussions:
+					</p>
+					<ul class="seo-list">
+						<li><strong>Debarment from Examinations:</strong> Students with an attendance shortage below 75% are often disqualified from sitting for end-semester or final exams.</li>
+						<li><strong>Condonation Fines & Penalties:</strong> While some colleges allow condonation for attendance between 65% and 75% with a medical certificate, it often involves hefty administrative fines.</li>
+						<li><strong>Internal Assessment Loss:</strong> Many universities allocate 5 to 10 marks of internal assessment directly proportional to attendance percentage.</li>
+						<li><strong>Year Back or Semester Detention:</strong> Severe shortages below 60% can result in semester detention, forcing students to repeat the entire academic term.</li>
+					</ul>
+					<p>
+						Using a dedicated <strong>college attendance calculator</strong> allows you to stay ahead of attendance shortfalls before they become critical emergencies.
+					</p>
+				</section>
+
+				<!-- Section 3: The Mathematical Formulas -->
+				<section class="seo-section">
+					<h2 class="seo-h2">How to Calculate 75% Attendance: Formulas & Logic</h2>
+					<p>
+						Our <strong>attendance calculator 75</strong> tool runs on precise mathematical algorithms. Here is the exact breakdown of how your attendance percentage, safe bunk limit, and catch-up requirements are computed:
+					</p>
+
+					<div class="formula-card">
+						<h3 class="formula-title">1. Current Attendance Percentage Formula</h3>
+						<p class="formula-text">
+							<code>Attendance (%) = (Classes Attended / Total Classes Held) × 100</code>
+						</p>
+						<p class="formula-desc">
+							<strong>Example:</strong> If 40 lectures have been held to date and you attended 30 of them:<br />
+							<code>(30 / 40) × 100 = 75.0%</code>
+						</p>
+					</div>
+
+					<div class="formula-card">
+						<h3 class="formula-title">2. Safe Bunk Limit Formula (When Current % ≥ Target %)</h3>
+						<p class="formula-text">
+							<code>Safe Bunks = ⌊(Classes Attended / Target Fraction) - Total Classes Held⌋</code>
+						</p>
+						<p class="formula-desc">
+							Where <em>Target Fraction</em> is <code>0.75</code> for 75%. The floor symbol <code>⌊ ⌋</code> rounds down to the nearest whole integer to ensure your percentage never dips below 75%.<br />
+							<strong>Example:</strong> Attended = 36, Total Held = 40, Target = 75% (0.75):<br />
+							<code>Safe Bunks = ⌊(36 / 0.75) - 40⌋ = ⌊48 - 40⌋ = 8 classes</code>.<br />
+							You can safely miss the next 8 consecutive classes and still finish exactly at 75%.
+						</p>
+					</div>
+
+					<div class="formula-card">
+						<h3 class="formula-title">3. Consecutive Classes Needed to Recover (When Current % &lt; Target %)</h3>
+						<p class="formula-text">
+							<code>Classes to Attend = ⌈((Target Fraction × Total Classes Held) - Classes Attended) / (1 - Target Fraction)⌉</code>
+						</p>
+						<p class="formula-desc">
+							For a 75% target (where <code>Target Fraction = 0.75</code>), the denominator is <code>1 - 0.75 = 0.25</code>. Multiplying by <code>4</code> simplifies the formula to:<br />
+							<code>Classes to Attend = ⌈3 × Total Held - 4 × Attended⌉</code>.<br />
+							<strong>Example:</strong> Attended = 20, Total Held = 35. To reach 75%:<br />
+							<code>Classes to Attend = ⌈3(35) - 4(20)⌉ = ⌈105 - 80⌉ = 25 classes</code>.<br />
+							You must attend the next 25 classes in a row without absence to regain 75% attendance.
+						</p>
+					</div>
+				</section>
+
+				<!-- Section 4: Step-by-Step User Guide -->
+				<section class="seo-section">
+					<h2 class="seo-h2">How to Use This 75 Percent Attendance Calculator App</h2>
+					<p>
+						Using our <strong>attendance calculator college</strong> utility is straightforward and requires zero registration or downloads:
+					</p>
+					<ol class="seo-ordered-list">
+						<li><strong>Select Your Attendance Target:</strong> Click on one of the quick-select pills (60%, 65%, 70%, 75%, 80%, 85%, 90%) or type any custom percentage required by your department.</li>
+						<li><strong>Enter Classes Attended:</strong> Input the total number of lecture or lab hours you have physically attended so far.</li>
+						<li><strong>Enter Total Classes Held:</strong> Input the cumulative number of classes your professors have conducted to date.</li>
+						<li><strong>(Optional) Enter Total Classes in Semester:</strong> If you know the total planned classes for the entire semester (e.g., 90 or 120 classes), enter it to unlock the <em>Semester Forecast</em> card.</li>
+						<li><strong>Read Instant Results:</strong> Watch your percentage, safe bunk quota, recovery target, and dynamic vibe status update instantly as you type.</li>
+					</ol>
+				</section>
+
+				<!-- Section 5: Key Features -->
+				<section class="seo-section">
+					<h2 class="seo-h2">Key Features of Our College Attendance Calculator</h2>
+					<div class="features-seo-grid">
+						<div class="feature-seo-item">
+							<h3 class="feature-seo-title">⚡ Instant Real-Time Calculations</h3>
+							<p>No waiting and no "Submit" buttons. The calculator updates every metric as soon as you type or change a number.</p>
+						</div>
+						<div class="feature-seo-item">
+							<h3 class="feature-seo-title">🎯 End-of-Semester Forecast</h3>
+							<p>Plan your bunk budget across the remaining semester. Find out if your target is mathematically achievable or if you are "cooked".</p>
+						</div>
+						<div class="feature-seo-item">
+							<h3 class="feature-seo-title">🔒 100% Client-Side Privacy</h3>
+							<p>All calculations happen directly inside your browser. No attendance data, login credentials, or student records are ever sent to external servers.</p>
+						</div>
+						<div class="feature-seo-item">
+							<h3 class="feature-seo-title">🌙 Built-in Dark Mode</h3>
+							<p>Seamlessly toggle between crisp light mode and deep OLED dark mode for late-night college study sessions.</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- Section 6: Frequently Asked Questions (FAQ) -->
+				<section class="seo-section">
+					<h2 class="seo-h2">Frequently Asked Questions (FAQ)</h2>
+					<div class="faq-container">
+						<details class="faq-item" open>
+							<summary class="faq-question">What is a Monthly Attendance Calculator and how to use it?</summary>
+							<div class="faq-answer">
+								<p>
+									A <strong>monthly attendance calculator</strong> allows students and employees to calculate attendance percentage over a specific calendar month. Simply input the number of days or classes attended in that month and divide by the total working days or scheduled lectures held in that month, then multiply by 100.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">What is the Attendance Calculator Formula?</summary>
+							<div class="faq-answer">
+								<p>
+									The basic <strong>attendance formula</strong> is: <code>Attendance (%) = (Classes Attended / Total Classes Held) × 100</code>. To find safe bunks above a target percentage (P%): <code>Safe Bunks = ⌊(Attended / (P/100)) - Total Held⌋</code>. To find classes needed to recover to target (P%): <code>Classes to Attend = ⌈((P/100 × Total Held) - Attended) / (1 - P/100)⌉</code>.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">What is the Attendance Calculator App and does it work offline?</summary>
+							<div class="faq-answer">
+								<p>
+									The <strong>Attendance Calculator App</strong> is a free, web-based mobile-friendly tool that runs directly in your browser. It calculates attendance percentage, safe bunks, and recovery classes instantly without requiring app store downloads, logins, or server storage.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">What is a Student Attendance Calculator?</summary>
+							<div class="faq-answer">
+								<p>
+									A <strong>student attendance calculator</strong> is a specialized educational calculator designed for school and university students to keep track of lecture and laboratory attendance. It prevents examination debarment by alerting students when attendance drops near or below mandatory thresholds like 75% or 80%.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">Can you use the Attendance Calculator for 100 Percent?</summary>
+							<div class="faq-answer">
+								<p>
+									Yes, you can set the attendance target to <strong>100%</strong> using our custom target input. Note that achieving 100% attendance requires attending every single class held from day one. If even one class has been missed, reaching a 100.0% final attendance is mathematically impossible.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">How does the Attendance Calculator 80 percent target work?</summary>
+							<div class="faq-answer">
+								<p>
+									The <strong>Attendance Calculator 80</strong> feature sets your target threshold to 80% (common in premier universities and professional degree courses). To maintain 80%, you must attend at least 4 out of every 5 classes held (Attended ≥ 0.8 × Total Classes).
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">How does the Attendance Calculator 75 percent target work?</summary>
+							<div class="faq-answer">
+								<p>
+									The <strong>Attendance Calculator 75</strong> helps students satisfy the standard 75% attendance rule mandated by UGC and colleges. If your current attendance is ≥ 75%, it calculates how many classes you can skip. If it is &lt; 75%, it computes the exact number of consecutive classes you must attend to return to 75%.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">For a 75 percent attendance calculator, how many days can you miss?</summary>
+							<div class="faq-answer">
+								<p>
+									For a standard semester with 100 classes, you need to attend at least 75 classes and can miss a maximum of 25 classes. If you have currently attended 30 out of 40 classes held, you can miss 0 immediate classes without dropping below 75%, but out of the remaining 60 semester classes, you can skip up to 15 classes.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">How to use an attendance percentage calculator?</summary>
+							<div class="faq-answer">
+								<p>
+									To use an <strong>attendance percentage calculator</strong>: 1) Select your target attendance (e.g., 75% or 80%), 2) Enter the number of classes or days you attended, 3) Enter the total classes or days conducted so far. The calculator immediately shows your current percentage, status badge, and safe bunk quota.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">How is attendance percentage calculated?</summary>
+							<div class="faq-answer">
+								<p>
+									Attendance percentage is calculated by dividing the total number of present sessions by the total number of delivered sessions, and multiplying that fraction by 100. For instance, attending 45 out of 60 lectures gives <code>(45 / 60) × 100 = 75%</code>.
+								</p>
+							</div>
+						</details>
+
+						<details class="faq-item">
+							<summary class="faq-question">How to calculate attendance percentage with a calculator?</summary>
+							<div class="faq-answer">
+								<p>
+									On any calculator: type your attended classes, press divide (÷), enter total classes held, press multiply (×), enter 100, and press equals (=). Or simply use our free online <strong>attendance calculator app</strong> to get instant calculations with bunk suggestions automatically.
+								</p>
+							</div>
+						</details>
+					</div>
+				</section>
+			</article>
+
 			<!-- Simple Footer -->
 			<footer class="footer text-center">
 				<p class="footer-note">
-					Client-side math • 100% private • No login required
+					© {new Date().getFullYear()} Attendance 75 Calculator • Free Online College Attendance Tracker • Client-side math & 100% private
 				</p>
 			</footer>
 		</div>
@@ -217,6 +442,10 @@ import Layout from '../layouts/Layout.astro';
 		--vibe-cooked-bg: #171717;
 		--vibe-cooked-border: #000000;
 		--vibe-cooked-text: #ffffff;
+
+		/* SEO Article Light */
+		--code-bg: #f3f3f3;
+		--code-border: #e5e5e5;
 	}
 
 	html.dark {
@@ -252,6 +481,10 @@ import Layout from '../layouts/Layout.astro';
 		--vibe-cooked-bg: #000000;
 		--vibe-cooked-border: #404040;
 		--vibe-cooked-text: #ffffff;
+
+		/* SEO Article Dark */
+		--code-bg: #1c1c1c;
+		--code-border: #2a2a2a;
 	}
 
 	/* Layout & Base */
@@ -269,7 +502,7 @@ import Layout from '../layouts/Layout.astro';
 
 	.content-wrapper {
 		width: 100%;
-		max-width: 620px;
+		max-width: 640px;
 		display: flex;
 		flex-direction: column;
 	}
@@ -350,7 +583,7 @@ import Layout from '../layouts/Layout.astro';
 		color: var(--text-body);
 		line-height: 1.5;
 		margin: 0 auto;
-		max-width: 480px;
+		max-width: 520px;
 	}
 
 	/* Card */
@@ -360,7 +593,7 @@ import Layout from '../layouts/Layout.astro';
 		border-radius: 16px;
 		padding: 28px;
 		box-shadow: var(--shadow-card);
-		margin-bottom: 20px;
+		margin-bottom: 24px;
 		transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 	}
 
@@ -718,11 +951,189 @@ import Layout from '../layouts/Layout.astro';
 		border-color: var(--border-focus);
 	}
 
+	/* SEO Content Article */
+	.seo-article {
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 16px;
+		padding: 32px 28px;
+		margin-bottom: 24px;
+		color: var(--text-body);
+		line-height: 1.65;
+		font-size: 14px;
+		box-shadow: var(--shadow-card);
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.seo-section {
+		margin-bottom: 28px;
+	}
+
+	.seo-section:last-child {
+		margin-bottom: 0;
+	}
+
+	.seo-h2 {
+		font-size: 20px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 12px 0;
+		letter-spacing: -0.4px;
+		line-height: 1.3;
+	}
+
+	.seo-section p {
+		margin: 0 0 12px 0;
+	}
+
+	.seo-section p:last-child {
+		margin-bottom: 0;
+	}
+
+	.seo-list,
+	.seo-ordered-list {
+		margin: 10px 0 14px 20px;
+		padding: 0;
+	}
+
+	.seo-list li,
+	.seo-ordered-list li {
+		margin-bottom: 8px;
+	}
+
+	.formula-card {
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 16px;
+		margin-bottom: 14px;
+	}
+
+	.formula-title {
+		font-size: 14px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 6px 0;
+	}
+
+	.formula-text {
+		font-family: 'Geist Mono', monospace, Courier;
+		font-size: 13px;
+		margin: 0 0 8px 0;
+	}
+
+	.formula-text code,
+	.formula-desc code {
+		background: var(--code-bg);
+		border: 1px solid var(--code-border);
+		padding: 2px 6px;
+		border-radius: 4px;
+		font-family: 'Geist Mono', monospace, Courier;
+		font-size: 12px;
+		color: var(--text-ink);
+	}
+
+	.formula-desc {
+		font-size: 12.5px;
+		margin: 0;
+		color: var(--text-body);
+		line-height: 1.5;
+	}
+
+	.features-seo-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+		margin-top: 12px;
+	}
+
+	.feature-seo-item {
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 14px;
+	}
+
+	.feature-seo-title {
+		font-size: 13.5px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 4px 0;
+	}
+
+	.feature-seo-item p {
+		font-size: 12.5px;
+		margin: 0;
+		color: var(--text-body);
+		line-height: 1.4;
+	}
+
+	/* FAQ Accordions */
+	.faq-container {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		margin-top: 12px;
+	}
+
+	.faq-item {
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 12px 16px;
+		transition: all 0.15s ease;
+	}
+
+	.faq-question {
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--text-ink);
+		cursor: pointer;
+		list-style: none;
+		position: relative;
+		padding-right: 20px;
+	}
+
+	.faq-question::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq-question::after {
+		content: "+";
+		position: absolute;
+		right: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--text-muted);
+	}
+
+	.faq-item[open] .faq-question::after {
+		content: "−";
+	}
+
+	.faq-answer {
+		margin-top: 10px;
+		font-size: 13px;
+		color: var(--text-body);
+		line-height: 1.5;
+	}
+
+	.faq-answer p {
+		margin: 0;
+	}
+
 	/* Footer Note */
+	.footer {
+		padding: 12px 0 24px 0;
+	}
+
 	.footer-note {
 		font-size: 12px;
 		color: var(--text-muted);
 		margin: 0;
+		line-height: 1.5;
 	}
 
 	/* Toast */
@@ -746,21 +1157,166 @@ import Layout from '../layouts/Layout.astro';
 	}
 
 	/* Mobile responsive */
-	@media (max-width: 540px) {
-		.calculator-card {
+	@media (max-width: 640px) {
+		.page-container {
+			padding: 16px 12px;
+			padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+		}
+
+		.top-nav {
+			margin-bottom: 16px;
+		}
+
+		.page-title {
+			font-size: 24px;
+			letter-spacing: -0.5px;
+		}
+
+		.page-subtitle {
+			font-size: 13px;
+			padding: 0 4px;
+		}
+
+		.calculator-card,
+		.seo-article {
 			padding: 20px 16px;
+			border-radius: 14px;
+		}
+
+		/* Prevent iOS Safari 16px auto-zoom on focus */
+		.text-input,
+		.custom-target-input {
+			font-size: 16px !important;
+		}
+
+		.text-input {
+			padding: 12px 14px;
 		}
 
 		.inputs-grid {
 			grid-template-columns: 1fr;
+			gap: 12px;
 		}
 
-		.details-grid {
-			grid-template-columns: 1fr;
+		/* Mobile Touch-Friendly Pills */
+		.pills-grid {
+			gap: 6px;
+		}
+
+		.target-btn {
+			padding: 8px 13px;
+			min-height: 40px;
+			font-size: 13px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex: 1 1 auto;
+			min-width: 52px;
+		}
+
+		.custom-target-wrap {
+			min-height: 40px;
+			flex: 1 1 auto;
+			justify-content: center;
+			padding: 2px 12px;
+		}
+
+		.custom-target-input {
+			width: 48px;
+		}
+
+		/* Results Box on Mobile */
+		.results-box {
+			padding-top: 20px;
+		}
+
+		.results-header {
+			flex-direction: row;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 12px;
 		}
 
 		.percentage-val {
 			font-size: 28px;
+			letter-spacing: -0.8px;
+		}
+
+		.ratio-val {
+			font-size: 12px;
+		}
+
+		.status-badge {
+			padding: 4px 10px;
+			font-size: 11px;
+			white-space: nowrap;
+		}
+
+		.vibe-box {
+			padding: 12px 14px;
+		}
+
+		.vibe-message {
+			font-size: 13px;
+		}
+
+		.details-grid {
+			grid-template-columns: 1fr;
+			gap: 10px;
+		}
+
+		.detail-card {
+			padding: 12px;
+		}
+
+		.detail-headline {
+			font-size: 13px;
+		}
+
+		.detail-desc {
+			font-size: 11.5px;
+		}
+
+		.btn-copy {
+			padding: 12px 16px;
+			min-height: 44px;
+			font-size: 13px;
+		}
+
+		.features-seo-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.seo-h2 {
+			font-size: 18px;
+		}
+
+		.toast {
+			width: calc(100% - 32px);
+			max-width: 340px;
+			text-align: center;
+			bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+		}
+	}
+
+	@media (max-width: 380px) {
+		.page-title {
+			font-size: 21px;
+		}
+
+		.target-btn {
+			padding: 7px 10px;
+			font-size: 12px;
+			min-width: 46px;
+		}
+
+		.percentage-val {
+			font-size: 26px;
+		}
+
+		.results-header {
+			flex-wrap: wrap;
+			gap: 6px;
 		}
 	}
 </style>
