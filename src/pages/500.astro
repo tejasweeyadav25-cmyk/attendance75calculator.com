@@ -1,0 +1,384 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface Props {
+	error?: unknown;
+}
+
+const { error } = Astro.props;
+---
+
+<Layout
+	title="500 - Server Error | Attendance 75 Calculator"
+	description="Something went wrong on our end. Please try again or head back to the Attendance Calculator."
+	canonicalUrl="https://attendance75calculator.com/500"
+>
+	<div class="page-container">
+		<div class="content-wrapper">
+			<!-- Top Bar with Brand Badge & Theme Toggle -->
+			<nav class="top-nav">
+				<div class="inline-badge">
+					<span class="badge-dot badge-dot-error"></span>
+					<a href="/" class="badge-link">Attendance 75 Calculator</a>
+				</div>
+
+				<button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+					<span id="theme-icon" class="theme-icon">🌙</span>
+					<span id="theme-label" class="theme-label">Dark</span>
+				</button>
+			</nav>
+
+			<!-- Error Content -->
+			<main class="error-card">
+				<div class="error-code">500</div>
+				<h1 class="error-title">Internal Server Error</h1>
+				<p class="error-desc">
+					Something went wrong on our end. This isn't your fault—our server just skipped class today. Please try again in a moment.
+				</p>
+				<div class="error-actions">
+					<a href="/" class="btn-primary">Back to Calculator</a>
+					<button type="button" id="retry-btn" class="btn-secondary">Try Again</button>
+				</div>
+			</main>
+
+			<!-- Footer -->
+			<footer class="footer text-center">
+				<nav class="footer-nav">
+					<a href="/about-us" class="footer-link">About Us</a>
+					<span class="footer-separator">•</span>
+					<a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+					<span class="footer-separator">•</span>
+					<a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+					<span class="footer-separator">•</span>
+					<a href="/contact-us" class="footer-link">Contact Us</a>
+				</nav>
+				<p class="footer-note">
+					© {new Date().getFullYear()} Attendance 75 Calculator • Free Online College Attendance Tracker
+				</p>
+			</footer>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	:root {
+		--bg-canvas: #fafafa;
+		--bg-card: #ffffff;
+		--bg-subtle: #fafafa;
+		--text-ink: #171717;
+		--text-body: #4d4d4d;
+		--text-muted: #8f8f8f;
+		--border-hairline: #ebebeb;
+		--border-focus: #171717;
+		--shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+	}
+
+	html.dark {
+		--bg-canvas: #0a0a0a;
+		--bg-card: #121212;
+		--bg-subtle: #171717;
+		--text-ink: #ededed;
+		--text-body: #a1a1a1;
+		--text-muted: #707070;
+		--border-hairline: #262626;
+		--border-focus: #ffffff;
+		--shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+	}
+
+	.page-container {
+		min-height: 100vh;
+		background-color: var(--bg-canvas);
+		color: var(--text-ink);
+		display: flex;
+		justify-content: center;
+		padding: 28px 16px;
+		font-family: 'Geist', Arial, sans-serif;
+		box-sizing: border-box;
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.content-wrapper {
+		width: 100%;
+		max-width: 640px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.top-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+	}
+
+	.inline-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-body);
+		box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+	}
+
+	.badge-dot {
+		width: 6px;
+		height: 6px;
+		background-color: #00c851;
+		border-radius: 50%;
+	}
+
+	.badge-dot-error {
+		background-color: #ee0000;
+	}
+
+	.badge-link {
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.badge-link:hover {
+		color: var(--text-ink);
+	}
+
+	.theme-toggle-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-ink);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.theme-toggle-btn:hover {
+		background: var(--bg-subtle);
+		border-color: var(--text-muted);
+	}
+
+	.theme-icon {
+		font-size: 14px;
+		line-height: 1;
+	}
+
+	.theme-label {
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	.error-card {
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 16px;
+		padding: 48px 28px;
+		margin-bottom: 24px;
+		box-shadow: var(--shadow-card);
+		text-align: center;
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.error-code {
+		font-size: 72px;
+		font-weight: 700;
+		color: #ee0000;
+		letter-spacing: -3px;
+		line-height: 1;
+		margin-bottom: 16px;
+		opacity: 0.15;
+	}
+
+	html.dark .error-code {
+		color: #f87171;
+	}
+
+	.error-title {
+		font-size: 24px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 12px 0;
+		letter-spacing: -0.5px;
+	}
+
+	.error-desc {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.65;
+		margin: 0 0 28px 0;
+		max-width: 400px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.error-actions {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+	}
+
+	.btn-primary {
+		display: inline-flex;
+		align-items: center;
+		padding: 10px 20px;
+		background: var(--text-ink);
+		color: var(--bg-canvas);
+		border: 1px solid var(--text-ink);
+		border-radius: 100px;
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+		transition: all 0.15s ease;
+		cursor: pointer;
+		font-family: inherit;
+	}
+
+	.btn-primary:hover {
+		opacity: 0.85;
+	}
+
+	.btn-secondary {
+		display: inline-flex;
+		align-items: center;
+		padding: 10px 20px;
+		background: var(--bg-card);
+		color: var(--text-ink);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+		transition: all 0.15s ease;
+		cursor: pointer;
+		font-family: inherit;
+	}
+
+	.btn-secondary:hover {
+		background: var(--bg-subtle);
+		border-color: var(--border-focus);
+	}
+
+	.footer {
+		padding: 12px 0 24px 0;
+	}
+
+	.footer-nav {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.footer-link {
+		font-size: 13px;
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.footer-link:hover {
+		color: var(--text-ink);
+		text-decoration: underline;
+	}
+
+	.footer-separator {
+		color: var(--text-muted);
+		font-size: 13px;
+	}
+
+	.footer-note {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	@media (max-width: 640px) {
+		.page-container {
+			padding: 16px 12px;
+		}
+
+		.error-card {
+			padding: 36px 20px;
+		}
+
+		.error-code {
+			font-size: 56px;
+		}
+
+		.error-title {
+			font-size: 20px;
+		}
+
+		.error-actions {
+			flex-direction: column;
+		}
+
+		.btn-primary,
+		.btn-secondary {
+			width: 100%;
+			justify-content: center;
+		}
+
+		.footer-nav {
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.footer-separator {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	const themeToggleBtn = document.getElementById('theme-toggle');
+	const themeIcon = document.getElementById('theme-icon');
+	const themeLabel = document.getElementById('theme-label');
+
+	function updateThemeUI(isDark: boolean) {
+		if (themeIcon && themeLabel) {
+			if (isDark) {
+				themeIcon.textContent = '☀️';
+				themeLabel.textContent = 'Light';
+			} else {
+				themeIcon.textContent = '🌙';
+				themeLabel.textContent = 'Dark';
+			}
+		}
+	}
+
+	const isInitiallyDark = document.documentElement.classList.contains('dark');
+	updateThemeUI(isInitiallyDark);
+
+	themeToggleBtn?.addEventListener('click', () => {
+		const isCurrentlyDark = document.documentElement.classList.contains('dark');
+		const newThemeIsDark = !isCurrentlyDark;
+
+		if (newThemeIsDark) {
+			document.documentElement.classList.add('dark');
+			localStorage.setItem('theme', 'dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+			localStorage.setItem('theme', 'light');
+		}
+
+		updateThemeUI(newThemeIsDark);
+	});
+
+	document.getElementById('retry-btn')?.addEventListener('click', () => {
+		window.location.reload();
+	});
+</script>
