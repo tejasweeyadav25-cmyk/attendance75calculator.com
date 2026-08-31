@@ -85,7 +85,6 @@ import Layout from '../layouts/Layout.astro';
 									type="number"
 									id="classes-attended"
 									min="0"
-									value="30"
 									placeholder="e.g. 30"
 									class="text-input"
 								/>
@@ -99,7 +98,6 @@ import Layout from '../layouts/Layout.astro';
 									type="number"
 									id="total-classes"
 									min="0"
-									value="40"
 									placeholder="e.g. 40"
 									class="text-input"
 								/>
@@ -113,7 +111,6 @@ import Layout from '../layouts/Layout.astro';
 									type="number"
 									id="total-semester-classes"
 									min="0"
-									value="100"
 									placeholder="e.g. 100 expected classes"
 									class="text-input"
 								/>
@@ -130,25 +127,25 @@ import Layout from '../layouts/Layout.astro';
 						<div>
 							<span class="result-eyebrow">CURRENT ATTENDANCE</span>
 							<div class="percentage-row">
-								<span id="percentage-display" class="percentage-val">75.0%</span>
-								<span id="ratio-display" class="ratio-val">(30 / 40 held)</span>
+						<span id="percentage-display" class="percentage-val">0.0%</span>
+							<span id="ratio-display" class="ratio-val">(0 / 0 held)</span>
 							</div>
 						</div>
-						<div id="status-badge" class="status-badge status-safe">
-							Safe & Chilling
+						<div id="status-badge" class="status-badge status-warning">
+							No Data
 						</div>
 					</div>
 
 					<!-- Progress Bar with Target Marker -->
 					<div class="progress-track">
-						<div id="progress-bar" class="progress-fill" style="width: 75%;"></div>
+						<div id="progress-bar" class="progress-fill" style="width: 0%;"></div>
 						<div id="target-marker" class="target-marker" style="left: 75%;" title="Target: 75%"></div>
 					</div>
 
 					<!-- Vibe Check / Primary Slang Message Box -->
-					<div id="vibe-box" class="vibe-box vibe-safe">
+					<div id="vibe-box" class="vibe-box vibe-warning">
 						<p id="vibe-message" class="vibe-message">
-							You're safe to bunk! Go touch grass, grab some chai, and enjoy your free time. 🚀
+							Enter your attended and total classes to calculate your status.
 						</p>
 					</div>
 
@@ -157,18 +154,17 @@ import Layout from '../layouts/Layout.astro';
 						<!-- Immediate To-Date Card -->
 						<div class="detail-card">
 							<span class="detail-eyebrow">RIGHT NOW STATUS</span>
-							<h3 id="current-headline" class="detail-headline">Safe to Bunk: 0 classes</h3>
+							<h3 id="current-headline" class="detail-headline">Waiting for input...</h3>
 							<p id="current-desc" class="detail-desc">
-								You are exactly at 75%. Cannot miss any immediate classes without dropping.
+								Enter numbers above to see your bunk budget.
 							</p>
 						</div>
 
 						<!-- End of Semester Forecast Card -->
-						<div id="sem-forecast-card" class="detail-card">
+						<div id="sem-forecast-card" class="detail-card hidden">
 							<span class="detail-eyebrow">SEMESTER FORECAST</span>
-							<h3 id="sem-headline" class="detail-headline">Semester Bunk Budget: 15 classes</h3>
+							<h3 id="sem-headline" class="detail-headline"></h3>
 							<p id="sem-desc" class="detail-desc">
-								Out of 60 classes left, you only need to attend 45 to finish at 75%.
 							</p>
 						</div>
 					</div>
