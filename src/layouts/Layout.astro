@@ -1,10 +1,18 @@
 ---
+interface Alternate {
+	hreflang: string;
+	href: string;
+}
+
 interface Props {
 	title?: string;
 	description?: string;
 	keywords?: string;
 	canonicalUrl?: string;
 	ogImage?: string;
+	lang?: string;
+	ogLocale?: string;
+	alternates?: Alternate[];
 }
 
 const {
@@ -12,144 +20,16 @@ const {
 	description = "Free online attendance calculator to check your 75% attendance criteria. Calculate safe bunks, classes needed to reach 75 percent attendance, and semester projections instantly.",
 	keywords = "attendance calculator, 75 attendance calculator, attendance calculator 75, attendance calculator app, 75 percent attendance calculator, college attendance calculator, attendance calculator college, student attendance calculator, monthly attendance calculator, attendance calculator 80, attendance calculator 100 percent",
 	canonicalUrl = "https://attendance75calculator.com/",
-	ogImage = "https://attendance75calculator.com/og-image.png"
+	ogImage = "https://attendance75calculator.com/og-image.png",
+	lang = "en",
+	ogLocale = "en_US",
+	alternates = []
 } = Astro.props;
 
-const siteUrl = "https://attendance75calculator.com";
-
-// JSON-LD Structured Data for WebApplication
-const webAppSchema = {
-	"@context": "https://schema.org",
-	"@type": "WebApplication",
-	"name": "Attendance Calculator",
-	"alternateName": [
-		"75 Attendance Calculator",
-		"College Attendance Calculator",
-		"Attendance Calculator 75",
-		"75 Percent Attendance Calculator",
-		"Student Attendance Calculator",
-		"Attendance Calculator App"
-	],
-	"url": siteUrl,
-	"description": "An interactive, client-side attendance calculator for college students to track 75 percent attendance, calculate bunk budgets, and plan semester attendance recovery.",
-	"applicationCategory": "EducationalApplication",
-	"operatingSystem": "All",
-	"browserRequirements": "Requires JavaScript. Requires HTML5.",
-	"offers": {
-		"@type": "Offer",
-		"price": "0",
-		"priceCurrency": "USD"
-	},
-	"featureList": [
-		"Instant 75% college attendance calculation",
-		"Monthly and semester attendance tracking",
-		"Safe bunk limit calculation",
-		"Consecutive classes needed for recovery",
-		"Support for 100%, 80%, 75%, and custom targets",
-		"Dark mode support",
-		"100% private and client-side processing"
-	]
-};
-
-// JSON-LD Structured Data for FAQPage
-const faqSchema = {
-	"@context": "https://schema.org",
-	"@type": "FAQPage",
-	"mainEntity": [
-		{
-			"@type": "Question",
-			"name": "What is a Monthly Attendance Calculator and how to use it?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "A monthly attendance calculator allows students and employees to calculate attendance percentage over a specific calendar month. Simply input the number of days or classes attended in that month and divide by the total working days or scheduled lectures held in that month, then multiply by 100."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "What is the Attendance Calculator Formula?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "The basic attendance formula is: Attendance (%) = (Classes Attended / Total Classes Held) × 100. To find safe bunks above a target percentage (P%): Safe Bunks = ⌊(Attended / (P/100)) - Total Held⌋. To find classes needed to recover to target (P%): Classes to Attend = ⌈((P/100 × Total Held) - Attended) / (1 - P/100)⌉."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "What is the Attendance Calculator App and does it work offline?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "The Attendance Calculator App is a free, web-based mobile-friendly tool that runs directly in your browser. It calculates attendance percentage, safe bunks, and recovery classes instantly without requiring app store downloads, logins, or server storage."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "What is a Student Attendance Calculator?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "A student attendance calculator is a specialized educational calculator designed for school and university students to keep track of lecture and laboratory attendance. It prevents examination debarment by alerting students when attendance drops near or below mandatory thresholds like 75% or 80%."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "Can you use the Attendance Calculator for 100 Percent?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "Yes, you can set the attendance target to 100% using our custom target input. Note that achieving 100% attendance requires attending every single class held from day one. If even one class has been missed, reaching a 100.0% final attendance is mathematically impossible."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "How does the Attendance Calculator 80 percent target work?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "The Attendance Calculator 80 feature sets your target threshold to 80% (common in premier universities and professional degree courses). To maintain 80%, you must attend at least 4 out of every 5 classes held (Attended ≥ 0.8 × Total Classes)."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "How does the Attendance Calculator 75 percent target work?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "The Attendance Calculator 75 helps students satisfy the standard 75% attendance rule mandated by UGC and colleges. If your current attendance is ≥ 75%, it calculates how many classes you can skip. If it is < 75%, it computes the exact number of consecutive classes you must attend to return to 75%."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "For a 75 percent attendance calculator, how many days can you miss?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "For a standard semester with 100 classes, you need to attend at least 75 classes and can miss a maximum of 25 classes. If you have currently attended 30 out of 40 classes held, you can miss 0 immediate classes without dropping below 75%, but out of the remaining 60 semester classes, you can skip up to 15 classes."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "How to use an attendance percentage calculator?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "To use an attendance percentage calculator: 1) Select your target attendance (e.g., 75% or 80%), 2) Enter the number of classes or days you attended, 3) Enter the total classes or days conducted so far. The calculator immediately shows your current percentage, status badge, and safe bunk quota."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "How is attendance percentage calculated?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "Attendance percentage is calculated by dividing the total number of present sessions by the total number of delivered sessions, and multiplying that fraction by 100. For instance, attending 45 out of 60 lectures gives (45 / 60) × 100 = 75%."
-			}
-		},
-		{
-			"@type": "Question",
-			"name": "How to calculate attendance percentage with a calculator?",
-			"acceptedAnswer": {
-				"@type": "Answer",
-				"text": "On any calculator: type your attended classes, press divide (÷), enter total classes held, press multiply (×), enter 100, and press equals (=). Or simply use our free online attendance calculator app to get instant calculations with bunk suggestions automatically."
-			}
-		}
-	]
-};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
@@ -160,6 +40,11 @@ const faqSchema = {
 		<meta name="apple-mobile-web-app-title" content="BunkCalc" />
 		<link rel="manifest" href="/site.webmanifest" />
 		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- hreflang alternates for multi-language SEO -->
+		{alternates.map((alt) => (
+			<link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+		))}
 
 		<!-- Google tag (gtag.js) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-3D0S6Y0XQG"></script>
@@ -189,7 +74,7 @@ const faqSchema = {
 		<meta property="og:image" content={ogImage} />
 		<meta property="og:image:alt" content="Attendance Calculator - 75 Percent Attendance Tracker" />
 		<meta property="og:site_name" content="Attendance 75 Calculator" />
-		<meta property="og:locale" content="en_US" />
+		<meta property="og:locale" content={ogLocale} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
@@ -198,9 +83,8 @@ const faqSchema = {
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={ogImage} />
 
-		<!-- JSON-LD Structured Data Schema -->
-		<script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
-		<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+		<!-- Page-specific JSON-LD Structured Data Schema -->
+		<slot name="head-extra" />
 
 		<!-- Theme Initialization Script to prevent Flash of Light/Dark Theme -->
 		<script is:inline>

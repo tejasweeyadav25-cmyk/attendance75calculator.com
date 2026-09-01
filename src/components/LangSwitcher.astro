@@ -1,0 +1,146 @@
+---
+import { locales, localePrefix } from '../i18n/locales';
+import { getTranslations } from '../i18n';
+
+interface Props {
+	lang: string;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+const current = locales.find((l) => l.code === lang) ?? locales[0];
+---
+
+<div class="lang-switcher">
+	<button
+		type="button"
+		id="lang-switch-btn"
+		class="lang-switch-btn"
+		aria-haspopup="true"
+		aria-expanded="false"
+		aria-label={t.nav.languageLabel}
+	>
+		<span class="lang-switch-icon">🌐</span>
+		<span class="lang-switch-current">{current.nativeName}</span>
+		<span class="lang-switch-caret">▾</span>
+	</button>
+	<ul id="lang-switch-menu" class="lang-switch-menu hidden" role="menu">
+		{locales.map((l) => (
+			<li role="none">
+				<a
+					role="menuitem"
+					href={`${localePrefix(l.code)}/`}
+					class={`lang-switch-item${l.code === lang ? ' active' : ''}`}
+					hreflang={l.hreflang}
+					aria-current={l.code === lang ? 'true' : undefined}
+				>
+					{l.nativeName}
+				</a>
+			</li>
+		))}
+	</ul>
+</div>
+
+<style>
+	.lang-switcher {
+		position: relative;
+	}
+
+	.lang-switch-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-ink);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.lang-switch-btn:hover {
+		background: var(--bg-pill-hover);
+		border-color: var(--text-muted);
+	}
+
+	.lang-switch-icon {
+		font-size: 13px;
+		line-height: 1;
+	}
+
+	.lang-switch-caret {
+		font-size: 10px;
+		color: var(--text-muted);
+	}
+
+	.lang-switch-menu {
+		position: absolute;
+		top: calc(100% + 6px);
+		right: 0;
+		min-width: 150px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 12px;
+		box-shadow: var(--shadow-card);
+		padding: 6px;
+		margin: 0;
+		list-style: none;
+		z-index: 50;
+	}
+
+	.lang-switch-menu.hidden {
+		display: none;
+	}
+
+	.lang-switch-item {
+		display: block;
+		padding: 8px 10px;
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--text-body);
+		text-decoration: none;
+		border-radius: 8px;
+		transition: all 0.1s ease;
+	}
+
+	.lang-switch-item:hover {
+		background: var(--bg-pill-hover);
+		color: var(--text-ink);
+	}
+
+	.lang-switch-item.active {
+		background: var(--bg-pill-active);
+		color: var(--text-pill-active);
+		font-weight: 600;
+	}
+</style>
+
+<script>
+	const btn = document.getElementById('lang-switch-btn');
+	const menu = document.getElementById('lang-switch-menu');
+
+	btn?.addEventListener('click', (e) => {
+		e.stopPropagation();
+		const isHidden = menu?.classList.contains('hidden');
+		menu?.classList.toggle('hidden');
+		btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+	});
+
+	document.addEventListener('click', (e) => {
+		if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target as Node) && e.target !== btn) {
+			menu.classList.add('hidden');
+			btn?.setAttribute('aria-expanded', 'false');
+		}
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') {
+			menu?.classList.add('hidden');
+			btn?.setAttribute('aria-expanded', 'false');
+		}
+	});
+</script>

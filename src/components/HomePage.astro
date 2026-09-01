@@ -1,0 +1,1706 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LangSwitcher from './LangSwitcher.astro';
+import { getTranslations } from '../i18n';
+import { locales, localePrefix, defaultLocale } from '../i18n/locales';
+
+interface Props {
+	lang: string;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+
+const siteUrl = 'https://attendance75calculator.com';
+const canonicalUrl = `${siteUrl}${localePrefix(lang)}/`;
+const currentLocale = locales.find((l) => l.code === lang) ?? locales[0];
+
+const alternates = [
+	...locales.map((l) => ({
+		hreflang: l.hreflang,
+		href: `${siteUrl}${localePrefix(l.code)}/`,
+	})),
+	{ hreflang: 'x-default', href: `${siteUrl}/` },
+];
+
+const footerNote = t.footer.note.replace('{year}', String(new Date().getFullYear()));
+
+// Strings consumed by the client-side calculator script (translated + interpolation-ready)
+const jsStrings = { ...t.js, heldSuffix: t.results.heldSuffix };
+const jsStringsJson = JSON.stringify(jsStrings).replace(/</g, '\\u003c');
+
+// JSON-LD Structured Data for WebApplication
+const webAppSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'Attendance Calculator',
+	alternateName: [
+		'75 Attendance Calculator',
+		'College Attendance Calculator',
+		'Attendance Calculator 75',
+		'75 Percent Attendance Calculator',
+		'Student Attendance Calculator',
+		'Attendance Calculator App',
+	],
+	url: canonicalUrl,
+	inLanguage: lang,
+	description: t.meta.description,
+	applicationCategory: 'EducationalApplication',
+	operatingSystem: 'All',
+	browserRequirements: 'Requires JavaScript. Requires HTML5.',
+	offers: {
+		'@type': 'Offer',
+		price: '0',
+		priceCurrency: 'USD',
+	},
+	featureList: [
+		'Instant 75% college attendance calculation',
+		'Monthly and semester attendance tracking',
+		'Safe bunk limit calculation',
+		'Consecutive classes needed for recovery',
+		'Support for 100%, 80%, 75%, and custom targets',
+		'Dark mode support',
+		'100% private and client-side processing',
+	],
+};
+
+// JSON-LD Structured Data for FAQPage
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	inLanguage: lang,
+	mainEntity: t.article.faq.items.map((item) => ({
+		'@type': 'Question',
+		name: item.question,
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: item.answerHtml.replace(/<[^>]+>/g, ''),
+		},
+	})),
+};
+---
+
+<Layout
+	title={t.meta.title}
+	description={t.meta.description}
+	keywords={t.meta.keywords}
+	canonicalUrl={canonicalUrl}
+	lang={lang}
+	ogLocale={currentLocale.ogLocale}
+	alternates={alternates}
+>
+	<Fragment slot="head-extra">
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+	</Fragment>
+
+	<div class="page-container">
+		<div class="content-wrapper">
+			<!-- Top Bar with Brand Badge, Language Switcher & Theme Toggle -->
+			<nav class="top-nav">
+				<div class="inline-badge">
+					<span class="badge-dot"></span>
+					<span class="badge-text">{t.nav.badge}</span>
+				</div>
+
+				<div class="top-nav-right">
+					<LangSwitcher lang={lang} />
+
+					<!-- Theme Toggle Button -->
+					<button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label={t.nav.themeToggleAria} title={t.nav.themeToggleAria}>
+						<span id="theme-icon" class="theme-icon">🌙</span>
+						<span id="theme-label" class="theme-label">{t.nav.themeDark}</span>
+					</button>
+				</div>
+			</nav>
+
+			<!-- Header -->
+			<header class="text-center mb-6">
+				<h1 class="page-title">
+					{t.header.title}
+				</h1>
+				<p class="page-subtitle" set:html={t.header.subtitleHtml} />
+
+				<!-- Quick Links -->
+				<nav class="hero-links">
+					<a href="/about-us" class="hero-link">{t.nav.aboutUs}</a>
+					<a href="/privacy-policy" class="hero-link">{t.nav.privacyPolicy}</a>
+					<a href="/terms-and-conditions" class="hero-link">{t.nav.termsAndConditions}</a>
+					<a href="/contact-us" class="hero-link">{t.nav.contactUs}</a>
+				</nav>
+			</header>
+
+			<!-- Main Calculator Card -->
+			<main class="calculator-card">
+				<div class="calculator-inner-grid">
+					<!-- Left Column: Inputs -->
+					<div class="calculator-left">
+						<!-- 1. Target Percentage Selector -->
+						<div class="form-group mb-5">
+							<div class="flex-between mb-2">
+								<label class="field-label">{t.calculator.targetLabel}</label>
+								<span class="target-indicator" id="target-indicator">{t.calculator.targetPrefix} 75%</span>
+							</div>
+							<div class="pills-grid" id="target-pills">
+								<button type="button" class="target-btn" data-value="60">60%</button>
+								<button type="button" class="target-btn" data-value="65">65%</button>
+								<button type="button" class="target-btn" data-value="70">70%</button>
+								<button type="button" class="target-btn active" data-value="75">75%</button>
+								<button type="button" class="target-btn" data-value="80">80%</button>
+								<button type="button" class="target-btn" data-value="85">85%</button>
+								<button type="button" class="target-btn" data-value="90">90%</button>
+								<div class="custom-target-wrap">
+									<input
+										type="number"
+										id="custom-target"
+										min="1"
+										max="100"
+										placeholder={t.calculator.customPlaceholder}
+										class="custom-target-input"
+										aria-label={t.calculator.customPlaceholder}
+									/>
+									<span class="custom-target-unit">%</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- 2. Inputs Grid (Attended, Total Held, Total in Semester) -->
+						<div class="inputs-grid mb-6">
+							<div class="input-block">
+								<label for="classes-attended" class="field-label">
+									{t.calculator.attendedLabel} <span class="label-muted">{t.calculator.attendedSub}</span>
+								</label>
+								<input
+									type="number"
+									id="classes-attended"
+									min="0"
+									placeholder={t.calculator.attendedPlaceholder}
+									class="text-input"
+								/>
+							</div>
+
+							<div class="input-block">
+								<label for="total-classes" class="field-label">
+									{t.calculator.totalLabel} <span class="label-muted">{t.calculator.totalSub}</span>
+								</label>
+								<input
+									type="number"
+									id="total-classes"
+									min="0"
+									placeholder={t.calculator.totalPlaceholder}
+									class="text-input"
+								/>
+							</div>
+
+							<div class="input-block full-width-sm">
+								<label for="total-semester-classes" class="field-label">
+									{t.calculator.semTotalLabel} <span class="label-optional">{t.calculator.semTotalSub}</span>
+								</label>
+								<input
+									type="number"
+									id="total-semester-classes"
+									min="0"
+									placeholder={t.calculator.semTotalPlaceholder}
+									class="text-input"
+								/>
+							</div>
+						</div>
+					</div>
+
+					<!-- Right Column: Results -->
+					<div class="calculator-right">
+						<!-- 3. Dynamic Results Box -->
+						<div id="results-box" class="results-box">
+					<!-- Header Status & Percentage -->
+					<div class="results-header">
+						<div>
+							<span class="result-eyebrow">{t.results.currentAttendanceEyebrow}</span>
+							<div class="percentage-row">
+						<span id="percentage-display" class="percentage-val">0.0%</span>
+							<span id="ratio-display" class="ratio-val">(0 / 0 {t.results.heldSuffix})</span>
+							</div>
+						</div>
+						<div id="status-badge" class="status-badge status-warning">
+							{t.js.noDataStatus}
+						</div>
+					</div>
+
+					<!-- Progress Bar with Target Marker -->
+					<div class="progress-track">
+						<div id="progress-bar" class="progress-fill" style="width: 0%;"></div>
+						<div id="target-marker" class="target-marker" style="left: 75%;" title={`${t.calculator.targetPrefix} 75%`}></div>
+					</div>
+
+					<!-- Vibe Check / Primary Slang Message Box -->
+					<div id="vibe-box" class="vibe-box vibe-warning">
+						<p id="vibe-message" class="vibe-message">
+							{t.js.noDataVibe}
+						</p>
+					</div>
+
+					<!-- Split Details: Right Now vs. End-of-Semester -->
+					<div class="details-grid">
+						<!-- Immediate To-Date Card -->
+						<div class="detail-card">
+							<span class="detail-eyebrow">{t.results.rightNowEyebrow}</span>
+							<h3 id="current-headline" class="detail-headline">{t.results.waitingHeadline}</h3>
+							<p id="current-desc" class="detail-desc">
+								{t.results.waitingDesc}
+							</p>
+						</div>
+
+						<!-- End of Semester Forecast Card -->
+						<div id="sem-forecast-card" class="detail-card hidden">
+							<span class="detail-eyebrow">{t.results.semesterForecastEyebrow}</span>
+							<h3 id="sem-headline" class="detail-headline"></h3>
+							<p id="sem-desc" class="detail-desc">
+							</p>
+						</div>
+					</div>
+
+						<!-- Quick Copy Status Button -->
+						<div class="mt-4">
+							<button type="button" id="copy-summary-btn" class="btn-copy">
+								<span id="copy-icon">📋</span>
+								<span id="copy-btn-text">{t.results.copyButtonText}</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			</main>
+
+			<!-- Comprehensive SEO Guide & Information Section -->
+			<article class="seo-article">
+				<!-- Section 1: Overview -->
+				<section class="seo-section">
+					<h2 class="seo-h2">{t.article.overview.h2}</h2>
+					<p set:html={t.article.overview.p1Html} />
+					<p set:html={t.article.overview.p2Html} />
+				</section>
+
+				<!-- Section 2: Why 75% Attendance is Mandatory -->
+				<section class="seo-section">
+					<h2 class="seo-h2">{t.article.why75.h2}</h2>
+					<p>{t.article.why75.p1}</p>
+					<p>{t.article.why75.p2}</p>
+					<ul class="seo-list">
+						{t.article.why75.list.map((item) => <li set:html={item} />)}
+					</ul>
+					<p set:html={t.article.why75.p3Html} />
+				</section>
+
+				<!-- Section 3: The Mathematical Formulas -->
+				<section class="seo-section">
+					<h2 class="seo-h2">{t.article.formulas.h2}</h2>
+					<p set:html={t.article.formulas.introHtml} />
+
+					{t.article.formulas.cards.map((card) => (
+						<div class="formula-card">
+							<h3 class="formula-title">{card.title}</h3>
+							<p class="formula-text">
+								<code>{card.formula}</code>
+							</p>
+							<p class="formula-desc" set:html={card.descHtml} />
+						</div>
+					))}
+				</section>
+
+				<!-- Section 4: Step-by-Step User Guide -->
+				<section class="seo-section">
+					<h2 class="seo-h2">{t.article.howTo.h2}</h2>
+					<p set:html={t.article.howTo.introHtml} />
+					<ol class="seo-ordered-list">
+						{t.article.howTo.steps.map((step) => <li set:html={step} />)}
+					</ol>
+				</section>
+
+				<!-- Section 5: Key Features -->
+				<section class="seo-section">
+					<h2 class="seo-h2">{t.article.features.h2}</h2>
+					<div class="features-seo-grid">
+						{t.article.features.items.map((item) => (
+							<div class="feature-seo-item">
+								<h3 class="feature-seo-title">{item.icon} {item.title}</h3>
+								<p>{item.desc}</p>
+							</div>
+						))}
+					</div>
+				</section>
+
+				<!-- Section 6: Frequently Asked Questions (FAQ) -->
+				<section class="seo-section">
+					<h2 class="seo-h2">{t.article.faq.h2}</h2>
+					<div class="faq-container">
+						{t.article.faq.items.map((item, i) => (
+							<details class="faq-item" open={i === 0}>
+								<summary class="faq-question">{item.question}</summary>
+								<div class="faq-answer">
+									<p set:html={item.answerHtml} />
+								</div>
+							</details>
+						))}
+					</div>
+				</section>
+			</article>
+
+			<!-- Footer -->
+			<footer class="footer text-center">
+				<nav class="footer-nav">
+					<a href="/about-us" class="footer-link">{t.nav.aboutUs}</a>
+					<span class="footer-separator">•</span>
+					<a href="/privacy-policy" class="footer-link">{t.nav.privacyPolicy}</a>
+					<span class="footer-separator">•</span>
+					<a href="/terms-and-conditions" class="footer-link">{t.nav.termsAndConditions}</a>
+					<span class="footer-separator">•</span>
+					<a href="/contact-us" class="footer-link">{t.nav.contactUs}</a>
+				</nav>
+				<p class="footer-note">
+					{footerNote}
+				</p>
+			</footer>
+		</div>
+	</div>
+
+	<!-- Toast Notification -->
+	<div id="toast" class="toast hidden">
+		✓ {t.results.toastText}
+	</div>
+
+	<!-- Translated strings for the client-side calculator script -->
+	<script type="application/json" id="i18n-js-strings" set:html={jsStringsJson} />
+</Layout>
+
+<style>
+	/* CSS Variables for Light & Dark Theme */
+	:root {
+		--bg-canvas: #fafafa;
+		--bg-card: #ffffff;
+		--bg-input: #ffffff;
+		--bg-subtle: #fafafa;
+		--bg-pill: #ffffff;
+		--bg-pill-hover: #f2f2f2;
+		--bg-pill-active: #171717;
+		--text-pill-active: #ffffff;
+		--text-ink: #171717;
+		--text-body: #4d4d4d;
+		--text-muted: #8f8f8f;
+		--border-hairline: #ebebeb;
+		--border-focus: #171717;
+		--track-bg: #f2f2f2;
+		--target-marker-bg: #171717;
+		--shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+		--badge-target-bg: #d3e5ff;
+		--badge-target-text: #0070f3;
+
+		/* Vibe Colors Light */
+		--vibe-safe-bg: #f4fbf6;
+		--vibe-safe-border: #c7eed2;
+		--vibe-safe-text: #00703c;
+		--vibe-warn-bg: #fffdf5;
+		--vibe-warn-border: #fde8b3;
+		--vibe-warn-text: #ab570a;
+		--vibe-danger-bg: #fff8f8;
+		--vibe-danger-border: #fcd5d5;
+		--vibe-danger-text: #ee0000;
+		--vibe-cooked-bg: #171717;
+		--vibe-cooked-border: #000000;
+		--vibe-cooked-text: #ffffff;
+
+		/* SEO Article Light */
+		--code-bg: #f3f3f3;
+		--code-border: #e5e5e5;
+	}
+
+	html.dark {
+		--bg-canvas: #0a0a0a;
+		--bg-card: #121212;
+		--bg-input: #1a1a1a;
+		--bg-subtle: #171717;
+		--bg-pill: #1a1a1a;
+		--bg-pill-hover: #262626;
+		--bg-pill-active: #ffffff;
+		--text-pill-active: #000000;
+		--text-ink: #ededed;
+		--text-body: #a1a1a1;
+		--text-muted: #707070;
+		--border-hairline: #262626;
+		--border-focus: #ffffff;
+		--track-bg: #262626;
+		--target-marker-bg: #ffffff;
+		--shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+		--badge-target-bg: #072a5a;
+		--badge-target-text: #52a8ff;
+
+		/* Vibe Colors Dark */
+		--vibe-safe-bg: #0b2214;
+		--vibe-safe-border: #164e29;
+		--vibe-safe-text: #4ade80;
+		--vibe-warn-bg: #291a03;
+		--vibe-warn-border: #593907;
+		--vibe-warn-text: #fbbf24;
+		--vibe-danger-bg: #2b0b0b;
+		--vibe-danger-border: #5c1818;
+		--vibe-danger-text: #f87171;
+		--vibe-cooked-bg: #000000;
+		--vibe-cooked-border: #404040;
+		--vibe-cooked-text: #ffffff;
+
+		/* SEO Article Dark */
+		--code-bg: #1c1c1c;
+		--code-border: #2a2a2a;
+	}
+
+	/* Layout & Base */
+	.page-container {
+		min-height: 100vh;
+		background-color: var(--bg-canvas);
+		color: var(--text-ink);
+		display: flex;
+		justify-content: center;
+		padding: 28px 16px;
+		font-family: 'Geist', Arial, sans-serif;
+		box-sizing: border-box;
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.content-wrapper {
+		width: 100%;
+		max-width: 640px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* Desktop: wider container and better spacing */
+	@media (min-width: 1024px) {
+		.content-wrapper {
+			max-width: 1200px;
+		}
+
+		.page-container {
+			padding: 40px 24px;
+		}
+
+		.calculator-card {
+			padding: 40px;
+		}
+	}
+
+	/* Top Nav Bar with Theme Toggle */
+	.top-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+	}
+
+	.top-nav-right {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.inline-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-body);
+		box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+	}
+
+	.badge-dot {
+		width: 6px;
+		height: 6px;
+		background-color: #00c851;
+		border-radius: 50%;
+	}
+
+	/* Theme Toggle Button */
+	.theme-toggle-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-ink);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.theme-toggle-btn:hover {
+		background: var(--bg-pill-hover);
+		border-color: var(--text-muted);
+	}
+
+	.theme-icon {
+		font-size: 14px;
+		line-height: 1;
+	}
+
+	.theme-label {
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	/* Header */
+	.page-title {
+		font-size: 30px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 6px 0;
+		letter-spacing: -0.8px;
+		line-height: 1.2;
+	}
+
+	.page-subtitle {
+		font-size: 14px;
+		color: var(--text-body);
+		line-height: 1.5;
+		margin: 0 auto 16px auto;
+		max-width: 520px;
+	}
+
+	.hero-links {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 16px;
+	}
+
+	.hero-link {
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--text-body);
+		text-decoration: none;
+		padding: 6px 14px;
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		background: var(--bg-card);
+		transition: all 0.15s ease;
+	}
+
+	.hero-link:hover {
+		color: var(--text-ink);
+		border-color: var(--border-focus);
+		background: var(--bg-subtle);
+	}
+
+	/* Card */
+	.calculator-card {
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 16px;
+		padding: 28px;
+		box-shadow: var(--shadow-card);
+		margin-bottom: 24px;
+		transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.field-label {
+		display: block;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--text-ink);
+		margin-bottom: 6px;
+	}
+
+	.label-muted {
+		font-weight: 400;
+		color: var(--text-muted);
+		font-size: 11px;
+	}
+
+	.label-optional {
+		font-weight: 500;
+		color: var(--badge-target-text);
+		font-size: 11px;
+	}
+
+	.flex-between {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.target-indicator {
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--badge-target-text);
+		background: var(--badge-target-bg);
+		padding: 2px 8px;
+		border-radius: 100px;
+	}
+
+	/* Target Pills Grid */
+	.pills-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		align-items: center;
+	}
+
+	.target-btn {
+		padding: 7px 14px;
+		font-size: 13px;
+		font-weight: 500;
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		background: var(--bg-pill);
+		color: var(--text-body);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.target-btn:hover {
+		background: var(--bg-pill-hover);
+		color: var(--text-ink);
+	}
+
+	.target-btn.active {
+		background: var(--bg-pill-active);
+		color: var(--text-pill-active);
+		border-color: var(--bg-pill-active);
+		font-weight: 600;
+	}
+
+	.custom-target-wrap {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		background: var(--bg-input);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		padding: 2px 10px;
+	}
+
+	.custom-target-input {
+		width: 50px;
+		border: none;
+		outline: none;
+		font-size: 13px;
+		font-family: inherit;
+		color: var(--text-ink);
+		background: transparent;
+		text-align: center;
+		padding: 3px 0;
+	}
+
+	.custom-target-unit {
+		font-size: 12px;
+		color: var(--text-muted);
+		font-weight: 500;
+	}
+
+	/* Inputs Grid */
+	.inputs-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 14px;
+	}
+
+	.full-width-sm {
+		grid-column: 1 / -1;
+	}
+
+	.input-block {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.text-input {
+		width: 100%;
+		padding: 11px 14px;
+		font-size: 15px;
+		border: 1px solid var(--border-hairline);
+		border-radius: 8px;
+		font-family: inherit;
+		color: var(--text-ink);
+		background: var(--bg-input);
+		box-sizing: border-box;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+	}
+
+	.text-input:focus {
+		outline: none;
+		border-color: var(--border-focus);
+		box-shadow: 0 0 0 1px var(--border-focus);
+	}
+
+	/* Results Box */
+	.results-box {
+		border-top: 1px solid var(--border-hairline);
+		padding-top: 24px;
+	}
+
+	/* Desktop: Remove border-top in two-column layout */
+	@media (min-width: 1024px) {
+		.calculator-inner-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 40px;
+			align-items: start;
+		}
+
+		.calculator-left {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.calculator-right {
+			position: sticky;
+			top: 24px;
+		}
+
+		.results-box {
+			border-top: none;
+			padding-top: 0;
+			background: var(--bg-subtle);
+			border: 1px solid var(--border-hairline);
+			border-radius: 12px;
+			padding: 24px;
+		}
+	}
+
+	.results-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		margin-bottom: 14px;
+	}
+
+	.result-eyebrow {
+		font-size: 11px;
+		font-weight: 600;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.percentage-row {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		margin-top: 2px;
+	}
+
+	.percentage-val {
+		font-size: 34px;
+		font-weight: 700;
+		color: var(--text-ink);
+		letter-spacing: -1px;
+		line-height: 1;
+	}
+
+	.ratio-val {
+		font-size: 13px;
+		color: var(--text-muted);
+	}
+
+	.status-badge {
+		padding: 5px 12px;
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 600;
+	}
+
+	.status-safe {
+		background: #d4f4dd;
+		color: #00703c;
+	}
+
+	html.dark .status-safe {
+		background: #0e371a;
+		color: #4ade80;
+	}
+
+	.status-warning {
+		background: #ffefcf;
+		color: #ab570a;
+	}
+
+	html.dark .status-warning {
+		background: #3b2803;
+		color: #fcd34d;
+	}
+
+	.status-danger {
+		background: #ffebeb;
+		color: #ee0000;
+	}
+
+	html.dark .status-danger {
+		background: #3b0f0f;
+		color: #f87171;
+	}
+
+	.status-cooked {
+		background: #171717;
+		color: #ffffff;
+		border: 1px solid #404040;
+	}
+
+	html.dark .status-cooked {
+		background: #ffffff;
+		color: #000000;
+		border: 1px solid #ffffff;
+	}
+
+	/* Progress Track */
+	.progress-track {
+		position: relative;
+		height: 8px;
+		background: var(--track-bg);
+		border-radius: 100px;
+		margin-bottom: 18px;
+		overflow: visible;
+	}
+
+	.progress-fill {
+		height: 100%;
+		border-radius: 100px;
+		transition: width 0.3s ease, background-color 0.3s ease;
+		background-color: #00c851;
+	}
+
+	.target-marker {
+		position: absolute;
+		top: -3px;
+		bottom: -3px;
+		width: 3px;
+		background: var(--target-marker-bg);
+		border-radius: 2px;
+		transform: translateX(-50%);
+		z-index: 2;
+	}
+
+	/* Vibe Box */
+	.vibe-box {
+		padding: 14px 18px;
+		border-radius: 10px;
+		margin-bottom: 16px;
+		border: 1px solid transparent;
+		transition: all 0.2s ease;
+	}
+
+	.vibe-safe {
+		background: var(--vibe-safe-bg);
+		border-color: var(--vibe-safe-border);
+		color: var(--vibe-safe-text);
+	}
+
+	.vibe-warning {
+		background: var(--vibe-warn-bg);
+		border-color: var(--vibe-warn-border);
+		color: var(--vibe-warn-text);
+	}
+
+	.vibe-danger {
+		background: var(--vibe-danger-bg);
+		border-color: var(--vibe-danger-border);
+		color: var(--vibe-danger-text);
+	}
+
+	.vibe-cooked {
+		background: var(--vibe-cooked-bg);
+		color: var(--vibe-cooked-text);
+		border-color: var(--vibe-cooked-border);
+	}
+
+	.vibe-message {
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	/* Details Grid */
+	.details-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+	}
+
+	.detail-card {
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 14px;
+		display: flex;
+		flex-direction: column;
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.detail-eyebrow {
+		font-size: 10px;
+		font-weight: 600;
+		color: var(--text-muted);
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+		margin-bottom: 4px;
+	}
+
+	.detail-headline {
+		font-size: 14px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 4px 0;
+		line-height: 1.3;
+	}
+
+	.detail-desc {
+		font-size: 12px;
+		color: var(--text-body);
+		line-height: 1.4;
+		margin: 0;
+	}
+
+	/* Copy Button */
+	.btn-copy {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 11px 16px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 8px;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--text-ink);
+		cursor: pointer;
+		transition: all 0.15s ease;
+		font-family: inherit;
+	}
+
+	.btn-copy:hover {
+		background: var(--bg-pill-hover);
+		border-color: var(--border-focus);
+	}
+
+	/* SEO Content Article */
+	.seo-article {
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 16px;
+		padding: 32px 28px;
+		margin-bottom: 24px;
+		color: var(--text-body);
+		line-height: 1.65;
+		font-size: 14px;
+		box-shadow: var(--shadow-card);
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+	}
+
+	/* Desktop: Better spacing for SEO content */
+	@media (min-width: 1024px) {
+		.seo-article {
+			padding: 48px 64px;
+		}
+	}
+
+	.seo-section {
+		margin-bottom: 28px;
+	}
+
+	.seo-section:last-child {
+		margin-bottom: 0;
+	}
+
+	.seo-h2 {
+		font-size: 20px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 12px 0;
+		letter-spacing: -0.4px;
+		line-height: 1.3;
+	}
+
+	.seo-section p {
+		margin: 0 0 12px 0;
+	}
+
+	.seo-section p:last-child {
+		margin-bottom: 0;
+	}
+
+	.seo-list,
+	.seo-ordered-list {
+		margin: 10px 0 14px 20px;
+		padding: 0;
+	}
+
+	.seo-list li,
+	.seo-ordered-list li {
+		margin-bottom: 8px;
+	}
+
+	.formula-card {
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 16px;
+		margin-bottom: 14px;
+	}
+
+	.formula-title {
+		font-size: 14px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 6px 0;
+	}
+
+	.formula-text {
+		font-family: 'Geist Mono', monospace, Courier;
+		font-size: 13px;
+		margin: 0 0 8px 0;
+	}
+
+	.formula-text code,
+	.formula-desc code {
+		background: var(--code-bg);
+		border: 1px solid var(--code-border);
+		padding: 2px 6px;
+		border-radius: 4px;
+		font-family: 'Geist Mono', monospace, Courier;
+		font-size: 12px;
+		color: var(--text-ink);
+	}
+
+	.formula-desc {
+		font-size: 12.5px;
+		margin: 0;
+		color: var(--text-body);
+		line-height: 1.5;
+	}
+
+	.features-seo-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+		margin-top: 12px;
+	}
+
+	.feature-seo-item {
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 14px;
+	}
+
+	.feature-seo-title {
+		font-size: 13.5px;
+		font-weight: 700;
+		color: var(--text-ink);
+		margin: 0 0 4px 0;
+	}
+
+	.feature-seo-item p {
+		font-size: 12.5px;
+		margin: 0;
+		color: var(--text-body);
+		line-height: 1.4;
+	}
+
+	/* FAQ Accordions */
+	.faq-container {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		margin-top: 12px;
+	}
+
+	.faq-item {
+		background: var(--bg-subtle);
+		border: 1px solid var(--border-hairline);
+		border-radius: 10px;
+		padding: 12px 16px;
+		transition: all 0.15s ease;
+	}
+
+	.faq-question {
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--text-ink);
+		cursor: pointer;
+		list-style: none;
+		position: relative;
+		padding-right: 20px;
+	}
+
+	.faq-question::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq-question::after {
+		content: "+";
+		position: absolute;
+		right: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--text-muted);
+	}
+
+	.faq-item[open] .faq-question::after {
+		content: "−";
+	}
+
+	.faq-answer {
+		margin-top: 10px;
+		font-size: 13px;
+		color: var(--text-body);
+		line-height: 1.5;
+	}
+
+	.faq-answer p {
+		margin: 0;
+	}
+
+	/* Footer Note */
+	.footer {
+		padding: 12px 0 24px 0;
+	}
+
+	.footer-nav {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.footer-link {
+		font-size: 13px;
+		color: var(--text-body);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.footer-link:hover {
+		color: var(--text-ink);
+		text-decoration: underline;
+	}
+
+	.footer-separator {
+		color: var(--text-muted);
+		font-size: 13px;
+	}
+
+	.footer-note {
+		font-size: 12px;
+		color: var(--text-muted);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	/* Toast */
+	.toast {
+		position: fixed;
+		bottom: 24px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: var(--text-ink);
+		color: var(--bg-canvas);
+		padding: 10px 20px;
+		border-radius: 100px;
+		font-size: 13px;
+		font-weight: 500;
+		box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+		z-index: 100;
+	}
+
+	.hidden {
+		display: none !important;
+	}
+
+	/* Mobile responsive */
+	@media (max-width: 640px) {
+		.page-container {
+			padding: 16px 12px;
+			padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+		}
+
+		.top-nav {
+			margin-bottom: 16px;
+		}
+
+		.page-title {
+			font-size: 24px;
+			letter-spacing: -0.5px;
+		}
+
+		.page-subtitle {
+			font-size: 13px;
+			padding: 0 4px;
+			margin-bottom: 12px;
+		}
+
+		.hero-links {
+			gap: 8px;
+			margin-top: 12px;
+		}
+
+		.hero-link {
+			font-size: 12px;
+			padding: 6px 12px;
+		}
+
+		.calculator-card,
+		.seo-article {
+			padding: 20px 16px;
+			border-radius: 14px;
+		}
+
+		/* Prevent iOS Safari 16px auto-zoom on focus */
+		.text-input,
+		.custom-target-input {
+			font-size: 16px !important;
+		}
+
+		.text-input {
+			padding: 12px 14px;
+		}
+
+		.inputs-grid {
+			grid-template-columns: 1fr;
+			gap: 12px;
+		}
+
+		/* Mobile Touch-Friendly Pills */
+		.pills-grid {
+			gap: 6px;
+		}
+
+		.target-btn {
+			padding: 8px 13px;
+			min-height: 40px;
+			font-size: 13px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex: 1 1 auto;
+			min-width: 52px;
+		}
+
+		.custom-target-wrap {
+			min-height: 40px;
+			flex: 1 1 auto;
+			justify-content: center;
+			padding: 2px 12px;
+		}
+
+		.custom-target-input {
+			width: 48px;
+		}
+
+		/* Results Box on Mobile */
+		.results-box {
+			padding-top: 20px;
+		}
+
+		.results-header {
+			flex-direction: row;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 12px;
+		}
+
+		.percentage-val {
+			font-size: 28px;
+			letter-spacing: -0.8px;
+		}
+
+		.ratio-val {
+			font-size: 12px;
+		}
+
+		.status-badge {
+			padding: 4px 10px;
+			font-size: 11px;
+			white-space: nowrap;
+		}
+
+		.vibe-box {
+			padding: 12px 14px;
+		}
+
+		.vibe-message {
+			font-size: 13px;
+		}
+
+		.details-grid {
+			grid-template-columns: 1fr;
+			gap: 10px;
+		}
+
+		.detail-card {
+			padding: 12px;
+		}
+
+		.detail-headline {
+			font-size: 13px;
+		}
+
+		.detail-desc {
+			font-size: 11.5px;
+		}
+
+		.btn-copy {
+			padding: 12px 16px;
+			min-height: 44px;
+			font-size: 13px;
+		}
+
+		.features-seo-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.seo-h2 {
+			font-size: 18px;
+		}
+
+		.footer-nav {
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.footer-separator {
+			display: none;
+		}
+
+		.toast {
+			width: calc(100% - 32px);
+			max-width: 340px;
+			text-align: center;
+			bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+		}
+	}
+
+	@media (max-width: 380px) {
+		.page-title {
+			font-size: 21px;
+		}
+
+		.target-btn {
+			padding: 7px 10px;
+			font-size: 12px;
+			min-width: 46px;
+		}
+
+		.percentage-val {
+			font-size: 26px;
+		}
+
+		.results-header {
+			flex-wrap: wrap;
+			gap: 6px;
+		}
+	}
+</style>
+
+<script>
+	// --- i18n strings for the calculator ---
+	interface I18nJsStrings {
+		[key: string]: string;
+	}
+
+	const i18nEl = document.getElementById('i18n-js-strings');
+	const i18n: I18nJsStrings = i18nEl?.textContent ? JSON.parse(i18nEl.textContent) : {};
+
+	function format(template: string, vars: Record<string, string | number>): string {
+		return template.replace(/\{(\w+)\}/g, (match, key) => (key in vars ? String(vars[key]) : match));
+	}
+
+	// --- THEME TOGGLE LOGIC ---
+	const themeToggleBtn = document.getElementById('theme-toggle');
+	const themeIcon = document.getElementById('theme-icon');
+	const themeLabel = document.getElementById('theme-label');
+
+	function updateThemeUI(isDark: boolean) {
+		if (themeIcon && themeLabel) {
+			if (isDark) {
+				themeIcon.textContent = '☀️';
+				themeLabel.textContent = document.documentElement.dataset.themeLightLabel || 'Light';
+			} else {
+				themeIcon.textContent = '🌙';
+				themeLabel.textContent = document.documentElement.dataset.themeDarkLabel || 'Dark';
+			}
+		}
+	}
+
+	// Initialize button state based on current html class
+	const isInitiallyDark = document.documentElement.classList.contains('dark');
+	updateThemeUI(isInitiallyDark);
+
+	themeToggleBtn?.addEventListener('click', () => {
+		const isCurrentlyDark = document.documentElement.classList.contains('dark');
+		const newThemeIsDark = !isCurrentlyDark;
+
+		if (newThemeIsDark) {
+			document.documentElement.classList.add('dark');
+			localStorage.setItem('theme', 'dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+			localStorage.setItem('theme', 'light');
+		}
+
+		updateThemeUI(newThemeIsDark);
+	});
+
+	// --- ATTENDANCE CALCULATOR LOGIC ---
+	let targetPercentage = 75;
+
+	// Elements
+	const attendedInput = document.getElementById('classes-attended') as HTMLInputElement;
+	const totalInput = document.getElementById('total-classes') as HTMLInputElement;
+	const semTotalInput = document.getElementById('total-semester-classes') as HTMLInputElement;
+	const customTargetInput = document.getElementById('custom-target') as HTMLInputElement;
+
+	const targetButtons = document.querySelectorAll('.target-btn');
+	const targetIndicator = document.getElementById('target-indicator');
+	const targetMarker = document.getElementById('target-marker');
+
+	const percentageDisplay = document.getElementById('percentage-display');
+	const ratioDisplay = document.getElementById('ratio-display');
+	const statusBadge = document.getElementById('status-badge');
+	const progressBar = document.getElementById('progress-bar');
+	const vibeBox = document.getElementById('vibe-box');
+	const vibeMessage = document.getElementById('vibe-message');
+
+	const currentHeadline = document.getElementById('current-headline');
+	const currentDesc = document.getElementById('current-desc');
+	const semForecastCard = document.getElementById('sem-forecast-card');
+	const semHeadline = document.getElementById('sem-headline');
+	const semDesc = document.getElementById('sem-desc');
+
+	const copySummaryBtn = document.getElementById('copy-summary-btn');
+	const toast = document.getElementById('toast');
+
+	function calculate() {
+		const attended = parseFloat(attendedInput?.value) || 0;
+		const totalHeld = parseFloat(totalInput?.value) || 0;
+		const target = targetPercentage;
+		const targetFrac = target / 100;
+
+		const semTotalRaw = parseFloat(semTotalInput?.value);
+		const hasSemTotal = !isNaN(semTotalRaw) && semTotalRaw > totalHeld;
+		const semTotal = hasSemTotal ? semTotalRaw : totalHeld;
+
+		if (targetIndicator) targetIndicator.textContent = `${i18n.targetPrefixLabel || ''} ${target}%`.trim();
+		if (targetMarker) {
+			targetMarker.style.left = `${Math.min(target, 100)}%`;
+			targetMarker.title = `${target}%`;
+		}
+
+		// Validation: Total = 0
+		if (totalHeld === 0) {
+			if (percentageDisplay) percentageDisplay.textContent = '0.0%';
+			if (ratioDisplay) ratioDisplay.textContent = `(0 / 0 ${i18n.heldSuffix})`;
+			if (progressBar) progressBar.style.width = '0%';
+			if (statusBadge) {
+				statusBadge.textContent = i18n.noDataStatus;
+				statusBadge.className = 'status-badge status-warning';
+			}
+			if (vibeBox && vibeMessage) {
+				vibeBox.className = 'vibe-box vibe-warning';
+				vibeMessage.textContent = i18n.noDataVibe;
+			}
+			if (currentHeadline) currentHeadline.textContent = i18n.waitingHeadline;
+			if (currentDesc) currentDesc.textContent = i18n.waitingDesc;
+			if (semForecastCard) semForecastCard.classList.add('hidden');
+			return;
+		}
+
+		// Validation: Attended > Total
+		if (attended > totalHeld) {
+			if (statusBadge) {
+				statusBadge.textContent = i18n.invalidStatus;
+				statusBadge.className = 'status-badge status-danger';
+			}
+			if (vibeBox && vibeMessage) {
+				vibeBox.className = 'vibe-box vibe-danger';
+				vibeMessage.textContent = i18n.invalidVibe;
+			}
+			if (currentHeadline) currentHeadline.textContent = i18n.invalidHeadline;
+			if (currentDesc) currentDesc.textContent = i18n.invalidDesc;
+			return;
+		}
+
+		const currentPercentage = (attended / totalHeld) * 100;
+		if (percentageDisplay) percentageDisplay.textContent = `${currentPercentage.toFixed(1)}%`;
+		if (ratioDisplay) ratioDisplay.textContent = `(${attended} / ${totalHeld} ${i18n.heldSuffix})`;
+
+		// Update Progress Bar
+		if (progressBar) {
+			progressBar.style.width = `${Math.min(currentPercentage, 100)}%`;
+			if (currentPercentage >= target) {
+				progressBar.style.backgroundColor = '#00c851';
+			} else if (currentPercentage >= target - 5) {
+				progressBar.style.backgroundColor = '#f5a623';
+			} else {
+				progressBar.style.backgroundColor = '#ee0000';
+			}
+		}
+
+		// --- RIGHT NOW CALCULATION ---
+		let immediateBunks = 0;
+		let immediateAttend = 0;
+		if (currentPercentage >= target) {
+			immediateBunks = Math.floor((attended / targetFrac) - totalHeld);
+			if (currentHeadline) {
+				currentHeadline.textContent = immediateBunks > 0
+					? format(i18n.safeToBunkPrefix, { n: immediateBunks })
+					: i18n.bunkBufferZero;
+			}
+			if (currentDesc) {
+				currentDesc.textContent = immediateBunks > 0
+					? format(i18n.safeDescWithBunks, { n: immediateBunks, target })
+					: format(i18n.safeDescOnLine, { pct: currentPercentage.toFixed(1), target });
+			}
+		} else {
+			if (targetFrac === 1) {
+				immediateAttend = 0;
+				if (currentHeadline) currentHeadline.textContent = i18n.target100Headline;
+				if (currentDesc) currentDesc.textContent = i18n.target100Desc;
+			} else {
+				immediateAttend = Math.ceil(((targetFrac * totalHeld) - attended) / (1 - targetFrac));
+				if (currentHeadline) currentHeadline.textContent = format(i18n.attendNextPrefix, { n: immediateAttend });
+				if (currentDesc) currentDesc.textContent = format(i18n.attendNextDesc, { n: immediateAttend, target });
+			}
+		}
+
+		// --- END OF SEMESTER PROJECTION CALCULATION ---
+		const remaining = Math.max(0, semTotal - totalHeld);
+		const maxPossibleAttended = attended + remaining;
+		const maxPossiblePct = semTotal > 0 ? (maxPossibleAttended / semTotal) * 100 : currentPercentage;
+		const semTotalTargetAttended = Math.ceil(targetFrac * semTotal);
+		const semNeededFromRemaining = Math.max(0, semTotalTargetAttended - attended);
+		const semBunksRemaining = remaining - semNeededFromRemaining;
+
+		const isCooked = hasSemTotal && maxPossiblePct < target;
+
+		if (hasSemTotal && semForecastCard && semHeadline && semDesc) {
+			semForecastCard.classList.remove('hidden');
+
+			if (isCooked) {
+				semHeadline.textContent = i18n.cookedHeadline;
+				semDesc.textContent = format(i18n.cookedDesc, { remaining, maxPct: maxPossiblePct.toFixed(1) });
+			} else if (semBunksRemaining > 0) {
+				semHeadline.textContent = format(i18n.semBudgetHeadline, { n: semBunksRemaining });
+				semDesc.textContent = format(i18n.semBudgetDesc, { remaining, needed: semNeededFromRemaining, target });
+			} else {
+				semHeadline.textContent = format(i18n.mustAttendHeadline, { needed: semNeededFromRemaining, remaining });
+				semDesc.textContent = format(i18n.mustAttendDesc, { needed: semNeededFromRemaining, remaining, target });
+			}
+		} else if (semForecastCard) {
+			semForecastCard.classList.add('hidden');
+		}
+
+		// --- STUDENT SLANG VIBE MESSAGING ---
+		if (vibeBox && vibeMessage && statusBadge) {
+			if (isCooked) {
+				// COOKED STATE
+				vibeBox.className = 'vibe-box vibe-cooked';
+				statusBadge.textContent = i18n.vibeCookedStatus;
+				statusBadge.className = 'status-badge status-cooked';
+				vibeMessage.innerHTML = format(i18n.vibeCookedMessageHtml, { maxPct: maxPossiblePct.toFixed(1) });
+			} else if (currentPercentage >= target) {
+				// SAFE STATE
+				vibeBox.className = 'vibe-box vibe-safe';
+				statusBadge.textContent = i18n.vibeSafeStatus;
+				statusBadge.className = 'status-badge status-safe';
+				if (immediateBunks > 0) {
+					vibeMessage.innerHTML = format(i18n.vibeSafeWithBunksHtml, { n: immediateBunks });
+				} else {
+					vibeMessage.innerHTML = format(i18n.vibeSafeOnEdgeHtml, { pct: currentPercentage.toFixed(1), target });
+				}
+			} else if (currentPercentage >= target - 5) {
+				// BORDERLINE STATE
+				vibeBox.className = 'vibe-box vibe-warning';
+				statusBadge.textContent = i18n.vibeBorderlineStatus;
+				statusBadge.className = 'status-badge status-warning';
+				vibeMessage.innerHTML = format(i18n.vibeBorderlineMessageHtml, { n: immediateAttend });
+			} else {
+				// SHORTAGE RECOVERABLE STATE
+				vibeBox.className = 'vibe-box vibe-danger';
+				statusBadge.textContent = i18n.vibeShortageStatus;
+				statusBadge.className = 'status-badge status-danger';
+				vibeMessage.innerHTML = format(i18n.vibeShortageMessageHtml, { n: immediateAttend });
+			}
+		}
+	}
+
+	// Target percentage button clicks
+	targetButtons.forEach(btn => {
+		btn.addEventListener('click', () => {
+			targetButtons.forEach(b => b.classList.remove('active'));
+			btn.classList.add('active');
+			targetPercentage = parseInt(btn.getAttribute('data-value') || '75');
+			if (customTargetInput) customTargetInput.value = '';
+			calculate();
+		});
+	});
+
+	// Custom target input
+	customTargetInput?.addEventListener('input', () => {
+		const val = parseFloat(customTargetInput.value);
+		if (!isNaN(val) && val > 0 && val <= 100) {
+			targetButtons.forEach(b => b.classList.remove('active'));
+			targetPercentage = val;
+			calculate();
+		}
+	});
+
+	// Copy Summary Button
+	copySummaryBtn?.addEventListener('click', () => {
+		const attended = parseFloat(attendedInput?.value) || 0;
+		const totalHeld = parseFloat(totalInput?.value) || 0;
+		const pct = totalHeld > 0 ? ((attended / totalHeld) * 100).toFixed(1) : '0';
+		const statusText = statusBadge?.textContent || '';
+		const msgText = vibeMessage?.textContent || '';
+
+		const textSummary =
+`${i18n.copySummaryTitle}
+• ${i18n.copyStatusLabel}: ${statusText}
+• ${i18n.copyAttendanceLabel}: ${pct}% (${attended}/${totalHeld})
+• ${i18n.copyTargetLabel}: ${targetPercentage}%
+• ${i18n.copyNoteLabel}: ${msgText}
+${i18n.copyFooter}`;
+
+		navigator.clipboard.writeText(textSummary).then(() => {
+			if (toast) {
+				toast.classList.remove('hidden');
+				setTimeout(() => {
+					toast.classList.add('hidden');
+				}, 2200);
+			}
+		}).catch(() => {
+			alert(i18n.copyFailed);
+		});
+	});
+
+	// Event listeners
+	attendedInput?.addEventListener('input', calculate);
+	totalInput?.addEventListener('input', calculate);
+	semTotalInput?.addEventListener('input', calculate);
+
+	// Initial run
+	calculate();
+</script>

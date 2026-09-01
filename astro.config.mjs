@@ -6,6 +6,13 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	site: 'https://attendance75calculator.com',
 	trailingSlash: 'ignore',
+	i18n: {
+		defaultLocale: 'en',
+		locales: ['en', 'es', 'ja', 'fr', 'de', 'pt', 'ko', 'it'],
+		routing: {
+			prefixDefaultLocale: false,
+		},
+	},
 	vite: {
 		plugins: [tailwindcss()],
 	},
