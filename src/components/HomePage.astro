@@ -64,6 +64,14 @@ const webAppSchema = {
 	],
 };
 
+// JSON-LD Structured Data for Organization (helps Google surface the site logo in search results)
+const organizationSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Organization',
+	url: siteUrl,
+	logo: `${siteUrl}/apple-touch-icon.png`,
+};
+
 // JSON-LD Structured Data for FAQPage
 const faqSchema = {
 	'@context': 'https://schema.org',
@@ -90,6 +98,7 @@ const faqSchema = {
 	alternates={alternates}
 >
 	<Fragment slot="head-extra">
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
 	</Fragment>
