@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "astro build && npx wrangler pages deploy ./dist --project-name attendance75calculator --commit-dirty=true",
-    "astro": "astro"
+    "astro": "astro",
+    "og:build": "node scripts/generate-og-image.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
@@ -19,5 +20,8 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "sharp": "^0.35.4"
   }
 }
