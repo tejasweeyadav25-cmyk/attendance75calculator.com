@@ -1476,6 +1476,17 @@ const faqSchema = {
 	// --- ATTENDANCE CALCULATOR LOGIC ---
 	let targetPercentage = 75;
 
+	// --- GA4 EVENT TRACKING (debounced so rapid typing fires one event, not one per keystroke) ---
+	let calculateEventTimer: ReturnType<typeof setTimeout> | null = null;
+	function trackCalculateEvent() {
+		if (calculateEventTimer) clearTimeout(calculateEventTimer);
+		calculateEventTimer = setTimeout(() => {
+			if (typeof gtag === 'function') {
+				gtag('event', 'calculate_attendance');
+			}
+		}, 800);
+	}
+
 	// Elements
 	const attendedInput = document.getElementById('classes-attended') as HTMLInputElement;
 	const totalInput = document.getElementById('total-classes') as HTMLInputElement;
@@ -1555,6 +1566,9 @@ const faqSchema = {
 		const currentPercentage = (attended / totalHeld) * 100;
 		if (percentageDisplay) percentageDisplay.textContent = `${currentPercentage.toFixed(1)}%`;
 		if (ratioDisplay) ratioDisplay.textContent = `(${attended} / ${totalHeld} ${i18n.heldSuffix})`;
+
+		// Validation passed and a result is being shown — track it (debounced).
+		trackCalculateEvent();
 
 		// Update Progress Bar
 		if (progressBar) {
