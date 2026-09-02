@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import LangSwitcher from './LangSwitcher.astro';
 import { getTranslations } from '../i18n';
-import { locales, localePrefix, defaultLocale } from '../i18n/locales';
+import { locales, localePrefix } from '../i18n/locales';
 
 interface Props {
 	lang: string;
@@ -26,7 +26,12 @@ const alternates = [
 const footerNote = t.footer.note.replace('{year}', String(new Date().getFullYear()));
 
 // Strings consumed by the client-side calculator script (translated + interpolation-ready)
-const jsStrings = { ...t.js, heldSuffix: t.results.heldSuffix };
+const jsStrings = {
+	...t.js,
+	heldSuffix: t.results.heldSuffix,
+	shareStatAttendedLabel: t.results.shareStatAttendedLabel,
+	shareStatTargetLabel: t.results.shareStatTargetLabel,
+};
 const jsStringsJson = JSON.stringify(jsStrings).replace(/</g, '\\u003c');
 
 // JSON-LD Structured Data for WebApplication
@@ -96,6 +101,8 @@ const faqSchema = {
 	lang={lang}
 	ogLocale={currentLocale.ogLocale}
 	alternates={alternates}
+	themeDarkLabel={t.nav.themeDark}
+	themeLightLabel={t.nav.themeLight}
 >
 	<Fragment slot="head-extra">
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
@@ -158,19 +165,21 @@ const faqSchema = {
 								<button type="button" class="target-btn" data-value="80">80%</button>
 								<button type="button" class="target-btn" data-value="85">85%</button>
 								<button type="button" class="target-btn" data-value="90">90%</button>
-								<div class="custom-target-wrap">
+								<div class="custom-target-wrap" id="custom-target-wrap">
+									<label for="custom-target" class="sr-only">{t.calculator.customPlaceholder}</label>
 									<input
 										type="number"
 										id="custom-target"
 										min="1"
 										max="100"
-										placeholder={t.calculator.customPlaceholder}
+										inputmode="numeric"
+										placeholder="--"
 										class="custom-target-input"
-										aria-label={t.calculator.customPlaceholder}
 									/>
 									<span class="custom-target-unit">%</span>
 								</div>
 							</div>
+							<p id="custom-target-error" class="field-error-msg hidden"></p>
 						</div>
 
 						<!-- 2. Inputs Grid (Attended, Total Held, Total in Semester) -->
@@ -183,6 +192,8 @@ const faqSchema = {
 									type="number"
 									id="classes-attended"
 									min="0"
+									max="1000"
+									inputmode="numeric"
 									placeholder={t.calculator.attendedPlaceholder}
 									class="text-input"
 								/>
@@ -196,6 +207,8 @@ const faqSchema = {
 									type="number"
 									id="total-classes"
 									min="0"
+									max="1000"
+									inputmode="numeric"
 									placeholder={t.calculator.totalPlaceholder}
 									class="text-input"
 								/>
@@ -209,9 +222,12 @@ const faqSchema = {
 									type="number"
 									id="total-semester-classes"
 									min="0"
+									max="1000"
+									inputmode="numeric"
 									placeholder={t.calculator.semTotalPlaceholder}
 									class="text-input"
 								/>
+								<p id="sem-total-error" class="field-error-msg hidden"></p>
 							</div>
 						</div>
 					</div>
@@ -259,19 +275,23 @@ const faqSchema = {
 						</div>
 
 						<!-- End of Semester Forecast Card -->
+						<!-- The headline/desc elements are created by JS only once
+						there's real content to show, and removed when there isn't —
+						never shipped or left behind as an empty heading. -->
 						<div id="sem-forecast-card" class="detail-card hidden">
 							<span class="detail-eyebrow">{t.results.semesterForecastEyebrow}</span>
-							<h3 id="sem-headline" class="detail-headline"></h3>
-							<p id="sem-desc" class="detail-desc">
-							</p>
 						</div>
 					</div>
 
-						<!-- Quick Copy Status Button -->
-						<div class="mt-4">
+						<!-- Quick Copy Status & Share Buttons -->
+						<div class="mt-4 result-actions">
 							<button type="button" id="copy-summary-btn" class="btn-copy">
 								<span id="copy-icon">📋</span>
 								<span id="copy-btn-text">{t.results.copyButtonText}</span>
+							</button>
+							<button type="button" id="share-result-btn" class="btn-copy hidden">
+								<span id="share-icon">📤</span>
+								<span id="share-btn-text">{t.results.shareButtonText}</span>
 							</button>
 						</div>
 					</div>
@@ -375,9 +395,12 @@ const faqSchema = {
 	<div id="toast" class="toast hidden">
 		✓ {t.results.toastText}
 	</div>
+	<div id="share-toast" class="toast hidden">
+		✓ {t.results.shareCopiedText}
+	</div>
 
 	<!-- Translated strings for the client-side calculator script -->
-	<script type="application/json" id="i18n-js-strings" set:html={jsStringsJson} />
+	<script type="application/json" id="i18n-js-strings" set:html={jsStringsJson} is:inline />
 </Layout>
 
 <style>
@@ -694,10 +717,16 @@ const faqSchema = {
 		border: 1px solid var(--border-hairline);
 		border-radius: 100px;
 		padding: 2px 10px;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	}
+
+	.custom-target-wrap.input-error {
+		border-color: var(--vibe-danger-text);
+		box-shadow: 0 0 0 1px var(--vibe-danger-text);
 	}
 
 	.custom-target-input {
-		width: 50px;
+		width: 68px;
 		border: none;
 		outline: none;
 		font-size: 13px;
@@ -747,6 +776,23 @@ const faqSchema = {
 		outline: none;
 		border-color: var(--border-focus);
 		box-shadow: 0 0 0 1px var(--border-focus);
+	}
+
+	/* Field-level validation error (matches the Input Error / status-danger palette) */
+	.text-input.input-error {
+		border-color: var(--vibe-danger-text);
+	}
+
+	.text-input.input-error:focus {
+		border-color: var(--vibe-danger-text);
+		box-shadow: 0 0 0 1px var(--vibe-danger-text);
+	}
+
+	.field-error-msg {
+		margin: 6px 0 0 0;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--vibe-danger-text);
 	}
 
 	/* Results Box */
@@ -977,7 +1023,12 @@ const faqSchema = {
 		margin: 0;
 	}
 
-	/* Copy Button */
+	/* Copy / Share Button Row */
+	.result-actions {
+		display: flex;
+		gap: 8px;
+	}
+
 	.btn-copy {
 		width: 100%;
 		display: flex;
@@ -996,9 +1047,19 @@ const faqSchema = {
 		font-family: inherit;
 	}
 
+	.result-actions .btn-copy {
+		width: auto;
+		flex: 1;
+	}
+
 	.btn-copy:hover {
 		background: var(--bg-pill-hover);
 		border-color: var(--border-focus);
+	}
+
+	.btn-copy:disabled {
+		opacity: 0.6;
+		cursor: default;
 	}
 
 	/* SEO Content Article */
@@ -1316,7 +1377,7 @@ const faqSchema = {
 		}
 
 		.custom-target-input {
-			width: 48px;
+			width: 84px;
 		}
 
 		/* Results Box on Mobile */
@@ -1403,6 +1464,10 @@ const faqSchema = {
 	}
 
 	@media (max-width: 380px) {
+		.result-actions {
+			flex-direction: column;
+		}
+
 		.page-title {
 			font-size: 21px;
 		}
@@ -1442,14 +1507,18 @@ const faqSchema = {
 	const themeIcon = document.getElementById('theme-icon');
 	const themeLabel = document.getElementById('theme-label');
 
+	// Icon + label always describe the CURRENT mode (not the action a click
+	// would take) — sun+"Light" while light, moon+"Dark" while dark — so
+	// it's never ambiguous which one it's telling you. "Toggle Dark/Light
+	// Mode" (aria-label/title) already conveys the action for AT users.
 	function updateThemeUI(isDark: boolean) {
 		if (themeIcon && themeLabel) {
 			if (isDark) {
-				themeIcon.textContent = '☀️';
-				themeLabel.textContent = document.documentElement.dataset.themeLightLabel || 'Light';
-			} else {
 				themeIcon.textContent = '🌙';
 				themeLabel.textContent = document.documentElement.dataset.themeDarkLabel || 'Dark';
+			} else {
+				themeIcon.textContent = '☀️';
+				themeLabel.textContent = document.documentElement.dataset.themeLightLabel || 'Light';
 			}
 		}
 	}
@@ -1492,6 +1561,8 @@ const faqSchema = {
 	const totalInput = document.getElementById('total-classes') as HTMLInputElement;
 	const semTotalInput = document.getElementById('total-semester-classes') as HTMLInputElement;
 	const customTargetInput = document.getElementById('custom-target') as HTMLInputElement;
+	const customTargetWrap = document.getElementById('custom-target-wrap');
+	const customTargetError = document.getElementById('custom-target-error');
 
 	const targetButtons = document.querySelectorAll('.target-btn');
 	const targetIndicator = document.getElementById('target-indicator');
@@ -1507,21 +1578,182 @@ const faqSchema = {
 	const currentHeadline = document.getElementById('current-headline');
 	const currentDesc = document.getElementById('current-desc');
 	const semForecastCard = document.getElementById('sem-forecast-card');
-	const semHeadline = document.getElementById('sem-headline');
-	const semDesc = document.getElementById('sem-desc');
+
+	// The semester forecast's <h3>/<p> only exist in the DOM while there's
+	// real content to show — never rendered (or left behind) empty.
+	function ensureSemForecastElements(): { headline: HTMLElement; desc: HTMLElement } | null {
+		if (!semForecastCard) return null;
+		let headline = document.getElementById('sem-headline');
+		let desc = document.getElementById('sem-desc');
+		if (!headline) {
+			headline = document.createElement('h3');
+			headline.id = 'sem-headline';
+			headline.className = 'detail-headline';
+			semForecastCard.appendChild(headline);
+		}
+		if (!desc) {
+			desc = document.createElement('p');
+			desc.id = 'sem-desc';
+			desc.className = 'detail-desc';
+			semForecastCard.appendChild(desc);
+		}
+		return { headline, desc };
+	}
+
+	function clearSemForecastElements() {
+		document.getElementById('sem-headline')?.remove();
+		document.getElementById('sem-desc')?.remove();
+	}
 
 	const copySummaryBtn = document.getElementById('copy-summary-btn');
 	const toast = document.getElementById('toast');
+	const shareResultBtn = document.getElementById('share-result-btn') as HTMLButtonElement | null;
+	const shareToast = document.getElementById('share-toast');
+	const semTotalError = document.getElementById('sem-total-error');
+
+	function setShareButtonVisible(visible: boolean) {
+		shareResultBtn?.classList.toggle('hidden', !visible);
+	}
+
+	// Sane upper bound shared by all three number inputs (Bug 4).
+	const INPUT_MAX = 1000;
+
+	function pluralize(n: number, singular: string, plural: string): string {
+		return n === 1 ? singular : plural;
+	}
+
+	interface SemTotalEvaluation {
+		status: 'empty' | 'error' | 'valid';
+		value: number;
+		message: string;
+	}
+
+	// Pure validation for the optional "Total Classes in Semester" field.
+	// Never touches the DOM — callers decide what to do with the result, so
+	// the exact same logic can drive both the on-screen error message and
+	// what the Copy/Share outputs are allowed to include.
+	function evaluateSemTotal(rawValue: string, totalHeld: number): SemTotalEvaluation {
+		const trimmed = (rawValue || '').trim();
+		if (trimmed === '') return { status: 'empty', value: 0, message: '' };
+
+		let value = parseFloat(trimmed);
+		if (isNaN(value)) return { status: 'empty', value: 0, message: '' };
+
+		if (value <= 0) {
+			return { status: 'error', value: 0, message: i18n.semTotalErrorNonPositive };
+		}
+		if (!Number.isInteger(value)) {
+			value = Math.round(value);
+			if (value <= 0) {
+				return { status: 'error', value: 0, message: i18n.semTotalErrorNonPositive };
+			}
+		}
+		if (value > INPUT_MAX) {
+			return { status: 'error', value: 0, message: format(i18n.semTotalErrorTooLarge, { max: INPUT_MAX }) };
+		}
+		// F5: semester === held is a legitimate "semester complete" state
+		// (0 remaining), not an error — only strictly less than held is invalid.
+		if (value < totalHeld) {
+			return { status: 'error', value: 0, message: format(i18n.semTotalErrorTooLow, { held: totalHeld }) };
+		}
+		return { status: 'valid', value, message: '' };
+	}
+
+	function updateSemTotalErrorUI(evaluation: SemTotalEvaluation) {
+		semTotalInput?.classList.toggle('input-error', evaluation.status === 'error');
+		if (!semTotalError) return;
+		if (evaluation.status === 'error') {
+			semTotalError.textContent = evaluation.message;
+			semTotalError.classList.remove('hidden');
+		} else {
+			semTotalError.textContent = '';
+			semTotalError.classList.add('hidden');
+		}
+	}
+
+	interface SemesterForecast {
+		isCooked: boolean;
+		isComplete: boolean;
+		metTarget: boolean;
+		remaining: number;
+		needed: number;
+		bunksRemaining: number;
+		maxPct: number;
+	}
+
+	// Pure semester-forecast math, factored out of calculate() so the Copy
+	// and Share outputs can compute the exact same numbers the card shows,
+	// without re-parsing already-formatted DOM text.
+	function buildSemesterForecast(attended: number, totalHeld: number, target: number, semTotal: number): SemesterForecast {
+		const targetFrac = target / 100;
+		const remaining = Math.max(0, semTotal - totalHeld);
+		// F5: semTotal === totalHeld means 0 classes remain — the semester is
+		// over, not a warning state. That's "complete", never "cooked".
+		const isComplete = remaining === 0;
+		const maxPossibleAttended = attended + remaining;
+		const maxPossiblePct = semTotal > 0 ? (maxPossibleAttended / semTotal) * 100 : 0;
+		const semTotalTargetAttended = Math.ceil(targetFrac * semTotal);
+		const needed = Math.max(0, semTotalTargetAttended - attended);
+		const bunksRemaining = remaining - needed;
+		return {
+			isCooked: !isComplete && maxPossiblePct < target,
+			isComplete,
+			metTarget: maxPossiblePct >= target,
+			remaining,
+			needed,
+			bunksRemaining,
+			maxPct: maxPossiblePct,
+		};
+	}
+
+	// Recomputes the semester forecast fresh from whatever's currently in the
+	// inputs. Returns null whenever there is nothing valid to show — no
+	// semester total entered, the semester field itself is invalid, or the
+	// primary attended/held inputs are invalid. That last check is what stops
+	// a stale or nonsensical forecast from ever reaching Copy or Share.
+	function getCurrentSemesterForecast(): SemesterForecast | null {
+		const attended = Math.min(parseFloat(attendedInput?.value) || 0, INPUT_MAX);
+		const totalHeld = Math.min(parseFloat(totalInput?.value) || 0, INPUT_MAX);
+		if (totalHeld === 0 || attended > totalHeld) return null;
+
+		const semEval = evaluateSemTotal(semTotalInput?.value ?? '', totalHeld);
+		if (semEval.status !== 'valid') return null;
+
+		return buildSemesterForecast(attended, totalHeld, targetPercentage, semEval.value);
+	}
+
+	// Builds the compact semester-forecast fragment reused by both the Copy
+	// text and the Share card (e.g. "21 bunks left of 60 remaining classes").
+	function formatSemesterLine(forecast: SemesterForecast): string {
+		if (forecast.isComplete) {
+			return format(forecast.metTarget ? i18n.semesterLineCompleteMet : i18n.semesterLineCompleteMissed, { pct: Math.round(forecast.maxPct) });
+		}
+		const classWordRemaining = pluralize(forecast.remaining, i18n.classSingular, i18n.classPlural);
+		if (forecast.isCooked) {
+			return format(i18n.semesterLineCooked, { maxPct: Math.round(forecast.maxPct), classWordRemaining });
+		}
+		if (forecast.bunksRemaining > 0) {
+			const bunkWord = pluralize(forecast.bunksRemaining, i18n.bunkSingular, i18n.bunkPlural);
+			// Same verb-agreement fix as safeToBunkCappedPrefix, applied to the
+			// same "quedar/rimanere/restar" verb this template also hardcodes.
+			const remainVerb = pluralize(forecast.bunksRemaining, i18n.remainVerbSingular, i18n.remainVerbPlural);
+			return format(i18n.semesterLineBudget, { n: forecast.bunksRemaining, bunkWord, remaining: forecast.remaining, classWordRemaining, remainVerb });
+		}
+		return format(i18n.semesterLineMustAttend, { needed: forecast.needed, remaining: forecast.remaining, classWordRemaining });
+	}
 
 	function calculate() {
-		const attended = parseFloat(attendedInput?.value) || 0;
-		const totalHeld = parseFloat(totalInput?.value) || 0;
+		const attended = Math.min(parseFloat(attendedInput?.value) || 0, INPUT_MAX);
+		const totalHeld = Math.min(parseFloat(totalInput?.value) || 0, INPUT_MAX);
 		const target = targetPercentage;
 		const targetFrac = target / 100;
 
-		const semTotalRaw = parseFloat(semTotalInput?.value);
-		const hasSemTotal = !isNaN(semTotalRaw) && semTotalRaw > totalHeld;
-		const semTotal = hasSemTotal ? semTotalRaw : totalHeld;
+		// Semester-field validation runs unconditionally, regardless of
+		// whether the primary attended/held inputs are currently valid — the
+		// field can be fixed independently and should give feedback either way.
+		const semEval = evaluateSemTotal(semTotalInput?.value ?? '', totalHeld);
+		updateSemTotalErrorUI(semEval);
+		const hasSemTotal = semEval.status === 'valid';
 
 		if (targetIndicator) targetIndicator.textContent = `${i18n.targetPrefixLabel || ''} ${target}%`.trim();
 		if (targetMarker) {
@@ -1529,9 +1761,10 @@ const faqSchema = {
 			targetMarker.title = `${target}%`;
 		}
 
-		// Validation: Total = 0
+		// Validation: Total = 0 — waiting-for-input state. The forecast must
+		// never show numbers here, no matter what the semester field says.
 		if (totalHeld === 0) {
-			if (percentageDisplay) percentageDisplay.textContent = '0.0%';
+			if (percentageDisplay) percentageDisplay.textContent = '0%';
 			if (ratioDisplay) ratioDisplay.textContent = `(0 / 0 ${i18n.heldSuffix})`;
 			if (progressBar) progressBar.style.width = '0%';
 			if (statusBadge) {
@@ -1545,11 +1778,22 @@ const faqSchema = {
 			if (currentHeadline) currentHeadline.textContent = i18n.waitingHeadline;
 			if (currentDesc) currentDesc.textContent = i18n.waitingDesc;
 			if (semForecastCard) semForecastCard.classList.add('hidden');
+			clearSemForecastElements();
+			setShareButtonVisible(false);
 			return;
 		}
 
-		// Validation: Attended > Total
+		// Validation: Attended > Total — BUG 1 FIX: the forecast card must be
+		// cleared here too, not just in the totalHeld===0 branch above. It
+		// must never keep showing numbers from a previous, valid calculation
+		// once the primary inputs are in an error state.
 		if (attended > totalHeld) {
+			// F4 FIX: the header (percentage + ratio) was left showing the
+			// previous valid calculation's numbers next to "Invalid Input" —
+			// every element written on the valid path must be reset here too.
+			if (percentageDisplay) percentageDisplay.textContent = '—';
+			if (ratioDisplay) ratioDisplay.textContent = '';
+			if (progressBar) progressBar.style.width = '0%';
 			if (statusBadge) {
 				statusBadge.textContent = i18n.invalidStatus;
 				statusBadge.className = 'status-badge status-danger';
@@ -1560,15 +1804,19 @@ const faqSchema = {
 			}
 			if (currentHeadline) currentHeadline.textContent = i18n.invalidHeadline;
 			if (currentDesc) currentDesc.textContent = i18n.invalidDesc;
+			if (semForecastCard) semForecastCard.classList.add('hidden');
+			clearSemForecastElements();
+			setShareButtonVisible(false);
 			return;
 		}
 
 		const currentPercentage = (attended / totalHeld) * 100;
-		if (percentageDisplay) percentageDisplay.textContent = `${currentPercentage.toFixed(1)}%`;
+		if (percentageDisplay) percentageDisplay.textContent = `${Math.round(currentPercentage)}%`;
 		if (ratioDisplay) ratioDisplay.textContent = `(${attended} / ${totalHeld} ${i18n.heldSuffix})`;
 
-		// Validation passed and a result is being shown — track it (debounced).
+		// Validation passed and a result is being shown — track it (debounced) and allow sharing.
 		trackCalculateEvent();
+		setShareButtonVisible(true);
 
 		// Update Progress Bar
 		if (progressBar) {
@@ -1582,90 +1830,152 @@ const faqSchema = {
 			}
 		}
 
+		// --- END OF SEMESTER PROJECTION CALCULATION ---
+		// Computed BEFORE "right now" below so that block can cap/override
+		// itself against the semester's actual remaining classes (F1 / F2).
+		// BUG 2 FIX: hasSemTotal now only comes from evaluateSemTotal, which
+		// rejects < held, <= 0, and > INPUT_MAX with a clear field error
+		// instead of silently hiding the card.
+		const forecast = hasSemTotal ? buildSemesterForecast(attended, totalHeld, target, semEval.value) : null;
+		const isCooked = forecast?.isCooked ?? false;
+
 		// --- RIGHT NOW CALCULATION ---
 		let immediateBunks = 0;
 		let immediateAttend = 0;
-		if (currentPercentage >= target) {
+		if (forecast?.isComplete) {
+			// F5: 0 classes remain — there is no "right now" left to act on,
+			// only the final result. Reuse the same wording as the semester card.
+			if (currentHeadline) currentHeadline.textContent = format(i18n.semCompleteHeadline, { pct: Math.round(forecast.maxPct) });
+			if (currentDesc) {
+				currentDesc.textContent = forecast.metTarget
+					? format(i18n.semCompleteMetDesc, { pct: Math.round(forecast.maxPct), target })
+					: format(i18n.semCompleteMissedDesc, { pct: Math.round(forecast.maxPct), target });
+			}
+		} else if (currentPercentage >= target) {
 			immediateBunks = Math.floor((attended / targetFrac) - totalHeld);
+			// F1 FIX: the safe-bunk count ignored the semester cap and could
+			// suggest bunking more classes than actually remain. Cap it to
+			// what's left, and say so in the headline when the cap is binding.
+			let capped = false;
+			if (forecast && immediateBunks > forecast.remaining) {
+				immediateBunks = forecast.remaining;
+				capped = true;
+			}
+			const classWord = pluralize(immediateBunks, i18n.classSingular, i18n.classPlural);
+			// Verb agreement for the "(only N left this semester)" parenthetical
+			// in the capped case — es/it/pt need "queda/rimane/resta" at n===1,
+			// not the hardcoded plural. Harmless no-op for locales whose
+			// template doesn't reference {cappedVerb}.
+			const cappedVerb = pluralize(immediateBunks, i18n.remainVerbSingular, i18n.remainVerbPlural);
 			if (currentHeadline) {
 				currentHeadline.textContent = immediateBunks > 0
-					? format(i18n.safeToBunkPrefix, { n: immediateBunks })
+					? format(capped ? i18n.safeToBunkCappedPrefix : i18n.safeToBunkPrefix, { n: immediateBunks, classWord, cappedVerb })
 					: i18n.bunkBufferZero;
 			}
 			if (currentDesc) {
 				currentDesc.textContent = immediateBunks > 0
-					? format(i18n.safeDescWithBunks, { n: immediateBunks, target })
-					: format(i18n.safeDescOnLine, { pct: currentPercentage.toFixed(1), target });
+					? format(i18n.safeDescWithBunks, { n: immediateBunks, target, classWord })
+					: format(i18n.safeDescOnLine, { pct: Math.round(currentPercentage), target });
 			}
 		} else {
 			if (targetFrac === 1) {
 				immediateAttend = 0;
 				if (currentHeadline) currentHeadline.textContent = i18n.target100Headline;
 				if (currentDesc) currentDesc.textContent = i18n.target100Desc;
+			} else if (isCooked && forecast) {
+				// F2 FIX: attending enough classes to recover is mathematically
+				// impossible within what's left of the semester — say so
+				// instead of printing an unreachable instruction. Same source
+				// as the semester card's own cooked computation (F3).
+				const classWordRemaining = pluralize(forecast.remaining, i18n.classSingular, i18n.classPlural);
+				if (currentHeadline) currentHeadline.textContent = i18n.cookedHeadline;
+				if (currentDesc) currentDesc.textContent = format(i18n.cookedDesc, { remaining: forecast.remaining, maxPct: Math.round(forecast.maxPct), classWordRemaining });
 			} else {
 				immediateAttend = Math.ceil(((targetFrac * totalHeld) - attended) / (1 - targetFrac));
-				if (currentHeadline) currentHeadline.textContent = format(i18n.attendNextPrefix, { n: immediateAttend });
-				if (currentDesc) currentDesc.textContent = format(i18n.attendNextDesc, { n: immediateAttend, target });
+				const classWord = pluralize(immediateAttend, i18n.classSingular, i18n.classPlural);
+				if (currentHeadline) currentHeadline.textContent = format(i18n.attendNextPrefix, { n: immediateAttend, classWord });
+				if (currentDesc) currentDesc.textContent = format(i18n.attendNextDesc, { n: immediateAttend, target, classWord });
 			}
 		}
 
-		// --- END OF SEMESTER PROJECTION CALCULATION ---
-		const remaining = Math.max(0, semTotal - totalHeld);
-		const maxPossibleAttended = attended + remaining;
-		const maxPossiblePct = semTotal > 0 ? (maxPossibleAttended / semTotal) * 100 : currentPercentage;
-		const semTotalTargetAttended = Math.ceil(targetFrac * semTotal);
-		const semNeededFromRemaining = Math.max(0, semTotalTargetAttended - attended);
-		const semBunksRemaining = remaining - semNeededFromRemaining;
-
-		const isCooked = hasSemTotal && maxPossiblePct < target;
-
-		if (hasSemTotal && semForecastCard && semHeadline && semDesc) {
+		if (forecast && semForecastCard) {
 			semForecastCard.classList.remove('hidden');
+			const semEls = ensureSemForecastElements();
+			const classWordRemaining = pluralize(forecast.remaining, i18n.classSingular, i18n.classPlural);
 
-			if (isCooked) {
-				semHeadline.textContent = i18n.cookedHeadline;
-				semDesc.textContent = format(i18n.cookedDesc, { remaining, maxPct: maxPossiblePct.toFixed(1) });
-			} else if (semBunksRemaining > 0) {
-				semHeadline.textContent = format(i18n.semBudgetHeadline, { n: semBunksRemaining });
-				semDesc.textContent = format(i18n.semBudgetDesc, { remaining, needed: semNeededFromRemaining, target });
-			} else {
-				semHeadline.textContent = format(i18n.mustAttendHeadline, { needed: semNeededFromRemaining, remaining });
-				semDesc.textContent = format(i18n.mustAttendDesc, { needed: semNeededFromRemaining, remaining, target });
+			if (semEls) {
+				const { headline: semHeadline, desc: semDesc } = semEls;
+				if (forecast.isComplete) {
+					// F5: semester === held is 0 remaining, not an error — show
+					// the final result instead of a budget/deficit/cooked framing.
+					semHeadline.textContent = format(i18n.semCompleteHeadline, { pct: Math.round(forecast.maxPct) });
+					semDesc.textContent = forecast.metTarget
+						? format(i18n.semCompleteMetDesc, { pct: Math.round(forecast.maxPct), target })
+						: format(i18n.semCompleteMissedDesc, { pct: Math.round(forecast.maxPct), target });
+				} else if (forecast.isCooked) {
+					semHeadline.textContent = i18n.cookedHeadline;
+					semDesc.textContent = format(i18n.cookedDesc, { remaining: forecast.remaining, maxPct: Math.round(forecast.maxPct), classWordRemaining });
+				} else if (forecast.bunksRemaining > 0) {
+					const classWord = pluralize(forecast.bunksRemaining, i18n.classSingular, i18n.classPlural);
+					semHeadline.textContent = format(i18n.semBudgetHeadline, { n: forecast.bunksRemaining, classWord });
+					semDesc.textContent = format(i18n.semBudgetDesc, { remaining: forecast.remaining, needed: forecast.needed, target, classWordRemaining });
+				} else {
+					semHeadline.textContent = format(i18n.mustAttendHeadline, { needed: forecast.needed, remaining: forecast.remaining });
+					semDesc.textContent = format(i18n.mustAttendDesc, { needed: forecast.needed, remaining: forecast.remaining, target, classWordRemaining });
+				}
 			}
 		} else if (semForecastCard) {
 			semForecastCard.classList.add('hidden');
+			clearSemForecastElements();
 		}
 
 		// --- STUDENT SLANG VIBE MESSAGING ---
 		if (vibeBox && vibeMessage && statusBadge) {
-			if (isCooked) {
+			if (forecast?.isComplete) {
+				// F5: semester is over — report the final result, not a
+				// "keep going" nudge that no longer applies.
+				if (forecast.metTarget) {
+					vibeBox.className = 'vibe-box vibe-safe';
+					statusBadge.textContent = i18n.vibeCompleteStatus;
+					statusBadge.className = 'status-badge status-safe';
+					vibeMessage.textContent = format(i18n.semCompleteMetDesc, { pct: Math.round(forecast.maxPct), target });
+				} else {
+					vibeBox.className = 'vibe-box vibe-danger';
+					statusBadge.textContent = i18n.vibeCompleteStatus;
+					statusBadge.className = 'status-badge status-danger';
+					vibeMessage.textContent = format(i18n.semCompleteMissedDesc, { pct: Math.round(forecast.maxPct), target });
+				}
+			} else if (isCooked && forecast) {
 				// COOKED STATE
 				vibeBox.className = 'vibe-box vibe-cooked';
 				statusBadge.textContent = i18n.vibeCookedStatus;
 				statusBadge.className = 'status-badge status-cooked';
-				vibeMessage.innerHTML = format(i18n.vibeCookedMessageHtml, { maxPct: maxPossiblePct.toFixed(1) });
+				vibeMessage.innerHTML = format(i18n.vibeCookedMessageHtml, { maxPct: Math.round(forecast.maxPct) });
 			} else if (currentPercentage >= target) {
 				// SAFE STATE
 				vibeBox.className = 'vibe-box vibe-safe';
 				statusBadge.textContent = i18n.vibeSafeStatus;
 				statusBadge.className = 'status-badge status-safe';
 				if (immediateBunks > 0) {
-					vibeMessage.innerHTML = format(i18n.vibeSafeWithBunksHtml, { n: immediateBunks });
+					const bunkWord = pluralize(immediateBunks, i18n.bunkSingular, i18n.bunkPlural);
+					vibeMessage.innerHTML = format(i18n.vibeSafeWithBunksHtml, { n: immediateBunks, bunkWord });
 				} else {
-					vibeMessage.innerHTML = format(i18n.vibeSafeOnEdgeHtml, { pct: currentPercentage.toFixed(1), target });
+					vibeMessage.innerHTML = format(i18n.vibeSafeOnEdgeHtml, { pct: Math.round(currentPercentage), target });
 				}
 			} else if (currentPercentage >= target - 5) {
 				// BORDERLINE STATE
+				const classWord = pluralize(immediateAttend, i18n.classSingular, i18n.classPlural);
 				vibeBox.className = 'vibe-box vibe-warning';
 				statusBadge.textContent = i18n.vibeBorderlineStatus;
 				statusBadge.className = 'status-badge status-warning';
-				vibeMessage.innerHTML = format(i18n.vibeBorderlineMessageHtml, { n: immediateAttend });
+				vibeMessage.innerHTML = format(i18n.vibeBorderlineMessageHtml, { n: immediateAttend, classWord });
 			} else {
 				// SHORTAGE RECOVERABLE STATE
+				const classWord = pluralize(immediateAttend, i18n.classSingular, i18n.classPlural);
 				vibeBox.className = 'vibe-box vibe-danger';
 				statusBadge.textContent = i18n.vibeShortageStatus;
 				statusBadge.className = 'status-badge status-danger';
-				vibeMessage.innerHTML = format(i18n.vibeShortageMessageHtml, { n: immediateAttend });
+				vibeMessage.innerHTML = format(i18n.vibeShortageMessageHtml, { n: immediateAttend, classWord });
 			}
 		}
 	}
@@ -1677,37 +1987,73 @@ const faqSchema = {
 			btn.classList.add('active');
 			targetPercentage = parseInt(btn.getAttribute('data-value') || '75');
 			if (customTargetInput) customTargetInput.value = '';
+			setCustomTargetError(null);
 			calculate();
 		});
 	});
 
-	// Custom target input
-	customTargetInput?.addEventListener('input', () => {
-		const val = parseFloat(customTargetInput.value);
-		if (!isNaN(val) && val > 0 && val <= 100) {
-			targetButtons.forEach(b => b.classList.remove('active'));
-			targetPercentage = val;
-			calculate();
+	function setCustomTargetError(message: string | null) {
+		customTargetWrap?.classList.toggle('input-error', !!message);
+		if (!customTargetError) return;
+		if (message) {
+			customTargetError.textContent = message;
+			customTargetError.classList.remove('hidden');
+		} else {
+			customTargetError.textContent = '';
+			customTargetError.classList.add('hidden');
 		}
+	}
+
+	// Custom target input — F6 FIX: out-of-range values (0, negative, >100)
+	// used to be silently ignored, leaving the target frozen with no
+	// explanation. Now shown as an inline error, same style as the semester
+	// field, and the bad value is never applied to targetPercentage.
+	customTargetInput?.addEventListener('input', () => {
+		const raw = customTargetInput.value.trim();
+		if (raw === '') {
+			setCustomTargetError(null);
+			return;
+		}
+
+		const val = parseFloat(raw);
+		if (isNaN(val) || val < 1 || val > 100) {
+			setCustomTargetError(i18n.customTargetError);
+			return;
+		}
+
+		setCustomTargetError(null);
+		targetButtons.forEach(b => b.classList.remove('active'));
+		targetPercentage = val;
+		calculate();
 	});
 
-	// Copy Summary Button
-	copySummaryBtn?.addEventListener('click', () => {
+	// Builds the same plain-text vibe-check summary used by both the copy
+	// button and the share caption, so the wording never drifts apart.
+	function buildSummaryText(): string {
 		const attended = parseFloat(attendedInput?.value) || 0;
 		const totalHeld = parseFloat(totalInput?.value) || 0;
-		const pct = totalHeld > 0 ? ((attended / totalHeld) * 100).toFixed(1) : '0';
+		const pct = totalHeld > 0 ? Math.round((attended / totalHeld) * 100) : 0;
 		const statusText = statusBadge?.textContent || '';
 		const msgText = vibeMessage?.textContent || '';
 
-		const textSummary =
+		const forecast = getCurrentSemesterForecast();
+		const semesterLine = forecast
+			? `\n• ${i18n.copySemesterLabel}: ${formatSemesterLine(forecast)}`
+			: '';
+
+		return (
 `${i18n.copySummaryTitle}
 • ${i18n.copyStatusLabel}: ${statusText}
 • ${i18n.copyAttendanceLabel}: ${pct}% (${attended}/${totalHeld})
 • ${i18n.copyTargetLabel}: ${targetPercentage}%
-• ${i18n.copyNoteLabel}: ${msgText}
-${i18n.copyFooter}`;
+• ${i18n.copyNoteLabel}: ${msgText}${semesterLine}
+${i18n.copyFooter}`
+		);
+	}
 
-		navigator.clipboard.writeText(textSummary).then(() => {
+	// Copy Summary Button
+	copySummaryBtn?.addEventListener('click', () => {
+		navigator.clipboard.writeText(buildSummaryText()).then(() => {
 			if (toast) {
 				toast.classList.remove('hidden');
 				setTimeout(() => {
@@ -1717,6 +2063,497 @@ ${i18n.copyFooter}`;
 		}).catch(() => {
 			alert(i18n.copyFailed);
 		});
+	});
+
+	// --- SHARE RESULT AS IMAGE ---
+	// CSS custom properties read straight from :root / html.dark so the
+	// generated card always matches the theme currently on screen.
+	function themeVar(name: string): string {
+		return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+	}
+
+	// Wraps text to fit maxWidth, breaking on word boundaries. Falls back to
+	// breaking mid-word when a single "word" (e.g. CJK text with no spaces,
+	// or a very long token) is already wider than maxWidth on its own.
+	function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+		const words = text.split(/\s+/).filter(Boolean);
+		const lines: string[] = [];
+		let line = '';
+
+		function breakIntoChunks(word: string): string {
+			let chunk = '';
+			for (const ch of word) {
+				const next = chunk + ch;
+				if (chunk && ctx.measureText(next).width > maxWidth) {
+					lines.push(chunk);
+					chunk = ch;
+				} else {
+					chunk = next;
+				}
+			}
+			return chunk;
+		}
+
+		for (const word of words) {
+			const candidate = line ? `${line} ${word}` : word;
+			if (ctx.measureText(candidate).width <= maxWidth) {
+				line = candidate;
+				continue;
+			}
+			if (line) {
+				lines.push(line);
+				line = '';
+			}
+			// Word doesn't fit even on its own line (e.g. long CJK text with
+			// no spaces) — fall back to breaking it character by character.
+			line = ctx.measureText(word).width <= maxWidth ? word : breakIntoChunks(word);
+		}
+		if (line) lines.push(line);
+		return lines;
+	}
+
+	function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+		ctx.beginPath();
+		ctx.moveTo(x + r, y);
+		ctx.arcTo(x + w, y, x + w, y + h, r);
+		ctx.arcTo(x + w, y + h, x, y + h, r);
+		ctx.arcTo(x, y + h, x, y, r);
+		ctx.arcTo(x, y, x + w, y, r);
+		ctx.closePath();
+	}
+
+	// End indices of each "sentence" in text, where a sentence is whatever
+	// precedes a run of . ! ? (Latin) or 。！？ (CJK). Any leftover tail with
+	// no terminator (typically a trailing emoji) becomes one final boundary
+	// at text.length. Boundaries are offsets into the ORIGINAL string —
+	// callers slice from it directly, so original spacing (or the lack of
+	// it, for CJK) is never disturbed by re-joining fragments.
+	function getSentenceBoundaries(text: string): number[] {
+		const boundaries: number[] = [];
+		const re = /[.!?。！？]+/g;
+		let m: RegExpExecArray | null;
+		while ((m = re.exec(text))) {
+			boundaries.push(m.index + m[0].length);
+		}
+		if (boundaries.length === 0 || boundaries[boundaries.length - 1] < text.length) {
+			boundaries.push(text.length);
+		}
+		return boundaries;
+	}
+
+	// Truncates text to the longest prefix (plus ellipsis) that still wraps
+	// within maxLines, snapping back to a word boundary when the text
+	// actually has one nearby (skipped for CJK, which has none).
+	function truncateToLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxLines: number): string[] {
+		const trimmed = text.trim();
+		const fullLines = wrapText(ctx, trimmed, maxWidth);
+		if (fullLines.length <= maxLines) return fullLines;
+
+		let lo = 0;
+		let hi = trimmed.length;
+		while (lo < hi) {
+			const mid = Math.ceil((lo + hi) / 2);
+			const candidate = `${trimmed.slice(0, mid).trimEnd()}…`;
+			if (wrapText(ctx, candidate, maxWidth).length <= maxLines) {
+				lo = mid;
+			} else {
+				hi = mid - 1;
+			}
+		}
+
+		let cut = lo;
+		const lastSpace = trimmed.slice(0, lo).lastIndexOf(' ');
+		if (lastSpace > lo * 0.5) cut = lastSpace;
+
+		const finalText = cut > 0 ? `${trimmed.slice(0, cut).trimEnd()}…` : '…';
+		return wrapText(ctx, finalText, maxWidth);
+	}
+
+	// Fits the vibe-copy note to at most maxLines, greedily including whole
+	// sentences (never cutting mid-sentence) — a trailing emoji that alone
+	// would push onto an extra line is dropped naturally, since it's tested
+	// as its own increment past the last real sentence. Only when even the
+	// first sentence overflows maxLines does this fall back to
+	// truncateToLines' word-boundary ellipsis.
+	function fitNoteToLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxLines: number): string[] {
+		const trimmed = text.trim();
+		if (!trimmed) return [];
+
+		const boundaries = getSentenceBoundaries(trimmed);
+		let bestLines: string[] = [];
+		let anyFit = false;
+		for (const end of boundaries) {
+			const candidate = trimmed.slice(0, end).trim();
+			if (!candidate) continue;
+			const lines = wrapText(ctx, candidate, maxWidth);
+			if (lines.length <= maxLines) {
+				bestLines = lines;
+				anyFit = true;
+			} else {
+				break;
+			}
+		}
+		if (anyFit) return bestLines;
+
+		const firstEnd = boundaries[0] ?? trimmed.length;
+		return truncateToLines(ctx, trimmed.slice(0, firstEnd).trim(), maxWidth, maxLines);
+	}
+
+	// Further shrinks text char-by-char so it's guaranteed to fit maxWidth on
+	// one line at the current ctx.font. Needed on top of truncateWords because
+	// a ~60-character cap is Latin-text-sized — a CJK "character" is much
+	// wider, so the same char count can still overflow the card.
+	function fitSingleLine(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
+		if (ctx.measureText(text).width <= maxWidth) return text;
+		let lo = 0;
+		let hi = text.length;
+		while (lo < hi) {
+			const mid = Math.ceil((lo + hi) / 2);
+			const candidate = `${text.slice(0, mid).trimEnd()}…`;
+			if (ctx.measureText(candidate).width <= maxWidth) {
+				lo = mid;
+			} else {
+				hi = mid - 1;
+			}
+		}
+		return lo > 0 ? `${text.slice(0, lo).trimEnd()}…` : '…';
+	}
+
+	// Draws the 1080x1080 share card. Only ever called on button click, never
+	// on keystroke — it's not cheap enough to run on every input event.
+	async function generateShareImage(): Promise<HTMLCanvasElement> {
+		const SIZE = 1080;
+		const canvas = document.createElement('canvas');
+		canvas.width = SIZE;
+		canvas.height = SIZE;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) throw new Error('2D canvas context unavailable');
+
+		// Wait for the Geist webfont so canvas text doesn't silently fall
+		// back to the platform default mid-render.
+		try {
+			await document.fonts.ready;
+		} catch {
+			// Font loading isn't guaranteed everywhere — fall back stack still works.
+		}
+
+		const fontFamily = "'Geist', Arial, sans-serif";
+
+		// Figure out which vibe state is currently shown, then read its
+		// existing theme colors — never invent new ones.
+		let vibeKey = 'warn';
+		if (vibeBox?.classList.contains('vibe-safe')) vibeKey = 'safe';
+		else if (vibeBox?.classList.contains('vibe-danger')) vibeKey = 'danger';
+		else if (vibeBox?.classList.contains('vibe-cooked')) vibeKey = 'cooked';
+
+		const bgCanvas = themeVar('--bg-canvas');
+		const bgCard = themeVar('--bg-card');
+		const borderHairline = themeVar('--border-hairline');
+		const textInk = themeVar('--text-ink');
+		const textBody = themeVar('--text-body');
+		const textMuted = themeVar('--text-muted');
+		const trackBg = themeVar('--track-bg');
+		const targetMarkerColor = themeVar('--target-marker-bg');
+		const targetAccent = themeVar('--badge-target-text');
+		const vibeBg = themeVar(`--vibe-${vibeKey}-bg`);
+		const vibeBorder = themeVar(`--vibe-${vibeKey}-border`);
+		const vibeText = themeVar(`--vibe-${vibeKey}-text`);
+
+		// Recompute the raw numbers straight from the inputs (same source
+		// buildSummaryText uses) so the visuals are exact whole numbers —
+		// no re-parsing of already-formatted, decimal-bearing DOM text.
+		const attended = parseFloat(attendedInput?.value) || 0;
+		const totalHeld = parseFloat(totalInput?.value) || 0;
+		const currentPercentage = totalHeld > 0 ? (attended / totalHeld) * 100 : 0;
+		const target = targetPercentage;
+
+		const statusText = statusBadge?.textContent?.trim() || '';
+		const headlineText = currentHeadline?.textContent?.trim() || '';
+		const noteRaw = vibeMessage?.textContent?.trim() || '';
+		const attendedLabel = i18n.shareStatAttendedLabel || '';
+		const targetLabel = i18n.shareStatTargetLabel || '';
+		const footerText = 'attendance75calculator.com';
+
+		// Compact semester row — omitted entirely when there's no valid
+		// forecast (BUG 3B). Kept visually subordinate to the hero headline:
+		// smallest font on the card, muted color, no dedicated visual anchor.
+		const semesterForecast = getCurrentSemesterForecast();
+		const semRowText = semesterForecast
+			? `${i18n.copySemesterLabel}: ${formatSemesterLine(semesterForecast)}`
+			: '';
+
+		// Canvas background
+		ctx.fillStyle = bgCanvas;
+		ctx.fillRect(0, 0, SIZE, SIZE);
+
+		// Card, inset with a safe margin so nothing gets cropped by a platform.
+		const margin = 56;
+		const cardW = SIZE - margin * 2;
+		const cardH = SIZE - margin * 2;
+		roundRect(ctx, margin, margin, cardW, cardH, 32);
+		ctx.fillStyle = bgCard;
+		ctx.fill();
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = borderHairline;
+		ctx.stroke();
+
+		const padX = margin + 64; // safe-area padding inside the card
+		const maxTextWidth = SIZE - padX * 2;
+		const contentTop = margin + 64;
+		const contentBottom = SIZE - margin - 64;
+		const availableHeight = contentBottom - contentTop;
+
+		// --- Measure every section with the exact sizes the draw pass below
+		// uses, then spread whatever's left over across the gaps between
+		// sections so the card fills edge to edge instead of leaving one big
+		// dead band in the middle.
+		const pillFontSize = 36;
+		const pillH = 62;
+		const baseGapAfterPill = 44;
+
+		const headlineFontCandidates = [
+			{ size: 84, lineHeight: 98 },
+			{ size: 72, lineHeight: 86 },
+			{ size: 60, lineHeight: 72 },
+		];
+		let headlineFont = headlineFontCandidates[headlineFontCandidates.length - 1];
+		let headlineLines: string[] = [];
+		for (const candidate of headlineFontCandidates) {
+			ctx.font = `700 ${candidate.size}px ${fontFamily}`;
+			const lines = headlineText ? wrapText(ctx, headlineText, maxTextWidth) : [];
+			headlineFont = candidate;
+			headlineLines = lines;
+			if (lines.length <= 2) break;
+		}
+		const headlineH = headlineLines.length * headlineFont.lineHeight;
+		const baseGapAfterHeadline = 56;
+
+		const barH = 36;
+		const markerOverhang = 10;
+		const baseGapAfterBar = 56;
+
+		const statsNumberFontSize = 62;
+		const statsNumberLineHeight = 74;
+		const statsLabelFontSize = 26;
+		const statsLabelLineHeight = 32;
+		const statsGap = 14;
+		const statsBlockH = statsNumberLineHeight + statsGap + statsLabelLineHeight;
+		const baseGapAfterStats = 48;
+
+		const semRowFontSize = 28;
+		const semRowLineHeight = 36;
+		const gapAfterSemRow = 28;
+
+		const noteFontSize = 30;
+		const noteLineHeight = 38;
+		const noteMaxLines = 2;
+		ctx.font = `600 ${noteFontSize}px ${fontFamily}`;
+		const noteLines = noteRaw ? fitNoteToLines(ctx, noteRaw, maxTextWidth, noteMaxLines) : [];
+		const noteBlockH = noteLines.length * noteLineHeight;
+		const gapAfterNote = 36;
+
+		const footerFontSize = 38;
+
+		const totalContentHeight =
+			pillH + baseGapAfterPill +
+			headlineH + baseGapAfterHeadline +
+			(barH + markerOverhang) + baseGapAfterBar +
+			statsBlockH + baseGapAfterStats +
+			(semRowText ? semRowLineHeight + gapAfterSemRow : 0) +
+			(noteLines.length ? noteBlockH + gapAfterNote : 0) +
+			footerFontSize;
+
+		const extra = Math.max(0, availableHeight - totalContentHeight);
+		const flexGaps = 4;
+		const extraPerGap = extra / flexGaps;
+
+		const gapAfterPill = baseGapAfterPill + extraPerGap;
+		const gapAfterHeadline = baseGapAfterHeadline + extraPerGap;
+		const gapAfterBar = baseGapAfterBar + extraPerGap;
+		const gapAfterStats = baseGapAfterStats + extraPerGap;
+
+		// --- Draw pass ---
+		let cursorY = contentTop;
+
+		// Status pill (unchanged styling)
+		if (statusText) {
+			ctx.font = `700 ${pillFontSize}px ${fontFamily}`;
+			const pillTextWidth = ctx.measureText(statusText).width;
+			const pillPadX = 28;
+			const pillW = pillTextWidth + pillPadX * 2;
+			const pillX = SIZE / 2 - pillW / 2;
+			roundRect(ctx, pillX, cursorY, pillW, pillH, pillH / 2);
+			ctx.fillStyle = vibeBg;
+			ctx.fill();
+			ctx.lineWidth = 2;
+			ctx.strokeStyle = vibeBorder;
+			ctx.stroke();
+			ctx.fillStyle = vibeText;
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+			ctx.fillText(statusText, SIZE / 2, cursorY + pillH / 2 + 2);
+			cursorY += pillH + gapAfterPill;
+		}
+
+		// Hero headline — the biggest element on the card
+		ctx.font = `700 ${headlineFont.size}px ${fontFamily}`;
+		ctx.fillStyle = textInk;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'top';
+		for (const line of headlineLines) {
+			ctx.fillText(line, SIZE / 2, cursorY);
+			cursorY += headlineFont.lineHeight;
+		}
+		cursorY += gapAfterHeadline;
+
+		// Progress bar with a target marker — the visual anchor
+		const barX = padX;
+		const barTop = cursorY;
+		roundRect(ctx, barX, barTop, maxTextWidth, barH, barH / 2);
+		ctx.fillStyle = trackBg;
+		ctx.fill();
+
+		const fillFrac = Math.max(0, Math.min(100, currentPercentage)) / 100;
+		const filledW = maxTextWidth * fillFrac;
+		if (filledW > 0) {
+			roundRect(ctx, barX, barTop, Math.min(Math.max(filledW, barH * 0.5), maxTextWidth), barH, barH / 2);
+			ctx.fillStyle = vibeText;
+			ctx.fill();
+		}
+
+		const clampedTarget = Math.max(0, Math.min(100, target));
+		const markerX = barX + Math.max(6, Math.min(maxTextWidth - 6, (clampedTarget / 100) * maxTextWidth));
+		ctx.strokeStyle = targetMarkerColor;
+		ctx.lineWidth = 5;
+		ctx.lineCap = 'round';
+		ctx.beginPath();
+		ctx.moveTo(markerX, barTop - markerOverhang);
+		ctx.lineTo(markerX, barTop + barH + markerOverhang);
+		ctx.stroke();
+
+		cursorY = barTop + barH + markerOverhang + gapAfterBar;
+
+		// Labeled stats: attendance (left) vs. target (right) — whole numbers only
+		const leftX = padX + maxTextWidth * 0.25;
+		const rightX = padX + maxTextWidth * 0.75;
+
+		ctx.textBaseline = 'top';
+		ctx.font = `800 ${statsNumberFontSize}px ${fontFamily}`;
+		ctx.fillStyle = vibeText;
+		ctx.fillText(`${Math.round(currentPercentage)}%`, leftX, cursorY);
+		ctx.fillStyle = targetAccent;
+		ctx.fillText(`${Math.round(target)}%`, rightX, cursorY);
+
+		const labelY = cursorY + statsNumberLineHeight + statsGap;
+		ctx.font = `700 ${statsLabelFontSize}px ${fontFamily}`;
+		ctx.fillStyle = textMuted;
+		if (attendedLabel) ctx.fillText(attendedLabel, leftX, labelY);
+		if (targetLabel) ctx.fillText(targetLabel, rightX, labelY);
+
+		cursorY += statsBlockH + gapAfterStats;
+
+		// Compact semester-forecast row — kept visually subordinate (smallest
+		// font, muted color, no pill/bar of its own) so the hero headline
+		// above stays the primary focus. Simply skipped when there's no
+		// valid forecast; the flex-gap redistribution above already accounts
+		// for its absence so the layout stays balanced either way.
+		if (semRowText) {
+			ctx.font = `600 ${semRowFontSize}px ${fontFamily}`;
+			ctx.fillStyle = textMuted;
+			ctx.textAlign = 'center';
+			ctx.fillText(fitSingleLine(ctx, semRowText, maxTextWidth), SIZE / 2, cursorY);
+			cursorY += semRowLineHeight + gapAfterSemRow;
+		}
+
+		// The existing vibe copy, reused verbatim — wrapped to at most 2
+		// whole sentences, never cut mid-sentence (see fitNoteToLines above).
+		if (noteLines.length) {
+			ctx.font = `600 ${noteFontSize}px ${fontFamily}`;
+			ctx.fillStyle = textBody;
+			ctx.textAlign = 'center';
+			for (const line of noteLines) {
+				ctx.fillText(line, SIZE / 2, cursorY);
+				cursorY += noteLineHeight;
+			}
+			cursorY += gapAfterNote;
+		}
+
+		// Footer — text-body (not text-muted) so the domain actually reads
+		// against the card background instead of nearly disappearing.
+		ctx.font = `600 ${footerFontSize}px ${fontFamily}`;
+		ctx.fillStyle = textBody;
+		ctx.textAlign = 'center';
+		ctx.fillText(footerText, SIZE / 2, contentBottom - footerFontSize);
+
+		return canvas;
+	}
+
+	function trackShareEvent() {
+		if (typeof gtag === 'function') {
+			gtag('event', 'share_result');
+		}
+	}
+
+	function showShareToast() {
+		if (!shareToast) return;
+		shareToast.classList.remove('hidden');
+		setTimeout(() => {
+			shareToast.classList.add('hidden');
+		}, 2200);
+	}
+
+	shareResultBtn?.addEventListener('click', async () => {
+		const btn = shareResultBtn;
+		if (!btn || btn.disabled) return;
+		btn.disabled = true;
+
+		try {
+			const canvas = await generateShareImage();
+			const shareText = buildSummaryText();
+			const shareUrl = 'https://attendance75calculator.com';
+
+			const blob: Blob | null = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+			if (!blob) throw new Error('Canvas toBlob failed');
+			const file = new File([blob], 'attendance.png', { type: 'image/png' });
+
+			if (navigator.canShare?.({ files: [file] })) {
+				// Preferred: native share sheet with the image attached (mobile).
+				await navigator.share({ files: [file], text: shareText, url: shareUrl });
+				trackShareEvent();
+			} else if (navigator.share) {
+				// File sharing unsupported — fall back to text + URL only.
+				await navigator.share({ text: shareText, url: shareUrl });
+				trackShareEvent();
+			} else {
+				// No Web Share API at all (most desktop browsers) — download
+				// the image and copy the caption instead.
+				const downloadUrl = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = downloadUrl;
+				a.download = 'attendance.png';
+				document.body.appendChild(a);
+				a.click();
+				a.remove();
+				URL.revokeObjectURL(downloadUrl);
+
+				try {
+					await navigator.clipboard.writeText(shareText);
+				} catch {
+					// Download still happened — clipboard failure isn't fatal.
+				}
+
+				showShareToast();
+				trackShareEvent();
+			}
+		} catch (err) {
+			// The user closing the native share sheet rejects with AbortError —
+			// that's a normal cancel, not a failure, so stay silent.
+			if (!(err instanceof DOMException && err.name === 'AbortError')) {
+				console.error('Share failed', err);
+			}
+		} finally {
+			btn.disabled = false;
+		}
 	});
 
 	// Event listeners

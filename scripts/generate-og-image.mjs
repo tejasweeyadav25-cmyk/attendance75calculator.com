@@ -1,6 +1,6 @@
 // Generates public/og-image.png from an inline SVG built with the site's
 // existing theme colors (see src/styles/app.css --theme tokens).
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";

@@ -13,6 +13,8 @@ interface Props {
 	lang?: string;
 	ogLocale?: string;
 	alternates?: Alternate[];
+	themeDarkLabel?: string;
+	themeLightLabel?: string;
 }
 
 const {
@@ -23,13 +25,19 @@ const {
 	ogImage = "https://attendance75calculator.com/og-image.png",
 	lang = "en",
 	ogLocale = "en_US",
-	alternates = []
+	alternates = [],
+	// Localized theme-toggle words, read by HomePage's client script via
+	// document.documentElement.dataset.themeDarkLabel/themeLightLabel so the
+	// label stays in the page's language after the first click (not just on
+	// the initial SSR paint). Defaults keep non-localized callers unaffected.
+	themeDarkLabel = "Dark",
+	themeLightLabel = "Light"
 } = Astro.props;
 
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-theme-dark-label={themeDarkLabel} data-theme-light-label={themeLightLabel}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
@@ -47,7 +55,7 @@ const {
 		))}
 
 		<!-- Google tag (gtag.js) -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=G-3D0S6Y0XQG"></script>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-3D0S6Y0XQG" is:inline></script>
 		<script is:inline>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}

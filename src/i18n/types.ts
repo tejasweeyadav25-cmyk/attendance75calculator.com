@@ -61,6 +61,10 @@ export interface Translations {
 		semesterForecastEyebrow: string;
 		copyButtonText: string;
 		toastText: string;
+		shareButtonText: string;
+		shareCopiedText: string;
+		shareStatAttendedLabel: string;
+		shareStatTargetLabel: string;
 	};
 	js: {
 		noDataStatus: string;
@@ -99,8 +103,29 @@ export interface Translations {
 		copyAttendanceLabel: string;
 		copyTargetLabel: string;
 		copyNoteLabel: string;
+		copySemesterLabel: string;
 		copyFooter: string;
 		copyFailed: string;
+		classSingular: string;
+		classPlural: string;
+		bunkSingular: string;
+		bunkPlural: string;
+		semTotalErrorTooLow: string;
+		semTotalErrorNonPositive: string;
+		semTotalErrorTooLarge: string;
+		semesterLineBudget: string;
+		semesterLineMustAttend: string;
+		semesterLineCooked: string;
+		safeToBunkCappedPrefix: string;
+		semCompleteHeadline: string;
+		semCompleteMetDesc: string;
+		semCompleteMissedDesc: string;
+		semesterLineCompleteMet: string;
+		semesterLineCompleteMissed: string;
+		customTargetError: string;
+		vibeCompleteStatus: string;
+		remainVerbSingular: string;
+		remainVerbPlural: string;
 	};
 	article: {
 		overview: {
