@@ -2,9 +2,9 @@ import type { Translations } from '../types';
 
 const es: Translations = {
 	meta: {
-		title: 'Calculadora de Asistencia - Calculadora Gratuita de Asistencia del 75% para Universitarios',
+		title: 'Calculadora de Asistencia 75% - Gratis',
 		description:
-			'Calculadora de asistencia online gratuita para verificar el criterio del 75%. Calcula cuántas clases puedes faltar, cuántas clases necesitas para llegar al 75 por ciento de asistencia y proyecciones del semestre al instante.',
+			'Calculadora de asistencia gratuita para el 75%. Calcula faltas permitidas, clases necesarias y proyecciones del semestre al instante.',
 		keywords:
 			'calculadora de asistencia, calculadora de asistencia 75, calculadora de asistencia del 75, calculadora de asistencia app, calculadora de asistencia del 75 por ciento, calculadora de asistencia universitaria, calculadora de asistencia para la universidad',
 		ogLocale: 'es_ES',

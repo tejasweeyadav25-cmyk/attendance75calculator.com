@@ -2,9 +2,9 @@ import type { Translations } from '../types';
 
 const de: Translations = {
 	meta: {
-		title: 'Anwesenheitsrechner – Kostenloser 75 % Anwesenheitsrechner für Studenten',
+		title: 'Anwesenheitsrechner - Kostenlos für die 75%-Regel',
 		description:
-			'Kostenloser Online-Anwesenheitsrechner für die 75-Prozent-Regel. Berechne sichere Fehlstunden, benötigte Stunden für 75 % Anwesenheit und Semesterprognosen in Echtzeit.',
+			'Kostenloser Anwesenheitsrechner für die 75%-Regel. Berechne Fehlstunden, benötigte Stunden und Semesterprognosen sofort.',
 		keywords:
 			'Anwesenheitsrechner, 75 Anwesenheitsrechner, Anwesenheitsrechner 75, Anwesenheitsrechner App, 75 Prozent Anwesenheitsrechner, Anwesenheitsrechner Uni, Uni Anwesenheitsrechner, Fehlstunden Rechner',
 		ogLocale: 'de_DE',

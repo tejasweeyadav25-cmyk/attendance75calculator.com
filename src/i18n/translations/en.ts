@@ -2,9 +2,9 @@ import type { Translations } from '../types';
 
 const en: Translations = {
 	meta: {
-		title: 'Attendance Calculator - Free 75% College Attendance Calculator App',
+		title: '75% Attendance Calculator - Free College Tool',
 		description:
-			'Free online attendance calculator to check 75% criteria. Calculate safe bunks, classes needed to reach 75 percent attendance, and semester projections instantly.',
+			'Free attendance calculator for the 75% rule. Check safe bunks, classes needed, and semester projections instantly.',
 		keywords:
 			'attendance calculator, 75 attendance calculator, attendance calculator 75, attendance calculator app, 75 percent attendance calculator, college attendance calculator, attendance calculator college',
 		ogLocale: 'en_US',

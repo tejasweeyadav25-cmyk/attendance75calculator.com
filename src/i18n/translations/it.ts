@@ -2,9 +2,9 @@ import type { Translations } from '../types';
 
 const it: Translations = {
 	meta: {
-		title: 'Calcolatore Presenze 75% - App Gratuita Calcolo Presenze Universitarie',
+		title: 'Calcolatore Presenze 75% - Gratis',
 		description:
-			"Calcolatore di presenze online gratuito per verificare il criterio del 75%. Calcola quante lezioni puoi saltare in sicurezza, quante devi frequentare per raggiungere il 75% di presenze e le proiezioni del semestre, all'istante.",
+			"Calcolatore presenze gratuito per il 75%. Calcola assenze sicure, lezioni necessarie e proiezioni del semestre all'istante.",
 		keywords:
 			'calcolatore presenze, calcolatore presenze 75, calcolatore presenze 75%, app calcolatore presenze, calcolatore presenze 75 percento, calcolatore presenze universitarie, calcolatore presenze università',
 		ogLocale: 'it_IT',

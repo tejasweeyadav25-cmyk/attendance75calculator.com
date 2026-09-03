@@ -2,9 +2,9 @@ import type { Translations } from '../types';
 
 const fr: Translations = {
 	meta: {
-		title: "Calculateur de Présence - Calculateur d'Assiduité 75% Gratuit pour Étudiants",
+		title: 'Calculateur de Présence 75% - Gratuit',
 		description:
-			'Calculateur de présence en ligne gratuit pour vérifier le seuil de 75%. Calculez les absences autorisées, les cours à suivre pour atteindre 75% de présence, et vos prévisions de semestre instantanément.',
+			'Calculateur de présence gratuit pour le seuil de 75%. Calculez absences autorisées, cours nécessaires et prévisions de semestre.',
 		keywords:
 			"calculateur de présence, calculateur de présence 75, calculateur d'assiduité 75, calculateur de présence application, calculateur de présence 75 pourcent, calculateur de présence universitaire, calculateur de présence étudiant",
 		ogLocale: 'fr_FR',

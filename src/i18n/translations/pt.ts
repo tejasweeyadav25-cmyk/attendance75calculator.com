@@ -2,9 +2,9 @@ import type { Translations } from '../types';
 
 const pt: Translations = {
 	meta: {
-		title: 'Calculadora de Frequência - App Gratuito de Calculadora de Frequência 75% para Faculdade',
+		title: 'Calculadora de Frequência 75% - Grátis',
 		description:
-			'Calculadora de frequência online gratuita para verificar o critério dos 75%. Calcule quantas aulas pode faltar com segurança, quantas precisa frequentar para atingir 75% de frequência e projeções do semestre instantaneamente.',
+			'Calculadora de frequência grátis para os 75%. Calcule faltas seguras, aulas necessárias e projeções do semestre instantaneamente.',
 		keywords:
 			'calculadora de frequência, calculadora de frequência 75, calculadora de presença 75%, app calculadora de frequência, calculadora de frequência 75 por cento, calculadora de frequência universitária, calculadora de frequência faculdade',
 		ogLocale: 'pt_PT',

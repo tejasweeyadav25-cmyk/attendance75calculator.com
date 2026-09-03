@@ -91,6 +91,24 @@ const faqSchema = {
 		},
 	})),
 };
+
+// JSON-LD Structured Data for HowTo (each step is authored as "Name: description")
+const howToSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'HowTo',
+	name: t.article.howTo.h2,
+	inLanguage: lang,
+	step: t.article.howTo.steps.map((step) => {
+		const plainStep = step.replace(/<[^>]+>/g, '');
+		const separatorIndex = plainStep.indexOf(':');
+		const hasName = separatorIndex > -1 && separatorIndex < 80;
+		return {
+			'@type': 'HowToStep',
+			name: hasName ? plainStep.slice(0, separatorIndex).trim() : plainStep,
+			text: hasName ? plainStep.slice(separatorIndex + 1).trim() : plainStep,
+		};
+	}),
+};
 ---
 
 <Layout
@@ -108,6 +126,7 @@ const faqSchema = {
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(howToSchema)} />
 	</Fragment>
 
 	<div class="page-container">
