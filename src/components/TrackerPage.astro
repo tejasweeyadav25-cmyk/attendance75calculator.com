@@ -1,0 +1,1769 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LangSwitcher from './LangSwitcher.astro';
+import { getTranslations } from '../i18n';
+import { locales, localePrefix } from '../i18n/locales';
+
+interface Props {
+	lang: string;
+}
+
+const { lang } = Astro.props;
+const t = getTranslations(lang);
+const currentLocale = locales.find((l) => l.code === lang) ?? locales[0];
+
+const siteUrl = 'https://attendance75calculator.com';
+const canonicalUrl = `${siteUrl}${localePrefix(lang)}/tracker`;
+
+const alternates = [
+	...locales.map((l) => ({
+		hreflang: l.hreflang,
+		href: `${siteUrl}${localePrefix(l.code)}/tracker`,
+	})),
+	{ hreflang: 'x-default', href: `${siteUrl}/tracker` },
+];
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	inLanguage: lang,
+	mainEntity: t.tracker.faq.map((item) => ({
+		'@type': 'Question',
+		name: item.question,
+		acceptedAnswer: { '@type': 'Answer', text: item.answerHtml.replace(/<[^>]+>/g, '') },
+	})),
+};
+
+const webAppSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: t.tracker.header.title,
+	url: canonicalUrl,
+	inLanguage: lang,
+	description: t.tracker.meta.description,
+	applicationCategory: 'EducationalApplication',
+	operatingSystem: 'All',
+	browserRequirements: 'Requires JavaScript. Requires HTML5.',
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+	featureList: [
+		'One-tap Present/Absent updates per subject',
+		'Multi-subject attendance tracking with overall roll-up',
+		'Weakest-subject callout',
+		'Safe-skip and recovery-class calculations',
+		'Shareable link with no server or account',
+		'100% private and client-side processing',
+	],
+};
+
+// Small grab-bag of cross-cutting strings the client script needs alongside
+// the shared `js` vibe-copy bundle (getAttendanceStatus already accepts this
+// exact shape) — mirrors the homepage's own jsStrings pattern.
+const jsStrings = {
+	...t.js,
+	targetPrefix: t.calculator.targetPrefix,
+	heldSuffix: t.results.heldSuffix,
+	optionalLabel: t.calculator.semTotalSub,
+	themeDark: t.nav.themeDark,
+	themeLight: t.nav.themeLight,
+};
+const jsStringsJson = JSON.stringify(jsStrings).replace(/</g, '\\u003c');
+const trackerStringsJson = JSON.stringify(t.tracker).replace(/</g, '\\u003c');
+---
+
+<Layout
+	title={t.tracker.meta.title}
+	description={t.tracker.meta.description}
+	keywords={t.tracker.meta.keywords}
+	canonicalUrl={canonicalUrl}
+	lang={lang}
+	ogLocale={currentLocale.ogLocale}
+	alternates={alternates}
+	themeDarkLabel={t.nav.themeDark}
+	themeLightLabel={t.nav.themeLight}
+>
+	<Fragment slot="head-extra">
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+	</Fragment>
+
+	<div class="page-container">
+		<div class="content-wrapper">
+			<!-- Top Bar -->
+			<nav class="top-nav no-print">
+				<div class="nav-brand">
+					<div class="inline-badge">
+						<span class="badge-dot"></span>
+						<a href={`${localePrefix(lang)}/`} class="badge-link">{t.nav.badge}</a>
+					</div>
+					<a href={`${localePrefix(lang)}/tracker`} class="nav-tracker-link active" aria-current="page">{t.nav.trackerLink}</a>
+				</div>
+				<div class="top-nav-right">
+					<LangSwitcher lang={lang} path="tracker" />
+					<button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label={t.nav.themeToggleAria} title={t.nav.themeToggleAria}>
+						<span id="theme-icon" class="theme-icon">🌙</span>
+						<span id="theme-label" class="theme-label">{t.nav.themeDark}</span>
+					</button>
+				</div>
+			</nav>
+
+			<!-- Header -->
+			<header class="text-center mb-6">
+				<h1 class="page-title">{t.tracker.header.title}</h1>
+				<p class="page-subtitle">
+					{t.tracker.header.subtitle}
+				</p>
+			</header>
+
+			<!-- Shared-link banner -->
+			<div id="shared-banner" class="notice-banner notice-info hidden no-print">
+				<p class="notice-text">{t.tracker.sharedBanner.text}</p>
+				<div class="notice-actions">
+					<button type="button" id="save-shared-btn" class="btn-pill btn-pill-solid">{t.tracker.sharedBanner.saveBtn}</button>
+					<button type="button" id="dismiss-shared-btn" class="btn-pill">{t.tracker.sharedBanner.dismissBtn}</button>
+				</div>
+			</div>
+
+			<!-- Storage-unavailable notice -->
+			<div id="storage-warning" class="notice-banner notice-warning hidden no-print">
+				<p class="notice-text">{t.tracker.storageWarning}</p>
+			</div>
+
+			<main class="tracker-grid">
+			<!-- Top block: left column (target selector, stacked above the
+			     status/shortage card) and the add-subject card on the right.
+			     Both grid columns stretch to equal height, so the status card
+			     grows to fill whatever vertical space the taller add-subject
+			     card leaves in the left column — no empty gap underneath the
+			     target selector. -->
+			<div class="top-grid" id="top-grid">
+				<div class="top-grid-left">
+					<section class="tracker-card overview-card">
+						<div class="target-row">
+							<div class="flex-between mb-2">
+								<label class="field-label">{t.tracker.targetLabel}</label>
+								<span class="target-indicator" id="target-indicator">{t.calculator.targetPrefix} 75%</span>
+							</div>
+							<div class="pills-grid" id="target-pills">
+								<button type="button" class="target-btn" data-value="60">60%</button>
+								<button type="button" class="target-btn" data-value="65">65%</button>
+								<button type="button" class="target-btn" data-value="70">70%</button>
+								<button type="button" class="target-btn active" data-value="75">75%</button>
+								<button type="button" class="target-btn" data-value="80">80%</button>
+								<button type="button" class="target-btn" data-value="85">85%</button>
+								<button type="button" class="target-btn" data-value="90">90%</button>
+								<div class="custom-target-wrap" id="custom-target-wrap">
+									<label for="custom-target" class="sr-only">{t.calculator.customPlaceholder}</label>
+									<input type="number" id="custom-target" min="1" max="100" inputmode="numeric" placeholder="--" class="custom-target-input" />
+									<span class="custom-target-unit">%</span>
+								</div>
+							</div>
+							<p id="custom-target-error" class="field-error-msg hidden"></p>
+						</div>
+						<p id="empty-hint" class="empty-hint hidden">{t.tracker.emptyHint}</p>
+					</section>
+
+					<section id="rollup-vibe" class="tracker-card stat-card rollup-vibe hidden">
+						<span id="rollup-vibe-label" class="rollup-vibe-label"></span>
+						<p id="rollup-vibe-message" class="rollup-vibe-message"></p>
+						<p id="rollup-vibe-forecast" class="forecast-note hidden"></p>
+					</section>
+				</div>
+
+				<!-- Add subject -->
+				<section class="tracker-card no-print" id="add-subject-card">
+					<div class="add-subject-header">
+						<h2 class="card-h2">{t.tracker.addSubject.heading}</h2>
+					</div>
+					<form id="add-subject-form" class="add-form" novalidate>
+						<div class="input-block add-name">
+							<label for="new-subject-name" class="field-label">{t.tracker.addSubject.nameLabel}</label>
+							<input type="text" id="new-subject-name" class="text-input" placeholder={t.tracker.addSubject.namePlaceholder} maxlength="60" required />
+						</div>
+						<div class="input-block">
+							<label for="new-subject-attended" class="field-label">{t.tracker.addSubject.attendedLabel} <span class="label-muted">{t.tracker.addSubject.attendedSub}</span></label>
+							<input type="number" id="new-subject-attended" class="text-input" min="0" max="1000" inputmode="numeric" placeholder="0" value="0" />
+						</div>
+						<div class="input-block">
+							<label for="new-subject-held" class="field-label">{t.tracker.addSubject.heldLabel} <span class="label-muted">{t.tracker.addSubject.heldSub}</span></label>
+							<input type="number" id="new-subject-held" class="text-input" min="0" max="1000" inputmode="numeric" placeholder="0" value="0" />
+						</div>
+						<div class="input-block add-planned">
+							<label for="new-subject-planned" class="field-label">{t.tracker.addSubject.plannedLabel} <span class="label-optional">{t.calculator.semTotalSub}</span></label>
+							<input type="number" id="new-subject-planned" class="text-input" min="0" max="1000" inputmode="numeric" placeholder={t.tracker.addSubject.plannedPlaceholder} />
+						</div>
+						<button type="submit" class="btn-pill btn-pill-solid add-submit">{t.tracker.addSubject.submitBtn}</button>
+					</form>
+					<p id="add-subject-error" class="field-error-msg hidden"></p>
+				</section>
+			</div>
+
+			<!-- Stats: one row of three equal cards — overall attendance,
+			     weakest subject, strongest subject. Hidden until at least one
+			     subject exists. -->
+			<div class="stats-grid hidden" id="stats-grid">
+				<section id="rollup-card" class="tracker-card stat-card">
+					<span class="result-eyebrow">{t.tracker.stats.overall}</span>
+					<div class="percentage-row">
+						<span id="rollup-pct" class="percentage-val">--%</span>
+						<span id="rollup-ratio" class="ratio-val"></span>
+					</div>
+				</section>
+				<section id="weakest-callout" class="tracker-card stat-card weakest-callout">
+					<span class="result-eyebrow">{t.tracker.stats.weakest}</span>
+					<div class="weakest-body">
+						<span id="weakest-name" class="weakest-name"></span>
+						<span id="weakest-detail" class="weakest-detail"></span>
+					</div>
+				</section>
+				<section id="strongest-callout" class="tracker-card stat-card strongest-callout">
+					<span class="result-eyebrow">{t.tracker.stats.strongest}</span>
+					<div class="weakest-body">
+						<span id="strongest-name" class="weakest-name"></span>
+						<span id="strongest-detail" class="weakest-detail"></span>
+					</div>
+				</section>
+			</div>
+
+			<!-- Subjects list -->
+			<section class="tracker-card" id="subjects-section">
+				<div class="subjects-toolbar">
+					<h2 class="card-h2">{t.tracker.subjectsHeading}</h2>
+					<div class="toolbar-actions no-print">
+						<button type="button" id="copy-vibe-btn" class="btn-pill">{t.tracker.copyVibeBtn}</button>
+						<button type="button" id="copy-link-btn" class="btn-pill">{t.tracker.copyLinkBtn}</button>
+						<button type="button" id="print-btn" class="btn-pill">{t.tracker.printBtn}</button>
+					</div>
+				</div>
+
+				<ul id="subjects-list" class="subjects-list"></ul>
+			</section>
+			</main>
+
+			<!-- Explanatory content -->
+			<article class="seo-article no-print">
+				<!-- Legal / utility links — quiet, low-priority, placed directly
+				     above the first prose heading. -->
+				<nav class="legal-links-row">
+					<a href="/about-us" class="legal-link">{t.nav.aboutUs}</a>
+					<span class="legal-link-separator">•</span>
+					<a href="/privacy-policy" class="legal-link">{t.nav.privacyPolicy}</a>
+					<span class="legal-link-separator">•</span>
+					<a href="/terms-and-conditions" class="legal-link">{t.nav.termsAndConditions}</a>
+					<span class="legal-link-separator">•</span>
+					<a href="/contact-us" class="legal-link">{t.nav.contactUs}</a>
+				</nav>
+
+				<section class="seo-section reveal">
+					<h2 class="seo-h2">{t.tracker.article.introH2}</h2>
+					<p set:html={t.tracker.article.introP1} />
+					<p>{t.tracker.article.introP2}</p>
+				</section>
+
+				<section class="seo-section reveal">
+					<h2 class="seo-h2">{t.tracker.article.calcH2}</h2>
+					{t.tracker.article.formulas.map((card) => (
+						<div class="formula-card">
+							<h3 class="formula-title">{card.title}</h3>
+							<p class="formula-text"><code>{card.formula}</code></p>
+							<p class="formula-desc">{card.desc}</p>
+						</div>
+					))}
+				</section>
+
+				<section class="seo-section reveal">
+					<h2 class="seo-h2">{t.article.faq.h2}</h2>
+					<div class="faq-container">
+						{t.tracker.faq.map((item) => (
+							<details class="faq-item">
+								<summary class="faq-question">{item.question}</summary>
+								<div class="faq-answer"><p set:html={item.answerHtml} /></div>
+							</details>
+						))}
+					</div>
+				</section>
+			</article>
+
+			<!-- Footer -->
+			<footer class="footer text-center no-print">
+				<nav class="footer-nav">
+					<a href={`${localePrefix(lang)}/`} class="footer-link">{t.tracker.footerCalculatorLink}</a>
+					<span class="footer-separator">•</span>
+					<a href={`${localePrefix(lang)}/tracker`} class="footer-link">{t.nav.trackerLink}</a>
+					<span class="footer-separator">•</span>
+					<a href="/about-us" class="footer-link">{t.nav.aboutUs}</a>
+					<span class="footer-separator">•</span>
+					<a href="/privacy-policy" class="footer-link">{t.nav.privacyPolicy}</a>
+					<span class="footer-separator">•</span>
+					<a href="/terms-and-conditions" class="footer-link">{t.nav.termsAndConditions}</a>
+					<span class="footer-separator">•</span>
+					<a href="/contact-us" class="footer-link">{t.nav.contactUs}</a>
+				</nav>
+				<p class="footer-note">{t.tracker.footerNote.replace('{year}', String(new Date().getFullYear()))}</p>
+			</footer>
+		</div>
+	</div>
+
+	<div id="toast" class="toast hidden">✓</div>
+
+	<div id="undo-toast" class="undo-toast hidden no-print" role="status" aria-live="polite">
+		<span id="undo-toast-text" class="undo-toast-text"></span>
+		<button type="button" id="undo-toast-btn" class="btn-pill btn-pill-solid undo-toast-btn">{t.tracker.toasts.undoBtn}</button>
+	</div>
+
+	<!-- Translated strings for the client-side tracker script -->
+	<script type="application/json" id="i18n-js-strings" set:html={jsStringsJson} is:inline />
+	<script type="application/json" id="i18n-tracker-strings" set:html={trackerStringsJson} is:inline />
+</Layout>
+
+<style is:global>
+	/* CSS variables, the card container, form controls, pills, type scale,
+	   result-card typography, legal links, footer and toast now live in
+	   src/styles/shared-ui.css (imported globally via app.css) so this page
+	   and the homepage can never drift apart. Only styles unique to this
+	   page's layout remain below. */
+
+	/* .page-container / .content-wrapper (width, padding, gutters) now live in
+	   src/styles/shared-ui.css so this page and the homepage can never drift
+	   apart on content width — only layout unique to this page remains here. */
+
+	/* Top section: a left column (target selector stacked above the
+	   status/shortage card) and Add a subject on the right, side by side in
+	   a two-column grid. align-items: stretch makes both columns match the
+	   taller one's height — the left column is a flex column itself, so it's
+	   the status card (flex: 1) that absorbs that extra height, not blank
+	   space under the target selector. Below 720px they stack to a single
+	   column, in source order: target, status, then add-subject. */
+	.top-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 20px;
+		align-items: stretch;
+	}
+
+	@media (max-width: 720px) {
+		.top-grid { grid-template-columns: 1fr; gap: 0; }
+	}
+
+	.top-grid-left {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+	.top-grid-left .overview-card { flex: 0 0 auto; }
+	.top-grid-left #rollup-vibe { flex: 1 1 auto; }
+	/* Zero-subjects state: the status card is hidden entirely, so the
+	   target card itself grows to fill the column — still no empty gap. */
+	.top-grid.is-empty .overview-card { flex: 1 1 auto; }
+
+	@media (max-width: 720px) {
+		.top-grid-left { gap: 0; }
+	}
+
+	.top-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+
+	.nav-brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+
+	.top-nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+	.inline-badge {
+		display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+		background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 100px;
+		font-size: 12px; font-weight: 500; color: var(--text-body); box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+		min-width: 0;
+	}
+	.badge-dot { width: 6px; height: 6px; background-color: #00c851; border-radius: 50%; flex-shrink: 0; }
+	.badge-link {
+		color: var(--text-body); text-decoration: none; transition: color 0.15s ease;
+		min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+	}
+	.badge-link:hover { color: var(--text-ink); }
+
+	.nav-tracker-link {
+		display: inline-flex; align-items: center; padding: 5px 12px;
+		background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 100px;
+		font-size: 12px; font-weight: 500; color: var(--text-body); text-decoration: none;
+		white-space: nowrap; flex-shrink: 0; transition: all 0.15s ease;
+	}
+	.nav-tracker-link:hover { background: var(--bg-pill-hover); border-color: var(--text-muted); color: var(--text-ink); }
+	.nav-tracker-link.active {
+		background: var(--bg-pill-active); border-color: var(--bg-pill-active);
+		color: var(--text-pill-active); font-weight: 600;
+	}
+
+	.theme-toggle-btn {
+		display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+		background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 100px;
+		font-size: 12px; font-weight: 500; color: var(--text-ink); cursor: pointer;
+		transition: all 0.15s ease; font-family: inherit; flex-shrink: 0;
+	}
+	.theme-toggle-btn:hover { background: var(--bg-pill-hover); border-color: var(--text-muted); }
+	.theme-icon { font-size: 14px; line-height: 1; }
+	.theme-label { font-size: 12px; font-weight: 500; }
+
+	/* Notice banners */
+	.notice-banner {
+		border-radius: 12px; border: 1px solid; padding: 14px 16px; margin-bottom: 16px;
+		display: flex; flex-direction: column; gap: 10px;
+	}
+	.notice-info { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); }
+	.notice-warning { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-text); }
+	.notice-text { margin: 0; font-size: 13px; line-height: 1.5; }
+	.notice-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+	.btn-pill {
+		display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+		padding: 7px 14px; font-size: 12.5px; font-weight: 600; border-radius: 100px;
+		border: 1px solid var(--border-hairline); background: var(--bg-card); color: var(--text-ink);
+		cursor: pointer; transition: all 0.15s ease; font-family: inherit; white-space: nowrap;
+	}
+	.btn-pill:hover { background: var(--bg-pill-hover); border-color: var(--border-focus); }
+	.btn-pill-solid { background: var(--bg-pill-active); color: var(--text-pill-active); border-color: var(--bg-pill-active); }
+	.btn-pill-solid:hover { opacity: 0.88; background: var(--bg-pill-active); }
+
+	/* Card container (padding/border/radius/shadow/background) comes from
+	   the shared .calculator-card, .tracker-card rule — only the tracker's
+	   own stacking margin lives here, since the homepage's card doesn't
+	   need one (it isn't laid out in a gap-based grid). */
+	.tracker-card {
+		margin-bottom: 12px;
+	}
+
+	.card-h2 { font-size: 16px; font-weight: 700; color: var(--text-ink); margin: 0 0 4px 0; }
+
+	.add-subject-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+	.add-subject-header .card-h2 { margin-bottom: 0; }
+
+	/* Empty-state line shown instead of the whole stats grid when there are
+	   zero subjects. */
+	.empty-hint {
+		margin: 12px 0; padding: 14px 16px; border: 1px dashed var(--border-hairline); border-radius: 12px;
+		font-size: 13px; color: var(--text-muted); text-align: center;
+	}
+
+	/* Stats area: overall attendance, weakest subject, strongest subject — one
+	   row of three equal cards (the status/shortage card now lives in the
+	   top block, stacked under the target selector). All three share the same
+	   tracker-card shell (radius/border/padding/shadow) and stretch to equal
+	   height, so no card is taller or wider than its neighbour. Below 720px
+	   this collapses to one column, in the same reading order. */
+	.stats-grid {
+		display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; align-items: stretch;
+	}
+	@media (max-width: 720px) {
+		.stats-grid { grid-template-columns: 1fr; }
+	}
+	/* Exactly one subject: weakest/strongest are meaningless (same subject) and
+	   stay hidden — this makes the remaining Overall card span the full row
+	   instead of leaving two empty cells. */
+	.stats-grid.single-subject { grid-template-columns: 1fr; }
+	.stat-card {
+		margin: 0; display: flex; flex-direction: column; justify-content: center;
+	}
+	.weakest-body { display: flex; flex-direction: column; margin-top: 4px; }
+	.weakest-name { font-size: 14px; font-weight: 700; color: var(--text-ink); }
+	.weakest-detail { font-size: 12px; color: var(--text-body); margin-top: 2px; }
+
+	/* Strongest card reuses the weakest card's structure but always reads as
+	   a positive result, so it gets the same success tone the homepage uses
+	   for a safe result, rather than the neutral shell the weakest card uses. */
+	.strongest-callout { background: var(--safe-bg); border-color: var(--safe-border); }
+	.strongest-callout .weakest-name, .strongest-callout .weakest-detail { color: var(--safe-text); }
+
+	/* Add-subject form — a fixed 2-column grid (not viewport-based breakpoints)
+	   because this form lives at very different container widths: a ~680px
+	   single column on tablet, a ~380px sidebar column on desktop (see the
+	   1024px tracker-grid split below), and full mobile width. Two columns
+	   for Attended/Held plus full-width rows for Name/Total/Submit is safe
+	   at all of those widths without a container query. */
+	.add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; align-items: end; }
+	.add-name, .add-planned, .add-submit { grid-column: 1 / -1; }
+	.input-block { display: flex; flex-direction: column; }
+	.add-submit { grid-column: 1 / -1; padding: 11px 16px; }
+
+	/* Subjects list */
+	.subjects-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+	.toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+	.subjects-list { list-style: none; margin: 14px 0 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+	.subject-row {
+		border: 1px solid var(--border-hairline); border-radius: 12px; padding: 14px; background: var(--bg-subtle);
+		transition: border-color 0.15s ease, background-color 0.2s ease;
+	}
+	.subject-row.risk-short { border-color: var(--danger-border); }
+	.subject-row.risk-invalid { border-color: var(--danger-border); background: var(--danger-bg); }
+
+	.subject-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+	.subject-name-wrap { display: flex; flex-direction: column; min-width: 0; }
+	.subject-name { font-size: 15px; font-weight: 700; color: var(--text-ink); word-break: break-word; }
+	.subject-ratio { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+	.subject-pct-wrap { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+	.subject-pct { font-size: 20px; font-weight: 700; color: var(--text-ink); letter-spacing: -0.4px; }
+	.subject-pct.borderline::after { content: " *"; color: var(--warn-text); }
+
+	.subject-status-badge { display: inline-block; margin-top: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+	.status-safe { background: var(--safe-bg); color: var(--safe-text); border: 1px solid var(--safe-border); }
+	.status-short { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
+	.status-neutral { background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border-hairline); }
+	.status-invalid { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
+	.status-warning { background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--warn-border); }
+	.status-cooked { background: var(--cooked-bg); color: var(--cooked-text); border: 1px solid var(--cooked-border); }
+
+	/* Overall roll-up vibe box — same four tones as the homepage's vibe box,
+	   using the tracker's own color variables, plus a neutral tone for the
+	   no-data state (once at least one subject exists this card is never
+	   hidden, so the "no classes recorded yet" case needs its own tone rather
+	   than disappearing). Lives in .top-grid-left, stacked under the target
+	   selector, so only background/border/text are overridden here — radius,
+	   padding, shadow, and the flex sizing all come from .tracker-card /
+	   .top-grid-left's own rules. */
+	.rollup-vibe.vibe-safe { background: var(--safe-bg); border-color: var(--safe-border); color: var(--safe-text); }
+	.rollup-vibe.vibe-warning { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-text); }
+	.rollup-vibe.vibe-danger { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+	.rollup-vibe.vibe-cooked { background: var(--cooked-bg); border-color: var(--cooked-border); color: var(--cooked-text); }
+	.rollup-vibe.vibe-neutral { background: var(--bg-subtle); border-color: var(--border-hairline); color: var(--text-muted); }
+	.rollup-vibe-label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+	.rollup-vibe-message { font-size: 13px; font-weight: 500; line-height: 1.5; margin: 0; }
+
+	.borderline-note { font-size: 11px; color: var(--warn-text); margin-top: 6px; }
+	.invalid-note { font-size: 12px; color: var(--danger-text); margin-top: 6px; font-weight: 500; }
+	.forecast-note { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+	.subject-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+	.subject-actions .btn-pill { flex: 1 1 auto; min-width: 84px; }
+	.btn-present { border-color: var(--safe-border); color: var(--safe-text); }
+	.btn-absent { border-color: var(--danger-border); color: var(--danger-text); }
+	.btn-danger-text { color: var(--danger-text); }
+	.btn-pill:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+	.semester-over-note { font-size: 12px; color: var(--warn-text); margin-top: 6px; font-weight: 500; }
+
+	.subject-edit-panel {
+		margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-hairline);
+		display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+	}
+	.subject-edit-panel .add-name { grid-column: 1 / -1; }
+	.subject-edit-actions { grid-column: 1 / -1; display: flex; gap: 8px; }
+	.subject-edit-actions .btn-pill { flex: 1; }
+
+	/* Fixed-position so it overlays rather than shifting page layout when it
+	   appears/disappears after a + Present / + Absent tap. Sits above the
+	   plain confirmation .toast so the two never overlap if both fire close
+	   together (e.g. an undo followed immediately by a copy-link tap). */
+	.undo-toast {
+		position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+		display: flex; align-items: center; gap: 12px;
+		background: var(--text-ink); color: var(--bg-canvas); padding: 8px 8px 8px 18px; border-radius: 100px;
+		font-size: 13px; font-weight: 500; box-shadow: 0 4px 16px rgba(0,0,0,0.25); z-index: 101;
+		max-width: calc(100% - 32px); box-sizing: border-box;
+	}
+	.undo-toast-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.undo-toast-btn { border-color: var(--bg-canvas); flex-shrink: 0; }
+
+	/* SEO article (reused visual language) */
+	.seo-article {
+		background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: 16px;
+		padding: 28px 24px; margin-bottom: 24px; color: var(--text-body); line-height: 1.65; font-size: 14px;
+		box-shadow: var(--shadow-card);
+	}
+	.seo-section { margin-bottom: 26px; }
+	.seo-section:last-child { margin-bottom: 0; }
+	.seo-h2 { font-size: 19px; font-weight: 700; color: var(--text-ink); margin: 0 0 12px 0; letter-spacing: -0.4px; }
+	.seo-section p { margin: 0 0 12px 0; }
+	.seo-section p:last-child { margin-bottom: 0; }
+
+	/* Scroll reveal for the prose sections below the tracker only. No base
+	   opacity: 0 anywhere — .reveal renders fully visible by default, and
+	   only animates when both prefers-reduced-motion and animation-timeline
+	   support are present, so the content is never at risk of staying
+	   invisible if either is unsupported or JS never runs (there's no JS
+	   involved at all). */
+	@media (prefers-reduced-motion: no-preference) {
+		@supports (animation-timeline: view()) {
+			.reveal {
+				animation: fade-up linear both;
+				animation-timeline: view();
+				animation-range: entry 0% entry 40%;
+			}
+		}
+	}
+	@keyframes fade-up {
+		from { opacity: 0; transform: translateY(16px); }
+		to   { opacity: 1; transform: none; }
+	}
+
+	.formula-card { background: var(--bg-subtle); border: 1px solid var(--border-hairline); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+	.formula-title { font-size: 14px; font-weight: 700; color: var(--text-ink); margin: 0 0 6px 0; }
+	.formula-text { font-family: 'Geist Mono', monospace, Courier; font-size: 12.5px; margin: 0 0 8px 0; }
+	.formula-text code { background: var(--bg-card); border: 1px solid var(--border-hairline); padding: 2px 6px; border-radius: 4px; font-family: 'Geist Mono', monospace, Courier; font-size: 11.5px; color: var(--text-ink); }
+	.formula-desc { font-size: 12.5px; margin: 0; color: var(--text-body); line-height: 1.5; }
+
+	/* Flat accordion list: a thin divider between rows rather than separate
+	   cards, and a >=44px-tall <summary> so the whole question is an easy
+	   tap target on a phone. The "+" rotates 45deg into an "x" on [open]
+	   instead of swapping glyphs, so the state change animates. */
+	.faq-container { display: flex; flex-direction: column; margin-top: 12px; }
+	.faq-item { border-bottom: 1px solid var(--border-hairline); }
+	.faq-item:last-child { border-bottom: none; }
+	.faq-question {
+		display: flex; align-items: center; min-height: 44px; padding: 12px 30px 12px 2px;
+		font-size: 14px; font-weight: 600; color: var(--text-ink); cursor: pointer;
+		list-style: none; position: relative;
+	}
+	.faq-question::-webkit-details-marker { display: none; }
+	.faq-question::after {
+		content: "+"; position: absolute; right: 4px; top: 50%; font-size: 20px; font-weight: 400;
+		line-height: 1; color: var(--text-muted);
+		transform: translateY(-50%) rotate(0deg);
+		transition: transform 0.2s ease;
+	}
+	.faq-item[open] .faq-question::after { transform: translateY(-50%) rotate(45deg); }
+	.faq-answer { padding: 0 30px 16px 2px; font-size: 13px; color: var(--text-body); line-height: 1.5; }
+	.faq-answer p { margin: 0; }
+
+	/* Mobile */
+	@media (max-width: 640px) {
+		.seo-article { padding: 14px; border-radius: 14px; }
+		.subject-edit-panel { grid-template-columns: 1fr; }
+		.subject-pct { font-size: 18px; }
+		.undo-toast { width: calc(100% - 32px); max-width: 340px; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+	}
+
+	@media (max-width: 360px) {
+		.add-form { grid-template-columns: 1fr; }
+		.subject-actions .btn-pill { min-width: 70px; font-size: 11.5px; padding: 7px 8px; }
+	}
+
+	/* Print / screenshot view */
+	@media print {
+		.no-print { display: none !important; }
+		.page-container { padding: 0; background: #fff; color: #000; }
+		.tracker-card, .seo-article { box-shadow: none; border-color: #ccc; }
+		.subject-edit-panel { display: none !important; }
+	}
+</style>
+
+<script>
+	import { getAttendanceStatus, toPlainText, type AttendanceTier, type AttendanceStatusStrings } from '../lib/attendanceStatus';
+	import {
+		buildSemesterForecast,
+		computeImmediateSkips,
+		computeImmediateNeeded,
+		type SemesterForecast,
+	} from '../lib/attendanceMath';
+
+	// ---------------------------------------------------------------------
+	// i18n — loaded once at boot from the JSON blobs the frontmatter embeds.
+	// jsStrings mirrors the homepage's own `t.js` bundle (getAttendanceStatus
+	// accepts this exact shape) plus a handful of cross-cutting extras;
+	// T carries every tracker-page-specific string (labels, notes, toasts,
+	// validation messages, FAQ/article copy isn't needed here since that's
+	// rendered server-side).
+	// ---------------------------------------------------------------------
+	interface I18nJsStrings extends AttendanceStatusStrings {
+		[key: string]: string;
+	}
+	const jsEl = document.getElementById('i18n-js-strings');
+	const jsStrings: I18nJsStrings = jsEl?.textContent ? JSON.parse(jsEl.textContent) : {};
+	const trackerEl = document.getElementById('i18n-tracker-strings');
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const T: any = trackerEl?.textContent ? JSON.parse(trackerEl.textContent) : {};
+
+	function format(template: string, vars: Record<string, string | number>): string {
+		return template.replace(/\{(\w+)\}/g, (match, key) => (key in vars ? String(vars[key]) : match));
+	}
+
+	// Maps a shared status tier to this page's status-badge / roll-up vibe-box
+	// tones — same four tones as the homepage's vibe box, just with the
+	// tracker's own color variables. The shared module only owns copy.
+	function tierBadgeClass(tier: AttendanceTier): string {
+		switch (tier) {
+			case 'safe-room':
+			case 'safe-edge':
+			case 'complete-met':
+				return 'status-safe';
+			case 'borderline':
+				return 'status-warning';
+			case 'cooked':
+			case 'unrecoverable-100':
+				return 'status-cooked';
+			case 'invalid':
+				return 'status-invalid';
+			case 'no-data':
+				return 'status-neutral';
+			default:
+				return 'status-short';
+		}
+	}
+
+	function tierVibeBoxClass(tier: AttendanceTier): string {
+		switch (tier) {
+			case 'safe-room':
+			case 'safe-edge':
+			case 'complete-met':
+				return 'vibe-safe';
+			case 'borderline':
+				return 'vibe-warning';
+			case 'cooked':
+			case 'unrecoverable-100':
+				return 'vibe-cooked';
+			case 'no-data':
+				return 'vibe-neutral';
+			default:
+				return 'vibe-danger';
+		}
+	}
+
+	// ---------------------------------------------------------------------
+	// Theme toggle (same pattern as the rest of the site)
+	// ---------------------------------------------------------------------
+	const themeToggleBtn = document.getElementById('theme-toggle');
+	const themeIcon = document.getElementById('theme-icon');
+	const themeLabel = document.getElementById('theme-label');
+
+	function updateThemeUI(isDark: boolean) {
+		if (themeIcon && themeLabel) {
+			if (isDark) {
+				themeIcon.textContent = '☀️';
+				themeLabel.textContent = jsStrings.themeLight;
+			} else {
+				themeIcon.textContent = '🌙';
+				themeLabel.textContent = jsStrings.themeDark;
+			}
+		}
+	}
+	updateThemeUI(document.documentElement.classList.contains('dark'));
+	themeToggleBtn?.addEventListener('click', () => {
+		const newThemeIsDark = !document.documentElement.classList.contains('dark');
+		document.documentElement.classList.toggle('dark', newThemeIsDark);
+		try {
+			localStorage.setItem('theme', newThemeIsDark ? 'dark' : 'light');
+		} catch {
+			/* private mode / storage blocked — theme just won't persist */
+		}
+		updateThemeUI(newThemeIsDark);
+	});
+
+	// ---------------------------------------------------------------------
+	// Types & storage
+	// ---------------------------------------------------------------------
+	interface Subject {
+		id: string;
+		name: string;
+		attended: number;
+		held: number;
+		totalPlanned: number | null;
+	}
+
+	interface TrackerState {
+		v: 1;
+		target: number;
+		subjects: Subject[];
+	}
+
+	const STORAGE_KEY = 'att-tracker-v1';
+	const INPUT_MAX = 1000;
+
+	function makeId(): string {
+		try {
+			if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID();
+		} catch {
+			/* fall through to fallback id */
+		}
+		return `s_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+	}
+
+	function defaultState(): TrackerState {
+		return { v: 1, target: 75, subjects: [] };
+	}
+
+	// Every read/write goes through here so a blocked/unavailable store
+	// (private mode, disabled site data) degrades to an in-memory session
+	// instead of ever throwing or breaking the page.
+	let storageAvailable = true;
+	function testStorage(): boolean {
+		try {
+			const testKey = '__att_tracker_test__';
+			localStorage.setItem(testKey, '1');
+			localStorage.removeItem(testKey);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+	storageAvailable = testStorage();
+
+	function sanitizeSubject(raw: any): Subject | null {
+		if (!raw || typeof raw !== 'object') return null;
+		const name = typeof raw.name === 'string' ? raw.name.slice(0, 60).trim() : '';
+		const attended = clampNonNegInt(raw.attended);
+		const held = clampNonNegInt(raw.held);
+		const totalPlanned = raw.totalPlanned === null || raw.totalPlanned === undefined ? null : clampNonNegInt(raw.totalPlanned);
+		if (!name) return null;
+		return {
+			id: typeof raw.id === 'string' && raw.id ? raw.id : makeId(),
+			name,
+			attended,
+			held,
+			totalPlanned,
+		};
+	}
+
+	function clampNonNegInt(v: any): number {
+		const n = Math.round(Number(v));
+		if (!isFinite(n) || isNaN(n) || n < 0) return 0;
+		return Math.min(n, INPUT_MAX);
+	}
+
+	// Strict parse used by add/edit validation: rejects negative, decimal, and
+	// non-numeric input outright instead of silently coercing it (unlike
+	// clampNonNegInt above, which is only for sanitizing already-saved/shared
+	// data). Empty string means "not provided" — callers decide what that
+	// means for a given field.
+	function parseNonNegInt(raw: string): number | null {
+		const s = raw.trim();
+		if (!/^\d+$/.test(s)) return null;
+		return Math.min(Number(s), INPUT_MAX);
+	}
+
+	interface SubjectFormResult {
+		ok: boolean;
+		error?: string;
+		name?: string;
+		attended?: number;
+		held?: number;
+		totalPlanned?: number | null;
+	}
+
+	// Shared by the add form and every subject's inline edit form so the two
+	// can never validate differently. excludeId lets an edit save exclude the
+	// subject being edited from the duplicate-name check.
+	function parseAndValidateSubject(
+		rawName: string,
+		rawAttended: string,
+		rawHeld: string,
+		rawPlanned: string,
+		existing: Subject[],
+		excludeId: string | null
+	): SubjectFormResult {
+		const name = rawName.trim().slice(0, 60);
+		if (!name) return { ok: false, error: T.validation.nameRequired };
+		if (existing.some((s) => s.id !== excludeId && s.name.toLowerCase() === name.toLowerCase())) {
+			return { ok: false, error: T.validation.duplicateName };
+		}
+
+		const attended = parseNonNegInt(rawAttended);
+		if (attended === null) return { ok: false, error: T.validation.attendedInvalid };
+
+		const held = parseNonNegInt(rawHeld);
+		if (held === null) return { ok: false, error: T.validation.heldInvalid };
+
+		let totalPlanned: number | null = null;
+		const plannedTrim = rawPlanned.trim();
+		if (plannedTrim !== '') {
+			totalPlanned = parseNonNegInt(plannedTrim);
+			if (totalPlanned === null) {
+				return { ok: false, error: T.validation.plannedInvalid };
+			}
+		}
+
+		if (attended > held) return { ok: false, error: T.validation.attendedExceedsHeld };
+		if (totalPlanned !== null && totalPlanned < held) {
+			return { ok: false, error: T.validation.plannedBelowHeld };
+		}
+
+		return { ok: true, name, attended, held, totalPlanned };
+	}
+
+	// Semester-end guard (shared by the button handlers and anything else that
+	// might ever increment a subject's counts): once held has reached a set
+	// total, no path may raise attended, held, or the total itself.
+	function canRecordClass(subject: Subject): boolean {
+		return subject.totalPlanned === null || subject.held < subject.totalPlanned;
+	}
+
+	function sanitizeState(raw: any): TrackerState {
+		const out = defaultState();
+		if (!raw || typeof raw !== 'object') return out;
+		const target = Number(raw.target);
+		if (isFinite(target) && target >= 1 && target <= 100) out.target = Math.round(target);
+		if (Array.isArray(raw.subjects)) {
+			out.subjects = raw.subjects
+				.map(sanitizeSubject)
+				.filter((s: Subject | null): s is Subject => s !== null);
+		}
+		return out;
+	}
+
+	function loadFromStorage(): TrackerState {
+		if (!storageAvailable) return defaultState();
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY);
+			if (!raw) return defaultState();
+			return sanitizeState(JSON.parse(raw));
+		} catch {
+			return defaultState();
+		}
+	}
+
+	function saveToStorage(state: TrackerState) {
+		if (!storageAvailable) return;
+		try {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+		} catch {
+			// Storage became unavailable mid-session (quota, blocked, etc.) —
+			// keep working in-memory rather than surfacing an error.
+			storageAvailable = false;
+			renderStorageWarning();
+		}
+	}
+
+	// ---------------------------------------------------------------------
+	// URL-safe base64 share encoding
+	// ---------------------------------------------------------------------
+	function encodeState(state: TrackerState): string {
+		const json = JSON.stringify(state);
+		const b64 = btoa(unescape(encodeURIComponent(json)));
+		return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+	}
+
+	function decodeState(encoded: string): TrackerState | null {
+		try {
+			let b64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+			while (b64.length % 4) b64 += '=';
+			const json = decodeURIComponent(escape(atob(b64)));
+			return sanitizeState(JSON.parse(json));
+		} catch {
+			return null;
+		}
+	}
+
+	// ---------------------------------------------------------------------
+	// State
+	// ---------------------------------------------------------------------
+	let state: TrackerState = defaultState();
+	// Which subject's inline edit panel is currently open, if any — the single
+	// source of truth for edit-panel visibility (renderSubjects() reads this,
+	// never the outgoing DOM), so save/cancel can close it deterministically
+	// and only one subject's panel is ever open at once.
+	let openEditId: string | null = null;
+	let isSharedView = false;
+	let previousState: TrackerState | null = null; // single-level undo snapshot
+	let undoTimer: ReturnType<typeof setTimeout> | null = null;
+	const UNDO_TIMEOUT_MS = 10000;
+
+	function cloneState(s: TrackerState): TrackerState {
+		return { v: 1, target: s.target, subjects: s.subjects.map((sub) => ({ ...sub })) };
+	}
+
+	// Single-level undo: takes a snapshot before a mutating action, then shows
+	// a fixed-position toast (so it overlays instead of shifting the page)
+	// for UNDO_TIMEOUT_MS. A new tap while the toast is already showing just
+	// resets the timer and replaces the snapshot — undo always reverts only
+	// the most recent action.
+	function snapshotForUndo(label: string) {
+		previousState = cloneState(state);
+		if (undoToastText) undoToastText.textContent = label;
+		undoToast?.classList.remove('hidden');
+		if (undoTimer) clearTimeout(undoTimer);
+		undoTimer = setTimeout(clearUndo, UNDO_TIMEOUT_MS);
+	}
+
+	function clearUndo() {
+		previousState = null;
+		if (undoTimer) {
+			clearTimeout(undoTimer);
+			undoTimer = null;
+		}
+		undoToast?.classList.add('hidden');
+	}
+
+	// ---------------------------------------------------------------------
+	// DOM references
+	// ---------------------------------------------------------------------
+	const targetButtons = document.querySelectorAll<HTMLButtonElement>('.target-btn');
+	const targetIndicator = document.getElementById('target-indicator');
+	const customTargetInput = document.getElementById('custom-target') as HTMLInputElement | null;
+	const customTargetWrap = document.getElementById('custom-target-wrap');
+	const customTargetError = document.getElementById('custom-target-error');
+
+	const topGrid = document.getElementById('top-grid');
+	const emptyHint = document.getElementById('empty-hint');
+	const statsGrid = document.getElementById('stats-grid');
+	const rollupPct = document.getElementById('rollup-pct');
+	const rollupRatio = document.getElementById('rollup-ratio');
+	const weakestCallout = document.getElementById('weakest-callout');
+	const weakestName = document.getElementById('weakest-name');
+	const weakestDetail = document.getElementById('weakest-detail');
+	const strongestCallout = document.getElementById('strongest-callout');
+	const strongestName = document.getElementById('strongest-name');
+	const strongestDetail = document.getElementById('strongest-detail');
+	const rollupVibe = document.getElementById('rollup-vibe');
+	const rollupVibeLabel = document.getElementById('rollup-vibe-label');
+	const rollupVibeMessage = document.getElementById('rollup-vibe-message');
+	const rollupVibeForecast = document.getElementById('rollup-vibe-forecast');
+
+	const addForm = document.getElementById('add-subject-form') as HTMLFormElement | null;
+	const newNameInput = document.getElementById('new-subject-name') as HTMLInputElement | null;
+	const newAttendedInput = document.getElementById('new-subject-attended') as HTMLInputElement | null;
+	const newHeldInput = document.getElementById('new-subject-held') as HTMLInputElement | null;
+	const newPlannedInput = document.getElementById('new-subject-planned') as HTMLInputElement | null;
+	const addSubjectError = document.getElementById('add-subject-error');
+
+	const subjectsSection = document.getElementById('subjects-section');
+	const subjectsList = document.getElementById('subjects-list');
+	const undoToast = document.getElementById('undo-toast');
+	const undoToastText = document.getElementById('undo-toast-text');
+	const undoToastBtn = document.getElementById('undo-toast-btn');
+	const copyVibeBtn = document.getElementById('copy-vibe-btn');
+	const copyLinkBtn = document.getElementById('copy-link-btn');
+	const printBtn = document.getElementById('print-btn');
+
+	const sharedBanner = document.getElementById('shared-banner');
+	const saveSharedBtn = document.getElementById('save-shared-btn');
+	const dismissSharedBtn = document.getElementById('dismiss-shared-btn');
+	const storageWarning = document.getElementById('storage-warning');
+
+	const toast = document.getElementById('toast');
+	let toastTimer: ReturnType<typeof setTimeout> | null = null;
+	function showToast(text: string) {
+		if (!toast) return;
+		toast.textContent = `✓ ${text}`;
+		toast.classList.remove('hidden');
+		if (toastTimer) clearTimeout(toastTimer);
+		toastTimer = setTimeout(() => toast.classList.add('hidden'), 2200);
+	}
+
+	function renderStorageWarning() {
+		storageWarning?.classList.toggle('hidden', storageAvailable);
+	}
+
+	// ---------------------------------------------------------------------
+	// Formulas — mirrors the homepage calculator's own math exactly:
+	// an always-on "right now" figure (never needs a semester total), plus
+	// an optional "by semester end" forecast once totalPlanned is known,
+	// including the homepage's cap-immediate-skips-to-what-remains (F1) and
+	// mathematically-impossible/"cooked" (F2) handling.
+	// ---------------------------------------------------------------------
+	interface SubjectComputed {
+		status: 'nodata' | 'invalid' | 'safe' | 'short';
+		pct: number | null;
+		borderline: boolean;
+		immediateSkips: number | null;
+		immediateSkipsCapped: boolean;
+		immediateNeeded: number | null;
+		unrecoverable: boolean;
+		cooked: boolean;
+		forecast: SemesterForecast | null;
+		semesterOver: boolean;
+	}
+
+	// Both the per-subject forecast below and the overall/aggregate one in
+	// renderRollup() call this exact same shared function — never a second
+	// copy of the maths.
+	function buildForecast(attended: number, held: number, targetPct: number, totalPlanned: number | null): SemesterForecast | null {
+		if (totalPlanned === null || totalPlanned < held) return null;
+		return buildSemesterForecast(attended, held, targetPct, totalPlanned);
+	}
+
+	function computeSubject(sub: Subject, targetPct: number): SubjectComputed {
+		const semesterOver = sub.totalPlanned !== null && sub.held >= sub.totalPlanned;
+		const empty: SubjectComputed = {
+			status: 'nodata', pct: null, borderline: false, immediateSkips: null,
+			immediateSkipsCapped: false, immediateNeeded: null, unrecoverable: false,
+			cooked: false, forecast: null, semesterOver,
+		};
+		if (sub.held === 0) return empty;
+		if (sub.attended > sub.held) return { ...empty, status: 'invalid' };
+
+		const p = targetPct / 100;
+		const pct = (sub.attended / sub.held) * 100;
+		const borderline = Math.abs(pct - targetPct) < 0.1;
+		const forecast = buildForecast(sub.attended, sub.held, targetPct, sub.totalPlanned);
+
+		if (pct >= targetPct) {
+			// Right now: how many more can be skipped and stay at/above target,
+			// exactly like the homepage's immediate safe-bunk figure — never
+			// requires a semester total.
+			let immediateSkips = computeImmediateSkips(sub.attended, sub.held, targetPct);
+			let immediateSkipsCapped = false;
+			if (forecast && !forecast.isComplete && immediateSkips > forecast.remaining) {
+				immediateSkips = forecast.remaining;
+				immediateSkipsCapped = true;
+			}
+			return {
+				status: 'safe', pct, borderline, immediateSkips, immediateSkipsCapped,
+				immediateNeeded: null, unrecoverable: false, cooked: false, forecast, semesterOver,
+			};
+		}
+
+		// Below target.
+		if (p >= 1) {
+			// Target is 100%: once a class has been missed (attended < held),
+			// no number of future classes can ever restore a perfect record.
+			return {
+				status: 'short', pct, borderline, immediateSkips: null, immediateSkipsCapped: false,
+				immediateNeeded: null, unrecoverable: true, cooked: false, forecast, semesterOver,
+			};
+		}
+		if (forecast && forecast.isCooked) {
+			// Even attending every remaining class this term can't reach
+			// target — recovering "right now" is moot, say so instead.
+			return {
+				status: 'short', pct, borderline, immediateSkips: null, immediateSkipsCapped: false,
+				immediateNeeded: null, unrecoverable: false, cooked: true, forecast, semesterOver,
+			};
+		}
+		const immediateNeeded = computeImmediateNeeded(sub.attended, sub.held, targetPct);
+		return {
+			status: 'short', pct, borderline, immediateSkips: null, immediateSkipsCapped: false,
+			immediateNeeded, unrecoverable: false, cooked: false, forecast, semesterOver,
+		};
+	}
+
+	// ---------------------------------------------------------------------
+	// Target UI
+	// ---------------------------------------------------------------------
+	function setActiveTargetButton(value: number) {
+		let matched = false;
+		targetButtons.forEach((btn) => {
+			const btnVal = Number(btn.dataset.value);
+			const isActive = btnVal === value;
+			btn.classList.toggle('active', isActive);
+			if (isActive) matched = true;
+		});
+		if (customTargetInput) {
+			if (!matched) {
+				customTargetInput.value = String(value);
+			} else if (document.activeElement !== customTargetInput) {
+				customTargetInput.value = '';
+			}
+		}
+	}
+
+	function setTarget(value: number, opts: { fromCustom?: boolean } = {}) {
+		if (!isFinite(value) || value < 1 || value > 100) return;
+		state.target = Math.round(value);
+		if (!opts.fromCustom) {
+			customTargetInput && (customTargetInput.value = '');
+			customTargetWrap?.classList.remove('input-error');
+			customTargetError?.classList.add('hidden');
+		}
+		setActiveTargetButton(state.target);
+		if (targetIndicator) targetIndicator.textContent = `${jsStrings.targetPrefix} ${state.target}%`;
+		persistAndRender();
+	}
+
+	targetButtons.forEach((btn) => {
+		btn.addEventListener('click', () => setTarget(Number(btn.dataset.value)));
+	});
+
+	customTargetInput?.addEventListener('input', () => {
+		const raw = customTargetInput.value.trim();
+		if (raw === '') {
+			customTargetWrap?.classList.remove('input-error');
+			customTargetError?.classList.add('hidden');
+			return;
+		}
+		const value = Number(raw);
+		if (!isFinite(value) || value < 1 || value > 100 || !Number.isInteger(value)) {
+			customTargetWrap?.classList.add('input-error');
+			if (customTargetError) {
+				customTargetError.textContent = jsStrings.customTargetError;
+				customTargetError.classList.remove('hidden');
+			}
+			return;
+		}
+		customTargetWrap?.classList.remove('input-error');
+		customTargetError?.classList.add('hidden');
+		setTarget(value, { fromCustom: true });
+	});
+
+	// ---------------------------------------------------------------------
+	// Add subject
+	// ---------------------------------------------------------------------
+	addForm?.addEventListener('submit', (e) => {
+		e.preventDefault();
+
+		const result = parseAndValidateSubject(
+			newNameInput?.value || '',
+			newAttendedInput?.value || '',
+			newHeldInput?.value || '',
+			newPlannedInput?.value || '',
+			state.subjects,
+			null
+		);
+		if (!result.ok) {
+			showAddError(result.error!);
+			return;
+		}
+		addSubjectError?.classList.add('hidden');
+
+		state.subjects.push({ id: makeId(), name: result.name!, attended: result.attended!, held: result.held!, totalPlanned: result.totalPlanned! });
+		addForm.reset();
+		if (newAttendedInput) newAttendedInput.value = '0';
+		if (newHeldInput) newHeldInput.value = '0';
+		newNameInput?.focus();
+		clearUndo();
+		persistAndRender();
+	});
+
+	function showAddError(msg: string) {
+		if (!addSubjectError) return;
+		addSubjectError.textContent = msg;
+		addSubjectError.classList.remove('hidden');
+	}
+
+	// Clears the add-form error the instant the current field values would
+	// actually pass validation — never just because something was typed.
+	addForm?.addEventListener('input', () => {
+		if (!addSubjectError || addSubjectError.classList.contains('hidden')) return;
+		const result = parseAndValidateSubject(
+			newNameInput?.value || '',
+			newAttendedInput?.value || '',
+			newHeldInput?.value || '',
+			newPlannedInput?.value || '',
+			state.subjects,
+			null
+		);
+		if (result.ok) addSubjectError.classList.add('hidden');
+	});
+
+	// ---------------------------------------------------------------------
+	// Row actions (event delegation)
+	// ---------------------------------------------------------------------
+	subjectsList?.addEventListener('click', (e) => {
+		const target = e.target as HTMLElement;
+		const row = target.closest<HTMLElement>('.subject-row');
+		if (!row) return;
+		const id = row.dataset.id;
+		if (!id) return;
+		const subject = state.subjects.find((s) => s.id === id);
+		if (!subject) return;
+
+		if (target.closest('.btn-present')) {
+			if (!canRecordClass(subject)) return;
+			snapshotForUndo(format(T.undo.present, { name: subject.name }));
+			subject.attended += 1;
+			subject.held += 1;
+			persistAndRender();
+		} else if (target.closest('.btn-absent')) {
+			if (!canRecordClass(subject)) return;
+			snapshotForUndo(format(T.undo.absent, { name: subject.name }));
+			subject.held += 1;
+			persistAndRender();
+		} else if (target.closest('.btn-edit')) {
+			// Opening this subject's panel closes any other subject's panel
+			// that's already open (openEditId only ever holds one id).
+			openEditId = openEditId === id ? null : id;
+			renderSubjects();
+		} else if (target.closest('.btn-delete')) {
+			snapshotForUndo(format(T.undo.deleted, { name: subject.name }));
+			state.subjects = state.subjects.filter((s) => s.id !== id);
+			if (openEditId === id) openEditId = null;
+			persistAndRender();
+		} else if (target.closest('.btn-save-edit')) {
+			const panel = row.querySelector('.subject-edit-panel');
+			if (!panel) return;
+			const nameInput = panel.querySelector<HTMLInputElement>('.edit-name');
+			const attendedInput = panel.querySelector<HTMLInputElement>('.edit-attended');
+			const heldInput = panel.querySelector<HTMLInputElement>('.edit-held');
+			const plannedInput = panel.querySelector<HTMLInputElement>('.edit-planned');
+			const errorEl = panel.querySelector<HTMLElement>('.edit-error');
+
+			const result = parseAndValidateSubject(
+				nameInput?.value || '',
+				attendedInput?.value || '',
+				heldInput?.value || '',
+				plannedInput?.value || '',
+				state.subjects,
+				subject.id
+			);
+			if (!result.ok) {
+				if (errorEl) { errorEl.textContent = result.error!; errorEl.classList.remove('hidden'); }
+				return;
+			}
+			errorEl?.classList.add('hidden');
+
+			snapshotForUndo(format(T.undo.updated, { name: subject.name }));
+			subject.name = result.name!;
+			subject.attended = result.attended!;
+			subject.held = result.held!;
+			subject.totalPlanned = result.totalPlanned!;
+			// Only a successful save collapses the panel — validation failures
+			// return above without touching openEditId, leaving it open.
+			openEditId = null;
+			persistAndRender();
+		} else if (target.closest('.btn-cancel-edit')) {
+			openEditId = null;
+			renderSubjects();
+		}
+	});
+
+	// Clears an open edit panel's error the instant its current values would
+	// actually pass validation.
+	subjectsList?.addEventListener('input', (e) => {
+		const target = e.target as HTMLElement;
+		const panel = target.closest<HTMLElement>('.subject-edit-panel');
+		if (!panel) return;
+		const errorEl = panel.querySelector<HTMLElement>('.edit-error');
+		if (!errorEl || errorEl.classList.contains('hidden')) return;
+		const row = panel.closest<HTMLElement>('.subject-row');
+		const subject = state.subjects.find((s) => s.id === row?.dataset.id);
+		if (!subject) return;
+		const nameInput = panel.querySelector<HTMLInputElement>('.edit-name');
+		const attendedInput = panel.querySelector<HTMLInputElement>('.edit-attended');
+		const heldInput = panel.querySelector<HTMLInputElement>('.edit-held');
+		const plannedInput = panel.querySelector<HTMLInputElement>('.edit-planned');
+		const result = parseAndValidateSubject(
+			nameInput?.value || '',
+			attendedInput?.value || '',
+			heldInput?.value || '',
+			plannedInput?.value || '',
+			state.subjects,
+			subject.id
+		);
+		if (result.ok) errorEl.classList.add('hidden');
+	});
+
+	undoToastBtn?.addEventListener('click', () => {
+		if (!previousState) return;
+		state = previousState;
+		clearUndo();
+		persistAndRender();
+		showToast(T.toasts.undone);
+	});
+
+	// ---------------------------------------------------------------------
+	// Copy Vibe Check — plain-text summary of every subject, same voice and
+	// clipboard behaviour as the homepage's own "Copy Vibe Check" button.
+	// ---------------------------------------------------------------------
+	function buildTrackerSummaryText(): string {
+		const validSubjects = state.subjects.filter((s) => s.held > 0 && s.attended <= s.held);
+		const totalAttended = validSubjects.reduce((sum, s) => sum + s.attended, 0);
+		const totalHeld = validSubjects.reduce((sum, s) => sum + s.held, 0);
+
+		const overallLine = totalHeld > 0
+			? (() => {
+				const overall = getAttendanceStatus({ attended: totalAttended, held: totalHeld, target: state.target }, jsStrings);
+				return `${overall.label} — ${toPlainText(overall.message)}`;
+			})()
+			: T.copySummary.noClassesRecorded;
+
+		const subjectLines = state.subjects.map((sub) => {
+			const c = computeSubject(sub, state.target);
+			const pctText = c.pct === null ? '--' : `${c.pct.toFixed(1)}%`;
+			const subStatus = getAttendanceStatus({ attended: sub.attended, held: sub.held, target: state.target, totalPlanned: sub.totalPlanned }, jsStrings);
+			return `• ${sub.name}: ${pctText} (${sub.attended}/${sub.held}) — ${subStatus.shortMessage}`;
+		});
+		const subjectsBlock = subjectLines.length > 0 ? subjectLines.join('\n') : T.copySummary.noSubjectsSaved;
+
+		return (
+`${jsStrings.copySummaryTitle}
+${format(T.copySummary.targetLine, { target: state.target })}
+${format(T.copySummary.overallLine, { line: overallLine })}
+
+${subjectsBlock}
+
+${jsStrings.copyFooter}`
+		);
+	}
+
+	copyVibeBtn?.addEventListener('click', async () => {
+		try {
+			await navigator.clipboard.writeText(buildTrackerSummaryText());
+			showToast(T.toasts.vibeCopied);
+		} catch {
+			showToast(T.toasts.copyFailed);
+		}
+	});
+
+	// ---------------------------------------------------------------------
+	// Share link
+	// ---------------------------------------------------------------------
+	copyLinkBtn?.addEventListener('click', async () => {
+		const url = `${location.origin}${location.pathname}#s=${encodeState(state)}`;
+		try {
+			await navigator.clipboard.writeText(url);
+			showToast(T.toasts.linkCopied);
+		} catch {
+			try {
+				const textarea = document.createElement('textarea');
+				textarea.value = url;
+				textarea.style.position = 'fixed';
+				textarea.style.opacity = '0';
+				document.body.appendChild(textarea);
+				textarea.select();
+				document.execCommand('copy');
+				document.body.removeChild(textarea);
+				showToast(T.toasts.linkCopied);
+			} catch {
+				showToast(T.toasts.addressBarFallback);
+			}
+		}
+	});
+
+	printBtn?.addEventListener('click', () => window.print());
+
+	// ---------------------------------------------------------------------
+	// Shared-view banner
+	// ---------------------------------------------------------------------
+	saveSharedBtn?.addEventListener('click', () => {
+		isSharedView = false;
+		sharedBanner?.classList.add('hidden');
+		saveToStorage(state);
+		history.replaceState(null, '', location.pathname);
+		showToast(T.toasts.savedToBrowser);
+		renderAll();
+	});
+
+	dismissSharedBtn?.addEventListener('click', () => {
+		sharedBanner?.classList.add('hidden');
+		history.replaceState(null, '', location.pathname);
+	});
+
+	// ---------------------------------------------------------------------
+	// Rendering
+	// ---------------------------------------------------------------------
+	function pluralize(n: number, singular: string, plural: string): string {
+		return n === 1 ? singular : plural;
+	}
+
+	// Shared detail line for the weakest/strongest stat cards — same
+	// status-derived numbers as the subject's own row. The below-target
+	// wording is identical either way (it's a fact about that subject); only
+	// the at/above-target line is framed differently, since the strongest
+	// card is specifically meant to show its spare safe-skip room.
+	function buildStatDetail(c: SubjectComputed, mode: 'weak' | 'strong'): string {
+		const pctText = (c.pct ?? 0).toFixed(1);
+		// A completed semester (held has reached the total) is frozen — never
+		// suggest skips or classes-needed that no longer exist to take.
+		if (c.forecast?.isComplete) {
+			return format(T.rollup.detailComplete, { pct: pctText });
+		}
+		if (c.status === 'short') {
+			if (c.unrecoverable) return format(T.rollup.detailUnrecoverable, { pct: pctText });
+			if (c.cooked) return format(T.rollup.detailCooked, { pct: pctText });
+			return format(T.rollup.detailShort, { pct: pctText, n: c.immediateNeeded ?? 0 });
+		}
+		if (mode === 'strong') {
+			const skips = c.immediateSkips ?? 0;
+			return skips > 0 ? format(T.rollup.detailSkip, { pct: pctText, n: skips }) : format(T.rollup.detailSafe, { pct: pctText });
+		}
+		return format(T.rollup.detailLowest, { pct: pctText });
+	}
+
+	function buildRow(sub: Subject): HTMLLIElement {
+		const li = document.createElement('li');
+		li.className = 'subject-row';
+		li.dataset.id = sub.id;
+
+		const c = computeSubject(sub, state.target);
+		if (c.status === 'invalid') li.classList.add('risk-invalid');
+		else if (c.status === 'short') li.classList.add('risk-short');
+
+		const pctText = c.pct === null ? '--' : `${c.pct.toFixed(1)}%`;
+
+		// Status label/copy come from the shared attendanceStatus module (also
+		// used by the homepage) so the two pages' voice can never drift apart.
+		// It never touches the numbers above — those still come from
+		// computeSubject() exactly as before.
+		const vibeStatus = getAttendanceStatus({ attended: sub.attended, held: sub.held, target: state.target, totalPlanned: sub.totalPlanned }, jsStrings);
+		const badgeClass = tierBadgeClass(vibeStatus.tier);
+
+		// Avoid stating the same recovery number twice: when the "right now"
+		// classes-needed figure is identical to the whole by-term-end remaining
+		// count, the forecast note below already says it — the badge falls back
+		// to the plain tier label instead of repeating the number.
+		const dupWithForecast = c.status === 'short' && !c.unrecoverable && !c.cooked &&
+			c.forecast && !c.forecast.isComplete && c.forecast.bunksRemaining <= 0 &&
+			c.immediateNeeded === c.forecast.remaining;
+		const badgeText = dupWithForecast ? vibeStatus.label : vibeStatus.shortMessage;
+		let extraNote = '';
+
+		if (c.status === 'invalid') {
+			extraNote = `<p class="invalid-note">${format(T.notes.invalid, { attended: sub.attended, held: sub.held })}</p>`;
+		} else if (c.status === 'short') {
+			if (c.unrecoverable) {
+				extraNote = `<p class="invalid-note">${T.notes.unrecoverable}</p>`;
+			} else if (c.cooked) {
+				extraNote = `<p class="invalid-note">${format(T.notes.cooked, { remaining: c.forecast?.remaining ?? 0, maxPct: c.forecast?.maxPct.toFixed(1) ?? '0' })}</p>`;
+			}
+		}
+
+		// Semester-forecast line — only when a total planned count is known,
+		// shown alongside (never instead of) the always-on "right now" badge
+		// above, exactly like the homepage's separate "right now" vs
+		// "end of semester" cards.
+		let forecastNote = '';
+		if (c.forecast && c.status !== 'invalid' && !c.cooked) {
+			const f = c.forecast;
+			if (f.isComplete) {
+				forecastNote = f.metTarget
+					? format(T.notes.termCompleteMet, { pct: f.maxPct.toFixed(1) })
+					: format(T.notes.termCompleteMissed, { pct: f.maxPct.toFixed(1) });
+			} else if (f.bunksRemaining > 0) {
+				const classWord = pluralize(f.bunksRemaining, jsStrings.classSingular, jsStrings.classPlural);
+				forecastNote = format(T.notes.forecastBudget, { n: f.bunksRemaining, classWord, remaining: f.remaining });
+			} else {
+				forecastNote = format(T.notes.forecastMustAttend, { remaining: f.remaining });
+			}
+		}
+		if (forecastNote) {
+			extraNote += `<p class="forecast-note">${forecastNote}</p>`;
+		}
+
+		if (c.borderline && c.status !== 'invalid') {
+			extraNote += `<p class="borderline-note">${T.notes.borderline}</p>`;
+		}
+
+		if (c.semesterOver) {
+			extraNote += `<p class="semester-over-note">${T.notes.semesterOver}</p>`;
+		}
+
+		li.innerHTML = `
+			<div class="subject-main">
+				<div class="subject-name-wrap">
+					<span class="subject-name"></span>
+					<span class="subject-ratio">${sub.attended} / ${sub.held} ${jsStrings.heldSuffix}${sub.totalPlanned !== null ? ` ${format(T.row.totalThisSemester, { n: sub.totalPlanned })}` : ''}</span>
+				</div>
+				<div class="subject-pct-wrap">
+					<span class="subject-pct${c.borderline ? ' borderline' : ''}">${pctText}</span>
+					<span class="subject-status-badge ${badgeClass}"></span>
+				</div>
+			</div>
+			${extraNote}
+			<div class="subject-actions no-print">
+				<button type="button" class="btn-pill btn-present"${c.semesterOver ? ' disabled' : ''}>${T.row.present}</button>
+				<button type="button" class="btn-pill btn-absent"${c.semesterOver ? ' disabled' : ''}>${T.row.absent}</button>
+				<button type="button" class="btn-pill btn-edit">${T.row.edit}</button>
+				<button type="button" class="btn-pill btn-delete btn-danger-text">${T.row.delete}</button>
+			</div>
+			<div class="subject-edit-panel hidden no-print">
+				<div class="input-block add-name">
+					<label class="field-label">${T.row.editNameLabel}</label>
+					<input type="text" class="text-input edit-name" maxlength="60" value="">
+				</div>
+				<div class="input-block">
+					<label class="field-label">${T.row.editAttendedLabel}</label>
+					<input type="number" class="text-input edit-attended" min="0" max="${INPUT_MAX}" value="${sub.attended}">
+				</div>
+				<div class="input-block">
+					<label class="field-label">${T.row.editHeldLabel}</label>
+					<input type="number" class="text-input edit-held" min="0" max="${INPUT_MAX}" value="${sub.held}">
+				</div>
+				<div class="input-block">
+					<label class="field-label">${T.row.editPlannedLabel} <span class="label-optional">${jsStrings.optionalLabel}</span></label>
+					<input type="number" class="text-input edit-planned" min="0" max="${INPUT_MAX}" value="${sub.totalPlanned ?? ''}">
+				</div>
+				<p class="field-error-msg edit-error hidden"></p>
+				<div class="subject-edit-actions">
+					<button type="button" class="btn-pill btn-pill-solid btn-save-edit">${T.row.save}</button>
+					<button type="button" class="btn-pill btn-cancel-edit">${T.row.cancel}</button>
+				</div>
+			</div>
+		`;
+
+		// Set text content via textContent (not innerHTML) to avoid any risk
+		// of student-entered subject names being interpreted as markup.
+		(li.querySelector('.subject-name') as HTMLElement).textContent = sub.name;
+		(li.querySelector('.subject-status-badge') as HTMLElement).textContent = badgeText;
+		(li.querySelector('.edit-name') as HTMLInputElement).value = sub.name;
+
+		return li;
+	}
+
+	// Renders in state.subjects' own order — the order subjects were added in
+	// — and never sorts for display. Sorting by percentage/status is only
+	// ever used to pick the weakest/strongest subject in renderRollup(),
+	// never here. Existing rows are keyed by subject.id: a row for an id
+	// that's still present is rebuilt in place (preserving whether its edit
+	// panel was open, per openEditId) rather than the whole list being torn
+	// down and reordered, so a tap like +Present never makes any row jump
+	// position.
+	function renderSubjects() {
+		if (!subjectsList) return;
+		const existingRows = new Map<string, HTMLLIElement>();
+		subjectsList.querySelectorAll<HTMLLIElement>('.subject-row').forEach((row) => {
+			if (row.dataset.id) existingRows.set(row.dataset.id, row);
+		});
+
+		let cursor: HTMLLIElement | null = null;
+		for (const sub of state.subjects) {
+			const existing = existingRows.get(sub.id);
+			const row = buildRow(sub);
+			if (openEditId === sub.id) row.querySelector('.subject-edit-panel')?.classList.remove('hidden');
+
+			if (existing) {
+				subjectsList.replaceChild(row, existing);
+				existingRows.delete(sub.id);
+			} else if (cursor?.nextSibling) {
+				subjectsList.insertBefore(row, cursor.nextSibling);
+			} else {
+				subjectsList.appendChild(row);
+			}
+			cursor = row;
+		}
+
+		// Anything left in existingRows belongs to a deleted subject.
+		existingRows.forEach((row) => row.remove());
+	}
+
+	function renderRollup() {
+		const subjectCount = state.subjects.length;
+		const hasSubjects = subjectCount > 0;
+
+		// Zero subjects: hide the status card and the three-card stats row,
+		// just a short prompt — the target card grows (via .is-empty) to
+		// fill the left column instead of leaving a gap where the status
+		// card would otherwise be.
+		topGrid?.classList.toggle('is-empty', !hasSubjects);
+		emptyHint?.classList.toggle('hidden', hasSubjects);
+		statsGrid?.classList.toggle('hidden', !hasSubjects);
+		// Exactly one subject: weakest/strongest would just be that same
+		// subject twice, so they stay hidden and the Overall card spans the
+		// full row (single-subject) instead of leaving two empty cells.
+		statsGrid?.classList.toggle('single-subject', subjectCount === 1);
+		weakestCallout?.classList.toggle('hidden', subjectCount < 2);
+		strongestCallout?.classList.toggle('hidden', subjectCount < 2);
+		if (!hasSubjects) {
+			rollupVibe?.classList.add('hidden');
+			return;
+		}
+
+		const validSubjects = state.subjects.filter((s) => s.held > 0 && s.attended <= s.held);
+		const totalAttended = validSubjects.reduce((sum, s) => sum + s.attended, 0);
+		const totalHeld = validSubjects.reduce((sum, s) => sum + s.held, 0);
+		// Aggregate semester forecast (sum attended, sum held, sum planned)
+		// only when every subject with data actually has a planned total —
+		// otherwise the sum would be a partial, misleading count, so the
+		// overall figure stays "right now"-only, same as an individual
+		// subject with no total planned entered.
+		const totalPlanned = validSubjects.length > 0 && validSubjects.every((s) => s.totalPlanned !== null)
+			? validSubjects.reduce((sum, s) => sum + (s.totalPlanned as number), 0)
+			: null;
+
+		if (rollupPct && rollupRatio) {
+			if (totalHeld === 0) {
+				rollupPct.textContent = '--%';
+				rollupRatio.textContent = T.rollup.noClassesRecorded;
+			} else {
+				const pct = (totalAttended / totalHeld) * 100;
+				rollupPct.textContent = `${pct.toFixed(1)}%`;
+				rollupRatio.textContent = format(T.rollup.heldAcross, {
+					attended: totalAttended,
+					held: totalHeld,
+					n: validSubjects.length,
+					subjectWord: pluralize(validSubjects.length, T.rollup.subjectSingular, T.rollup.subjectPlural),
+				});
+			}
+		}
+
+		// Weakest/strongest cards are never hidden once a subject exists — no
+		// blank cells in the 2x2 grid — so with no data yet they show a
+		// neutral placeholder instead. Sorting here picks which subject is
+		// weakest/strongest only; it never touches the subject list's own
+		// (fixed, insertion) order.
+		if (weakestName && weakestDetail && strongestName && strongestDetail) {
+			const withData = validSubjects
+				.map((s) => ({ s, c: computeSubject(s, state.target) }))
+				.filter((x) => x.c.status !== 'nodata');
+
+			if (withData.length === 0) {
+				weakestName.textContent = T.rollup.noData;
+				weakestDetail.textContent = T.rollup.noDataDetail;
+				strongestName.textContent = T.rollup.noData;
+				strongestDetail.textContent = T.rollup.noDataDetail;
+			} else {
+				const weakest = withData.reduce((min, x) => ((x.c.pct ?? 0) < (min.c.pct ?? 0) ? x : min));
+				const strongest = withData.reduce((max, x) => ((x.c.pct ?? 0) > (max.c.pct ?? 0) ? x : max));
+				weakestName.textContent = weakest.s.name;
+				weakestDetail.textContent = buildStatDetail(weakest.c, 'weak');
+				strongestName.textContent = strongest.s.name;
+				strongestDetail.textContent = buildStatDetail(strongest.c, 'strong');
+			}
+		}
+
+		// Overall roll-up vibe — same shared module as every subject row and
+		// the homepage, but shown with its longer, more playful message since
+		// there's room here. Never hidden: held===0 naturally resolves to the
+		// shared module's own no-data tier/copy instead of this card
+		// disappearing and leaving a blank grid cell.
+		if (rollupVibe && rollupVibeLabel && rollupVibeMessage) {
+			const overallStatus = getAttendanceStatus({ attended: totalAttended, held: totalHeld, target: state.target, totalPlanned }, jsStrings);
+			rollupVibe.className = `tracker-card stat-card rollup-vibe ${tierVibeBoxClass(overallStatus.tier)}`;
+			rollupVibeLabel.textContent = overallStatus.label;
+			rollupVibeMessage.innerHTML = overallStatus.message;
+		}
+
+		// Overall by-term-end forecast: summed across only the subjects that
+		// actually have a semester total set (never a partial, misleading mix
+		// with subjects that don't), same shared forecast formula as every
+		// subject row and the homepage.
+		if (rollupVibeForecast) {
+			const withPlanned = validSubjects.filter((s) => s.totalPlanned !== null);
+			let text = '';
+			if (withPlanned.length === 0) {
+				text = T.rollup.forecastUnavailable;
+			} else {
+				const fAttended = withPlanned.reduce((sum, s) => sum + s.attended, 0);
+				const fHeld = withPlanned.reduce((sum, s) => sum + s.held, 0);
+				const fTotalPlanned = withPlanned.reduce((sum, s) => sum + (s.totalPlanned as number), 0);
+				if (fTotalPlanned >= fHeld) {
+					const f = buildSemesterForecast(fAttended, fHeld, state.target, fTotalPlanned);
+					if (f.isComplete) {
+						text = f.metTarget
+							? format(T.rollup.forecastMet, { pct: f.maxPct.toFixed(1) })
+							: format(T.rollup.forecastMissed, { pct: f.maxPct.toFixed(1) });
+					} else if (f.bunksRemaining > 0) {
+						const classWord = pluralize(f.bunksRemaining, jsStrings.classSingular, jsStrings.classPlural);
+						text = format(T.rollup.forecastBudget, { n: f.bunksRemaining, classWord, remaining: f.remaining });
+					} else {
+						text = format(T.rollup.forecastMustAttend, { remaining: f.remaining });
+					}
+				}
+			}
+			rollupVibeForecast.textContent = text;
+			rollupVibeForecast.classList.toggle('hidden', !text);
+		}
+	}
+
+	function renderAll() {
+		setActiveTargetButton(state.target);
+		if (targetIndicator) targetIndicator.textContent = `${jsStrings.targetPrefix} ${state.target}%`;
+		subjectsSection?.classList.toggle('hidden', state.subjects.length === 0);
+		renderRollup();
+		renderSubjects();
+		renderStorageWarning();
+	}
+
+	function persistAndRender() {
+		if (!isSharedView) saveToStorage(state);
+		renderAll();
+	}
+
+	// ---------------------------------------------------------------------
+	// Boot
+	// ---------------------------------------------------------------------
+	function boot() {
+		renderStorageWarning();
+
+		const hash = location.hash;
+		if (hash.startsWith('#s=')) {
+			const decoded = decodeState(hash.slice(3));
+			if (decoded) {
+				state = decoded;
+				isSharedView = true;
+				sharedBanner?.classList.remove('hidden');
+				renderAll();
+				return;
+			}
+		}
+
+		state = loadFromStorage();
+		renderAll();
+	}
+
+	boot();
+</script>

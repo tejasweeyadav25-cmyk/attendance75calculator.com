@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./shared-ui.css";
 
 /* Design tokens from DESIGN.md - Geist system */
 @theme {

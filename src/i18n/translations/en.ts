@@ -11,6 +11,7 @@ const en: Translations = {
 	},
 	nav: {
 		badge: 'Attendance 75 Calculator',
+		trackerLink: 'Tracker',
 		themeDark: 'Dark',
 		themeLight: 'Light',
 		themeToggleAria: 'Toggle Dark/Light Mode',
@@ -52,6 +53,7 @@ const en: Translations = {
 		shareCopiedText: 'Image downloaded & caption copied!',
 		shareStatAttendedLabel: 'ATTENDANCE',
 		shareStatTargetLabel: 'TARGET',
+		trackerUpsellHtml: 'Tracking more than one subject? → <strong>Save all your subjects</strong>',
 	},
 	js: {
 		noDataStatus: 'No Data',
@@ -118,6 +120,20 @@ const en: Translations = {
 		remainVerbPlural: 'remain',
 		copyFooter: 'Calculated on attendance75calculator.com',
 		copyFailed: 'Failed to copy to clipboard.',
+		unrecoverable100Status: 'Not Recoverable 💀',
+		unrecoverable100MessageHtml:
+			'Target is 100% and a class has already been missed — a perfect record can’t be regained this term. Only lowering the target fixes this.',
+		shortNoData: 'No classes held yet',
+		shortInvalid: "Invalid — attended can't exceed held",
+		shortCompleteMet: 'Finished at {pct}% — target met 🎉',
+		shortCompleteMissed: 'Finished at {pct}% — target missed',
+		shortSafeEdgeZero: 'On the edge — don’t skip today ⚠️',
+		shortSafeEdgeOne: 'Cutting it close — 1 bunk left ⚠️',
+		shortSafeRoom: 'Safe — {n} {bunkWord} to spare 🚀',
+		shortUnrecoverable100: 'Not recoverable at 100% target 💀',
+		shortCooked: 'Cooked — max {maxPct}% possible 💀',
+		shortBorderline: 'Thin ice — attend {n} {classWord} in a row ☕',
+		shortShortage: 'Time to grind — attend {n} {classWord} in a row 📚',
 	},
 	article: {
 		overview: {
@@ -269,6 +285,187 @@ const en: Translations = {
 	},
 	footer: {
 		note: '© {year} Attendance 75 Calculator • Free Online College Attendance Tracker • Client-side math & 100% private',
+	},
+	tracker: {
+		meta: {
+			title: 'Attendance Tracker - Track Every Subject, One Tap After Class',
+			description:
+				'Save all your subjects once, then update your attendance with one tap after each class. Free, private, multi-subject attendance tracker with safe-skip limits, recovery targets, and an overall roll-up — nothing ever leaves your browser.',
+			keywords:
+				'attendance tracker, multi subject attendance tracker, weekly attendance tracker, class attendance tracker app, track attendance per subject, attendance tracker for college students',
+		},
+		header: {
+			title: 'Attendance Tracker',
+			subtitle: 'Save every subject once, then +Present / +Absent after class.',
+		},
+		targetLabel: 'Target attendance',
+		emptyHint: 'Add your first subject to start tracking.',
+		sharedBanner: {
+			text: "You're viewing a tracker shared via link. It hasn't been saved to this browser yet.",
+			saveBtn: 'Save to my tracker',
+			dismissBtn: 'Just viewing',
+		},
+		storageWarning:
+			"Your browser is blocking site data (private mode, or site data disabled), so changes here won't be saved once you leave. The tracker still works normally for this session — use Copy Link to keep a backup.",
+		addSubject: {
+			heading: 'Add a subject',
+			nameLabel: 'Subject name',
+			namePlaceholder: 'e.g. Data Structures',
+			attendedLabel: 'Attended',
+			attendedSub: 'so far',
+			heldLabel: 'Held',
+			heldSub: 'so far',
+			plannedLabel: 'Total Classes in Semester',
+			plannedPlaceholder: 'e.g. 100 expected classes',
+			submitBtn: '+ Add subject',
+		},
+		stats: {
+			overall: 'Overall attendance',
+			weakest: 'Weakest subject',
+			strongest: 'Strongest subject',
+		},
+		subjectsHeading: 'Your subjects',
+		copyVibeBtn: '📋 Copy Vibe Check',
+		copyLinkBtn: '🔗 Copy link',
+		printBtn: '🖨️ Print / Screenshot',
+		row: {
+			totalThisSemester: '· {n} total this semester',
+			present: '+ Present',
+			absent: '+ Absent',
+			edit: 'Edit',
+			delete: 'Delete',
+			editNameLabel: 'Name',
+			editAttendedLabel: 'Attended',
+			editHeldLabel: 'Held',
+			editPlannedLabel: 'Total Classes in Semester',
+			save: 'Save',
+			cancel: 'Cancel',
+		},
+		notes: {
+			invalid: "Attended ({attended}) can't be more than held ({held}) — fix the numbers below.",
+			unrecoverable: 'Target is 100% and a class was already missed — this can only be reset by lowering the target.',
+			cooked: 'Even attending every one of the {remaining} remaining classes only reaches {maxPct}% — below target for the term.',
+			termCompleteMet: 'Term complete: finished at {pct}% — target met.',
+			termCompleteMissed: 'Term complete: finished at {pct}% — target missed.',
+			forecastBudget: 'By term end: safe to skip {n} more {classWord} of {remaining} remaining.',
+			forecastMustAttend: 'By term end: must attend all {remaining} remaining classes.',
+			borderline: "* Borderline value — colleges round 74.x% differently, double-check your institution's policy.",
+			semesterOver: 'Semester over — no classes left. Use Edit to change the total.',
+		},
+		validation: {
+			nameRequired: 'Give the subject a name.',
+			duplicateName: 'You already have a subject with that name.',
+			attendedInvalid: 'Attended must be a whole number, 0 or greater.',
+			heldInvalid: 'Held must be a whole number, 0 or greater.',
+			plannedInvalid: 'Total Classes in Semester must be a whole number, 0 or greater.',
+			attendedExceedsHeld: "Attended can't be more than classes held.",
+			plannedBelowHeld: 'Total classes in semester must be greater than or equal to classes held.',
+		},
+		toasts: {
+			vibeCopied: 'Vibe check copied',
+			linkCopied: 'Link copied',
+			copyFailed: 'Could not copy — try again',
+			addressBarFallback: 'Could not copy — copy the address bar instead',
+			savedToBrowser: 'Saved to this browser',
+			undone: 'Undone',
+			undoBtn: 'Undo',
+		},
+		undo: {
+			present: '"{name}" marked present',
+			absent: '"{name}" marked absent',
+			deleted: '"{name}" deleted',
+			updated: '"{name}" updated',
+		},
+		rollup: {
+			noClassesRecorded: '(no classes recorded yet)',
+			heldAcross: '({attended} / {held} held across {n} {subjectWord})',
+			subjectSingular: 'subject',
+			subjectPlural: 'subjects',
+			noData: '—',
+			noDataDetail: 'No classes recorded yet',
+			detailComplete: '{pct}% · semester complete',
+			detailUnrecoverable: '{pct}% · not recoverable at 100% target',
+			detailCooked: '{pct}% · out of reach this term',
+			detailShort: '{pct}% · attend {n} in a row',
+			detailSkip: '{pct}% · can skip {n} more',
+			detailSafe: '{pct}% · safe',
+			detailLowest: '{pct}% · lowest of your subjects',
+			forecastUnavailable: 'Forecast unavailable — add semester totals.',
+			forecastMet: 'By term end (subjects with a total set): finished at {pct}% — target met.',
+			forecastMissed: 'By term end (subjects with a total set): finished at {pct}% — target missed.',
+			forecastBudget: 'By term end (subjects with a total set): safe to skip {n} more {classWord} of {remaining} remaining.',
+			forecastMustAttend: 'By term end (subjects with a total set): must attend all {remaining} remaining classes.',
+		},
+		copySummary: {
+			targetLine: '• Target: {target}%',
+			overallLine: '• Overall: {line}',
+			noClassesRecorded: 'No classes recorded yet.',
+			noSubjectsSaved: 'No subjects saved yet.',
+		},
+		faq: [
+			{
+				question: 'How is the Tracker different from the homepage calculator?',
+				answerHtml:
+					'The homepage calculator answers a single one-off question: attended, held, and your target percentage in, an instant result out. The Tracker is built for the whole semester — you save every subject once, and each week you tap +Present or +Absent after class to keep every subject up to date, with an overall roll-up across all of them.',
+			},
+			{
+				question: 'Is my data sent to a server?',
+				answerHtml:
+					"No. The Tracker is 100% client-side, exactly like the homepage calculator. Your subjects, counts, and target are saved only in your browser's local storage. Nothing is ever uploaded, and there is no account or sign-in.",
+			},
+			{
+				question: 'What happens if I clear my browser data or use private/incognito mode?',
+				answerHtml:
+					"Local storage is tied to your browser profile, so clearing site data or browsing in a private window will remove (or never save) your tracker. In private mode the Tracker still works perfectly for that session — it just won't remember your subjects the next time you open the page. Use Copy Link before you close the tab if you want to keep a backup.",
+			},
+			{
+				question: 'How do I share my tracker with a friend or move it to another device?',
+				answerHtml:
+					'Tap Copy Link. It encodes your current subjects and target directly into the URL — nothing is uploaded anywhere. Anyone who opens that link sees your tracker and can choose to save it as their own; opening it on your laptop restores the same data you had on your phone.',
+			},
+			{
+				question: 'How is the "safe to skip" number calculated?',
+				answerHtml:
+					'Once you enter the Total Classes in Semester for a subject, the Tracker works out the most classes you can still miss and still land at or above your target by the end of the term — accounting for the classes already held, not just the ones left.',
+			},
+			{
+				question: 'Why does the recovery number look different from a simple "classes needed" guess?',
+				answerHtml:
+					"Attending a class adds one to both the classes attended and the classes held, so the percentage moves slower than a naive calculation suggests. The Tracker's recovery formula accounts for that growing denominator, so the number it gives you is the exact number of classes in a row that brings you to your target — not an underestimate.",
+			},
+		],
+		article: {
+			introH2: 'A tracker built for the whole semester',
+			introP1:
+				"Most attendance calculators answer one question and you move on. This page is different: save every subject once, and after each class tap <strong>+Present</strong> or <strong>+Absent</strong> on that subject — one tap, no retyping numbers, no confirmation dialog. Your data is saved automatically in this browser so it's ready the next time you open the page.",
+			introP2:
+				'Each subject shows its own percentage and status, an overall roll-up across everything you\'re taking, and a "weakest subject" callout — because it\'s easy to track your overall number and still get blindsided by the one class you keep skipping.',
+			calcH2: 'How the numbers are calculated',
+			formulas: [
+				{
+					title: 'Current percentage',
+					formula: 'pct = (attended / held) × 100',
+					desc: "The raw percentage is shown to one decimal place. Colleges disagree on whether 74.6% should floor to 74% or round to 75% — this tracker never silently rounds a borderline value up for you; it flags it instead so you can check your institution's own policy.",
+				},
+				{
+					title: 'Classes you can skip right now',
+					formula: 'skips = floor(attended / target% − held)',
+					desc: 'Shown for every subject you\'re on track in — the same "right now" figure the homepage calculator gives, with no total class count required.',
+				},
+				{
+					title: 'Classes needed to recover',
+					formula: 'needed = ceil((target% × held − attended) / (1 − target%))',
+					desc: "Shown when you're below target. Every class you attend adds to both the numerator and the denominator, so a naive guess that only grows the numerator understates how many you actually need — this formula accounts for that.",
+				},
+				{
+					title: 'By-term-end forecast',
+					formula: 'maxPct = (attended + remaining) / totalClassesInSemester × 100',
+					desc: 'Only shown once you enter the Total Classes in Semester — projects where you\'ll land by the end of the term, capping the "right now" skip figure to what actually remains and flagging when target is mathematically out of reach.',
+				},
+			],
+		},
+		footerNote: '© {year} Attendance 75 Calculator • Free Online College Attendance Tracker',
+		footerCalculatorLink: 'Calculator',
 	},
 };
 

@@ -11,6 +11,7 @@ const es: Translations = {
 	},
 	nav: {
 		badge: 'Attendance 75 Calculator',
+		trackerLink: 'Rastreador',
 		themeDark: 'Oscuro',
 		themeLight: 'Claro',
 		themeToggleAria: 'Cambiar entre modo oscuro y claro',
@@ -52,6 +53,7 @@ const es: Translations = {
 		shareCopiedText: '¡Imagen descargada y texto copiado!',
 		shareStatAttendedLabel: 'ASISTENCIA',
 		shareStatTargetLabel: 'OBJETIVO',
+		trackerUpsellHtml: '¿Sigues más de una materia? → <strong>Guarda todas tus materias</strong>',
 	},
 	js: {
 		noDataStatus: 'Sin Datos',
@@ -118,6 +120,20 @@ const es: Translations = {
 		vibeCompleteStatus: 'Semestre Completo 🏁',
 		copyFooter: 'Calculado en attendance75calculator.com',
 		copyFailed: 'Error al copiar al portapapeles.',
+		unrecoverable100Status: 'No Recuperable 💀',
+		unrecoverable100MessageHtml:
+			'El objetivo es 100% y ya faltaste a una clase — un historial perfecto no se puede recuperar este semestre. Solo bajar el objetivo lo soluciona.',
+		shortNoData: 'Aún no hay clases realizadas',
+		shortInvalid: 'Inválido — asistidas no puede superar a realizadas',
+		shortCompleteMet: 'Terminaste en {pct}% — objetivo cumplido 🎉',
+		shortCompleteMissed: 'Terminaste en {pct}% — objetivo no alcanzado',
+		shortSafeEdgeZero: 'Al límite — no faltes hoy ⚠️',
+		shortSafeEdgeOne: 'Justo al límite — te queda 1 falta ⚠️',
+		shortSafeRoom: 'A salvo — {n} {bunkWord} sin riesgo 🚀',
+		shortUnrecoverable100: 'No recuperable con objetivo del 100% 💀',
+		shortCooked: 'Frito — máximo {maxPct}% posible 💀',
+		shortBorderline: 'En la cuerda floja — asiste {n} {classWord} seguidas ☕',
+		shortShortage: 'Hora de esforzarte — asiste {n} {classWord} seguidas 📚',
 	},
 	article: {
 		overview: {
@@ -269,6 +285,187 @@ const es: Translations = {
 	},
 	footer: {
 		note: '© {year} Attendance 75 Calculator • Rastreador Gratuito de Asistencia Universitaria en Línea • Cálculo del lado del cliente y 100% privado',
+	},
+	tracker: {
+		meta: {
+			title: 'Rastreador de Asistencia - Controla Cada Materia con Un Toque',
+			description:
+				'Guarda todas tus materias una vez y actualiza tu asistencia con un toque después de cada clase. Rastreador de asistencia gratuito, privado y multi-materia con límites de faltas seguras, objetivos de recuperación y un resumen general — nada sale nunca de tu navegador.',
+			keywords:
+				'rastreador de asistencia, rastreador de asistencia multi materia, rastreador de asistencia semanal, app de rastreo de asistencia por clase, seguimiento de asistencia por materia, rastreador de asistencia para universitarios',
+		},
+		header: {
+			title: 'Rastreador de Asistencia',
+			subtitle: 'Guarda cada materia una vez y luego usa +Presente / +Ausente después de clase.',
+		},
+		targetLabel: 'Objetivo de asistencia',
+		emptyHint: 'Agrega tu primera materia para empezar a rastrear.',
+		sharedBanner: {
+			text: 'Estás viendo un rastreador compartido por enlace. Todavía no se ha guardado en este navegador.',
+			saveBtn: 'Guardar en mi rastreador',
+			dismissBtn: 'Solo estoy viendo',
+		},
+		storageWarning:
+			'Tu navegador está bloqueando los datos del sitio (modo privado, o datos del sitio desactivados), así que los cambios aquí no se guardarán al salir. El rastreador sigue funcionando con normalidad en esta sesión — usa Copiar enlace para tener una copia de respaldo.',
+		addSubject: {
+			heading: 'Agregar una materia',
+			nameLabel: 'Nombre de la materia',
+			namePlaceholder: 'ej. Estructuras de Datos',
+			attendedLabel: 'Asistidas',
+			attendedSub: 'hasta ahora',
+			heldLabel: 'Realizadas',
+			heldSub: 'hasta ahora',
+			plannedLabel: 'Total de Clases del Semestre',
+			plannedPlaceholder: 'ej. 100 clases previstas',
+			submitBtn: '+ Agregar materia',
+		},
+		stats: {
+			overall: 'Asistencia general',
+			weakest: 'Materia más débil',
+			strongest: 'Materia más fuerte',
+		},
+		subjectsHeading: 'Tus materias',
+		copyVibeBtn: '📋 Copiar Resumen',
+		copyLinkBtn: '🔗 Copiar enlace',
+		printBtn: '🖨️ Imprimir / Captura',
+		row: {
+			totalThisSemester: '· {n} en total este semestre',
+			present: '+ Presente',
+			absent: '+ Ausente',
+			edit: 'Editar',
+			delete: 'Eliminar',
+			editNameLabel: 'Nombre',
+			editAttendedLabel: 'Asistidas',
+			editHeldLabel: 'Realizadas',
+			editPlannedLabel: 'Total de Clases del Semestre',
+			save: 'Guardar',
+			cancel: 'Cancelar',
+		},
+		notes: {
+			invalid: 'Las asistidas ({attended}) no pueden ser más que las realizadas ({held}) — corrige los números abajo.',
+			unrecoverable: 'El objetivo es 100% y ya faltaste a una clase — esto solo se puede corregir bajando el objetivo.',
+			cooked: 'Aunque asistas a las {remaining} clases restantes, solo llegarías a {maxPct}% — por debajo del objetivo del semestre.',
+			termCompleteMet: 'Semestre completo: terminaste en {pct}% — objetivo cumplido.',
+			termCompleteMissed: 'Semestre completo: terminaste en {pct}% — objetivo no alcanzado.',
+			forecastBudget: 'Para fin de semestre: puedes faltar {n} {classWord} más de las {remaining} que quedan.',
+			forecastMustAttend: 'Para fin de semestre: debes asistir a las {remaining} clases que quedan.',
+			borderline: '* Valor límite — las universidades redondean 74.x% de forma distinta; verifica la política de tu institución.',
+			semesterOver: 'Semestre terminado — no quedan clases. Usa Editar para cambiar el total.',
+		},
+		validation: {
+			nameRequired: 'Ponle un nombre a la materia.',
+			duplicateName: 'Ya tienes una materia con ese nombre.',
+			attendedInvalid: 'Asistidas debe ser un número entero, 0 o mayor.',
+			heldInvalid: 'Realizadas debe ser un número entero, 0 o mayor.',
+			plannedInvalid: 'Total de Clases del Semestre debe ser un número entero, 0 o mayor.',
+			attendedExceedsHeld: 'Las asistidas no pueden ser más que las clases realizadas.',
+			plannedBelowHeld: 'El total de clases del semestre debe ser mayor o igual que las clases realizadas.',
+		},
+		toasts: {
+			vibeCopied: 'Resumen copiado',
+			linkCopied: 'Enlace copiado',
+			copyFailed: 'No se pudo copiar — intenta de nuevo',
+			addressBarFallback: 'No se pudo copiar — copia la barra de direcciones en su lugar',
+			savedToBrowser: 'Guardado en este navegador',
+			undone: 'Deshecho',
+			undoBtn: 'Deshacer',
+		},
+		undo: {
+			present: '"{name}" marcada como presente',
+			absent: '"{name}" marcada como ausente',
+			deleted: '"{name}" eliminada',
+			updated: '"{name}" actualizada',
+		},
+		rollup: {
+			noClassesRecorded: '(no hay clases registradas todavía)',
+			heldAcross: '({attended} / {held} realizadas en {n} {subjectWord})',
+			subjectSingular: 'materia',
+			subjectPlural: 'materias',
+			noData: '—',
+			noDataDetail: 'No hay clases registradas todavía',
+			detailComplete: '{pct}% · semestre completo',
+			detailUnrecoverable: '{pct}% · no recuperable con objetivo del 100%',
+			detailCooked: '{pct}% · fuera de alcance este semestre',
+			detailShort: '{pct}% · asiste {n} seguidas',
+			detailSkip: '{pct}% · puedes faltar {n} más',
+			detailSafe: '{pct}% · a salvo',
+			detailLowest: '{pct}% · la más baja de tus materias',
+			forecastUnavailable: 'Pronóstico no disponible — agrega los totales del semestre.',
+			forecastMet: 'Para fin de semestre (materias con total definido): terminarías en {pct}% — objetivo cumplido.',
+			forecastMissed: 'Para fin de semestre (materias con total definido): terminarías en {pct}% — objetivo no alcanzado.',
+			forecastBudget: 'Para fin de semestre (materias con total definido): puedes faltar {n} {classWord} más de las {remaining} que quedan.',
+			forecastMustAttend: 'Para fin de semestre (materias con total definido): debes asistir a las {remaining} clases que quedan.',
+		},
+		copySummary: {
+			targetLine: '• Objetivo: {target}%',
+			overallLine: '• General: {line}',
+			noClassesRecorded: 'No hay clases registradas todavía.',
+			noSubjectsSaved: 'No hay materias guardadas todavía.',
+		},
+		faq: [
+			{
+				question: '¿En qué se diferencia el Rastreador de la calculadora de la página principal?',
+				answerHtml:
+					'La calculadora de la página principal responde una sola pregunta puntual: asistidas, realizadas y tu porcentaje objetivo, y obtienes un resultado instantáneo. El Rastreador está pensado para todo el semestre — guardas cada materia una vez y, cada semana, tocas +Presente o +Ausente después de clase para mantener todo actualizado, con un resumen general de todas tus materias.',
+			},
+			{
+				question: '¿Mis datos se envían a un servidor?',
+				answerHtml:
+					'No. El Rastreador es 100% del lado del cliente, igual que la calculadora de la página principal. Tus materias, conteos y objetivo se guardan solo en el almacenamiento local de tu navegador. Nada se sube nunca, y no hay cuenta ni inicio de sesión.',
+			},
+			{
+				question: '¿Qué pasa si borro los datos de mi navegador o uso el modo privado/incógnito?',
+				answerHtml:
+					'El almacenamiento local está ligado a tu perfil del navegador, así que borrar los datos del sitio o navegar en una ventana privada eliminará (o nunca guardará) tu rastreador. En modo privado el Rastreador sigue funcionando perfectamente durante esa sesión — solo que no recordará tus materias la próxima vez que abras la página. Usa Copiar enlace antes de cerrar la pestaña si quieres tener una copia de respaldo.',
+			},
+			{
+				question: '¿Cómo comparto mi rastreador con un amigo o lo paso a otro dispositivo?',
+				answerHtml:
+					'Toca Copiar enlace. Codifica tus materias y objetivo actuales directamente en la URL — nada se sube a ningún lado. Cualquiera que abra ese enlace ve tu rastreador y puede optar por guardarlo como propio; abrirlo en tu laptop restaura los mismos datos que tenías en tu teléfono.',
+			},
+			{
+				question: '¿Cómo se calcula el número de "faltas seguras"?',
+				answerHtml:
+					'Una vez que ingresas el Total de Clases del Semestre de una materia, el Rastreador calcula la mayor cantidad de clases a las que todavía puedes faltar y aun así llegar a tu objetivo (o superarlo) al final del semestre — teniendo en cuenta las clases ya realizadas, no solo las que quedan.',
+			},
+			{
+				question: '¿Por qué el número de recuperación es distinto de una estimación simple de "clases necesarias"?',
+				answerHtml:
+					'Asistir a una clase suma uno tanto a las clases asistidas como a las realizadas, así que el porcentaje avanza más despacio de lo que sugiere un cálculo ingenuo. La fórmula de recuperación del Rastreador tiene en cuenta ese denominador creciente, así que el número que te da es la cantidad exacta de clases seguidas que te lleva a tu objetivo — no una subestimación.',
+			},
+		],
+		article: {
+			introH2: 'Un rastreador pensado para todo el semestre',
+			introP1:
+				'La mayoría de las calculadoras de asistencia responden una pregunta y ya. Esta página es diferente: guarda cada materia una vez y, después de cada clase, toca <strong>+Presente</strong> o <strong>+Ausente</strong> en esa materia — un toque, sin volver a escribir números, sin diálogos de confirmación. Tus datos se guardan automáticamente en este navegador, listos para la próxima vez que abras la página.',
+			introP2:
+				'Cada materia muestra su propio porcentaje y estado, un resumen general de todo lo que estás cursando, y una alerta de "materia más débil" — porque es fácil vigilar tu número general y aun así llevarte una sorpresa con esa clase a la que sigues faltando.',
+			calcH2: 'Cómo se calculan los números',
+			formulas: [
+				{
+					title: 'Porcentaje actual',
+					formula: 'porcentaje = (asistidas / realizadas) × 100',
+					desc: 'El porcentaje exacto se muestra con un decimal. Las universidades no se ponen de acuerdo sobre si 74.6% debe redondearse a 74% o a 75% — este rastreador nunca redondea hacia arriba en silencio un valor límite; en cambio lo marca para que verifiques la política de tu institución.',
+				},
+				{
+					title: 'Clases que puedes faltar ahora mismo',
+					formula: 'faltas = floor(asistidas / objetivo% − realizadas)',
+					desc: 'Se muestra para cada materia en la que vas bien — la misma cifra "ahora mismo" que da la calculadora de la página principal, sin necesitar el total de clases.',
+				},
+				{
+					title: 'Clases necesarias para recuperarte',
+					formula: 'necesarias = ceil((objetivo% × realizadas − asistidas) / (1 − objetivo%))',
+					desc: 'Se muestra cuando estás por debajo del objetivo. Cada clase a la que asistes suma tanto al numerador como al denominador, así que una estimación ingenua que solo aumenta el numerador subestima cuántas necesitas en realidad — esta fórmula lo tiene en cuenta.',
+				},
+				{
+					title: 'Pronóstico de fin de semestre',
+					formula: 'porcentajeMáx = (asistidas + restantes) / totalClasesDelSemestre × 100',
+					desc: 'Solo se muestra una vez que ingresas el Total de Clases del Semestre — proyecta dónde terminarás al final del semestre, limitando la cifra de faltas "ahora mismo" a lo que realmente queda y avisándote cuando el objetivo es matemáticamente inalcanzable.',
+				},
+			],
+		},
+		footerNote: '© {year} Attendance 75 Calculator • Rastreador Gratuito de Asistencia Universitaria en Línea',
+		footerCalculatorLink: 'Calculadora',
 	},
 };
 

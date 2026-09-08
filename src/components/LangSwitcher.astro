@@ -4,9 +4,11 @@ import { getTranslations } from '../i18n';
 
 interface Props {
 	lang: string;
+	/** Path segment to switch within, no leading/trailing slash — '' for the homepage, 'tracker' for /tracker. */
+	path?: string;
 }
 
-const { lang } = Astro.props;
+const { lang, path = '' } = Astro.props;
 const t = getTranslations(lang);
 const current = locales.find((l) => l.code === lang) ?? locales[0];
 ---
@@ -29,7 +31,7 @@ const current = locales.find((l) => l.code === lang) ?? locales[0];
 			<li role="none">
 				<a
 					role="menuitem"
-					href={`${localePrefix(l.code)}/`}
+					href={`${localePrefix(l.code)}/${path}`}
 					class={`lang-switch-item${l.code === lang ? ' active' : ''}`}
 					hreflang={l.hreflang}
 					aria-current={l.code === lang ? 'true' : undefined}

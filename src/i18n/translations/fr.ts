@@ -11,6 +11,7 @@ const fr: Translations = {
 	},
 	nav: {
 		badge: 'Attendance 75 Calculator',
+		trackerLink: 'Suivi',
 		themeDark: 'Sombre',
 		themeLight: 'Clair',
 		themeToggleAria: 'Basculer le mode Sombre/Clair',
@@ -52,6 +53,7 @@ const fr: Translations = {
 		shareCopiedText: 'Image téléchargée et légende copiée !',
 		shareStatAttendedLabel: 'PRÉSENCE',
 		shareStatTargetLabel: 'OBJECTIF',
+		trackerUpsellHtml: 'Vous suivez plusieurs matières ? → <strong>Enregistrez toutes vos matières</strong>',
 	},
 	js: {
 		noDataStatus: 'Aucune donnée',
@@ -118,6 +120,20 @@ const fr: Translations = {
 		remainVerbPlural: 'restent',
 		copyFooter: 'Calculé sur attendance75calculator.com',
 		copyFailed: 'Échec de la copie dans le presse-papiers.',
+		unrecoverable100Status: 'Non Récupérable 💀',
+		unrecoverable100MessageHtml:
+			"L'objectif est de 100% et un cours a déjà été manqué — un dossier parfait ne peut plus être récupéré ce semestre. Seul le fait de baisser l'objectif corrige cela.",
+		shortNoData: 'Aucun cours donné pour le moment',
+		shortInvalid: 'Invalide — les cours suivis ne peuvent pas dépasser les cours donnés',
+		shortCompleteMet: 'Terminé à {pct}% — objectif atteint 🎉',
+		shortCompleteMissed: 'Terminé à {pct}% — objectif manqué',
+		shortSafeEdgeZero: "Sur le fil — ne séchez pas aujourd'hui ⚠️",
+		shortSafeEdgeOne: 'Marge serrée — il reste 1 absence ⚠️',
+		shortSafeRoom: 'Tranquille — {n} {bunkWord} de marge 🚀',
+		shortUnrecoverable100: 'Non récupérable avec un objectif de 100% 💀',
+		shortCooked: 'Cuit — max {maxPct}% possible 💀',
+		shortBorderline: 'Sur des œufs — assistez à {n} {classWord} de suite ☕',
+		shortShortage: 'Il est temps de vous accrocher — assistez à {n} {classWord} de suite 📚',
 	},
 	article: {
 		overview: {
@@ -269,6 +285,187 @@ const fr: Translations = {
 	},
 	footer: {
 		note: '© {year} Attendance 75 Calculator • Calculateur de Présence Universitaire Gratuit en Ligne • Calculs côté client et 100% privé',
+	},
+	tracker: {
+		meta: {
+			title: 'Suivi de Présence - Suivez Chaque Matière en Un Geste',
+			description:
+				"Enregistrez toutes vos matières une fois, puis mettez à jour votre présence en un geste après chaque cours. Suivi de présence gratuit, privé et multi-matières avec limites d'absences sécurisées, objectifs de rattrapage et un bilan général — rien ne quitte jamais votre navigateur.",
+			keywords:
+				'suivi de présence, suivi de présence multi matières, suivi de présence hebdomadaire, application de suivi de présence par cours, suivi de présence par matière, suivi de présence pour étudiants',
+		},
+		header: {
+			title: 'Suivi de Présence',
+			subtitle: 'Enregistrez chaque matière une fois, puis +Présent / +Absent après le cours.',
+		},
+		targetLabel: 'Objectif de présence',
+		emptyHint: 'Ajoutez votre première matière pour commencer le suivi.',
+		sharedBanner: {
+			text: "Vous consultez un suivi partagé par lien. Il n'a pas encore été enregistré sur ce navigateur.",
+			saveBtn: 'Enregistrer dans mon suivi',
+			dismissBtn: 'Je consulte seulement',
+		},
+		storageWarning:
+			"Votre navigateur bloque les données du site (mode privé, ou données du site désactivées), donc les changements ici ne seront pas enregistrés une fois que vous partirez. Le suivi continue de fonctionner normalement pour cette session — utilisez Copier le lien pour garder une sauvegarde.",
+		addSubject: {
+			heading: 'Ajouter une matière',
+			nameLabel: 'Nom de la matière',
+			namePlaceholder: 'ex. Structures de Données',
+			attendedLabel: 'Suivis',
+			attendedSub: "jusqu'ici",
+			heldLabel: 'Donnés',
+			heldSub: "jusqu'ici",
+			plannedLabel: 'Total des Cours du Semestre',
+			plannedPlaceholder: 'ex. 100 cours prévus',
+			submitBtn: '+ Ajouter la matière',
+		},
+		stats: {
+			overall: 'Présence globale',
+			weakest: 'Matière la plus faible',
+			strongest: 'Matière la plus forte',
+		},
+		subjectsHeading: 'Vos matières',
+		copyVibeBtn: '📋 Copier le bilan',
+		copyLinkBtn: '🔗 Copier le lien',
+		printBtn: '🖨️ Imprimer / Capture',
+		row: {
+			totalThisSemester: '· {n} au total ce semestre',
+			present: '+ Présent',
+			absent: '+ Absent',
+			edit: 'Modifier',
+			delete: 'Supprimer',
+			editNameLabel: 'Nom',
+			editAttendedLabel: 'Suivis',
+			editHeldLabel: 'Donnés',
+			editPlannedLabel: 'Total des Cours du Semestre',
+			save: 'Enregistrer',
+			cancel: 'Annuler',
+		},
+		notes: {
+			invalid: "Les cours suivis ({attended}) ne peuvent pas dépasser les cours donnés ({held}) — corrigez les chiffres ci-dessous.",
+			unrecoverable: "L'objectif est de 100% et un cours a déjà été manqué — cela ne peut être corrigé qu'en baissant l'objectif.",
+			cooked: 'Même en assistant aux {remaining} cours restants, vous n\'atteindriez que {maxPct}% — en dessous de l\'objectif du semestre.',
+			termCompleteMet: 'Semestre terminé : vous avez fini à {pct}% — objectif atteint.',
+			termCompleteMissed: 'Semestre terminé : vous avez fini à {pct}% — objectif manqué.',
+			forecastBudget: "D'ici la fin du semestre : vous pouvez manquer {n} {classWord} de plus sur les {remaining} restants.",
+			forecastMustAttend: "D'ici la fin du semestre : vous devez assister aux {remaining} cours restants.",
+			borderline: '* Valeur limite — les établissements arrondissent 74,x% différemment ; vérifiez la politique de votre établissement.',
+			semesterOver: "Semestre terminé — plus aucun cours restant. Utilisez Modifier pour changer le total.",
+		},
+		validation: {
+			nameRequired: 'Donnez un nom à la matière.',
+			duplicateName: 'Vous avez déjà une matière portant ce nom.',
+			attendedInvalid: 'Suivis doit être un nombre entier, 0 ou plus.',
+			heldInvalid: 'Donnés doit être un nombre entier, 0 ou plus.',
+			plannedInvalid: 'Total des Cours du Semestre doit être un nombre entier, 0 ou plus.',
+			attendedExceedsHeld: 'Les cours suivis ne peuvent pas dépasser les cours donnés.',
+			plannedBelowHeld: 'Le total des cours du semestre doit être supérieur ou égal aux cours donnés.',
+		},
+		toasts: {
+			vibeCopied: 'Bilan copié',
+			linkCopied: 'Lien copié',
+			copyFailed: 'Impossible de copier — réessayez',
+			addressBarFallback: "Impossible de copier — copiez plutôt la barre d'adresse",
+			savedToBrowser: 'Enregistré sur ce navigateur',
+			undone: 'Annulé',
+			undoBtn: 'Annuler',
+		},
+		undo: {
+			present: '« {name} » marquée présente',
+			absent: '« {name} » marquée absente',
+			deleted: '« {name} » supprimée',
+			updated: '« {name} » mise à jour',
+		},
+		rollup: {
+			noClassesRecorded: '(aucun cours enregistré pour le moment)',
+			heldAcross: '({attended} / {held} donnés sur {n} {subjectWord})',
+			subjectSingular: 'matière',
+			subjectPlural: 'matières',
+			noData: '—',
+			noDataDetail: 'Aucun cours enregistré pour le moment',
+			detailComplete: '{pct}% · semestre terminé',
+			detailUnrecoverable: '{pct}% · non récupérable avec un objectif de 100%',
+			detailCooked: '{pct}% · hors de portée ce semestre',
+			detailShort: '{pct}% · assistez à {n} cours de suite',
+			detailSkip: '{pct}% · peut manquer {n} de plus',
+			detailSafe: '{pct}% · en sécurité',
+			detailLowest: '{pct}% · la plus basse de vos matières',
+			forecastUnavailable: 'Prévision indisponible — ajoutez les totaux du semestre.',
+			forecastMet: "D'ici la fin du semestre (matières avec un total défini) : vous finiriez à {pct}% — objectif atteint.",
+			forecastMissed: "D'ici la fin du semestre (matières avec un total défini) : vous finiriez à {pct}% — objectif manqué.",
+			forecastBudget: "D'ici la fin du semestre (matières avec un total défini) : vous pouvez manquer {n} {classWord} de plus sur les {remaining} restants.",
+			forecastMustAttend: "D'ici la fin du semestre (matières avec un total défini) : vous devez assister aux {remaining} cours restants.",
+		},
+		copySummary: {
+			targetLine: '• Objectif : {target}%',
+			overallLine: '• Global : {line}',
+			noClassesRecorded: 'Aucun cours enregistré pour le moment.',
+			noSubjectsSaved: 'Aucune matière enregistrée pour le moment.',
+		},
+		faq: [
+			{
+				question: 'En quoi le Suivi diffère-t-il du calculateur de la page d\'accueil ?',
+				answerHtml:
+					"Le calculateur de la page d'accueil répond à une seule question ponctuelle : cours suivis, cours donnés et votre pourcentage cible, pour un résultat instantané. Le Suivi est conçu pour tout le semestre — vous enregistrez chaque matière une fois, puis chaque semaine vous appuyez sur +Présent ou +Absent après le cours pour tout garder à jour, avec un bilan général sur l'ensemble de vos matières.",
+			},
+			{
+				question: 'Mes données sont-elles envoyées à un serveur ?',
+				answerHtml:
+					"Non. Le Suivi est 100% côté client, exactement comme le calculateur de la page d'accueil. Vos matières, compteurs et objectif sont enregistrés uniquement dans le stockage local de votre navigateur. Rien n'est jamais envoyé, et il n'y a ni compte ni connexion.",
+			},
+			{
+				question: 'Que se passe-t-il si j\'efface les données de mon navigateur ou si j\'utilise le mode privé/navigation privée ?',
+				answerHtml:
+					"Le stockage local est lié à votre profil de navigateur, donc effacer les données du site ou naviguer dans une fenêtre privée supprimera (ou n'enregistrera jamais) votre suivi. En mode privé, le Suivi fonctionne parfaitement pour cette session — il ne se souviendra simplement pas de vos matières la prochaine fois que vous ouvrirez la page. Utilisez Copier le lien avant de fermer l'onglet si vous voulez garder une sauvegarde.",
+			},
+			{
+				question: 'Comment partager mon suivi avec un ami ou le transférer sur un autre appareil ?',
+				answerHtml:
+					"Appuyez sur Copier le lien. Il encode vos matières et votre objectif actuels directement dans l'URL — rien n'est envoyé nulle part. Toute personne qui ouvre ce lien voit votre suivi et peut choisir de l'enregistrer comme le sien ; l'ouvrir sur votre ordinateur restaure les mêmes données que sur votre téléphone.",
+			},
+			{
+				question: 'Comment le nombre d\'« absences sécurisées » est-il calculé ?',
+				answerHtml:
+					"Une fois que vous entrez le Total des Cours du Semestre pour une matière, le Suivi calcule le nombre maximum de cours que vous pouvez encore manquer tout en atteignant (ou dépassant) votre objectif d'ici la fin du semestre — en tenant compte des cours déjà donnés, pas seulement de ceux qui restent.",
+			},
+			{
+				question: 'Pourquoi le nombre de rattrapage est-il différent d\'une simple estimation de « cours nécessaires » ?',
+				answerHtml:
+					"Assister à un cours ajoute un point à la fois aux cours suivis et aux cours donnés, donc le pourcentage évolue plus lentement qu'une estimation naïve ne le suggère. La formule de rattrapage du Suivi tient compte de ce dénominateur croissant, donc le nombre qu'elle vous donne est le nombre exact de cours consécutifs qui vous ramène à votre objectif — jamais une sous-estimation.",
+			},
+		],
+		article: {
+			introH2: 'Un suivi conçu pour tout le semestre',
+			introP1:
+				"La plupart des calculateurs de présence répondent à une question et c'est tout. Cette page est différente : enregistrez chaque matière une fois, et après chaque cours appuyez sur <strong>+Présent</strong> ou <strong>+Absent</strong> pour cette matière — un geste, sans ressaisir de chiffres, sans boîte de dialogue de confirmation. Vos données sont enregistrées automatiquement dans ce navigateur, prêtes pour la prochaine fois que vous ouvrirez la page.",
+			introP2:
+				"Chaque matière affiche son propre pourcentage et son statut, un bilan général sur tout ce que vous suivez, et une alerte « matière la plus faible » — parce qu'il est facile de surveiller son chiffre global tout en se faisant surprendre par ce seul cours qu'on continue de manquer.",
+			calcH2: 'Comment les chiffres sont calculés',
+			formulas: [
+				{
+					title: 'Pourcentage actuel',
+					formula: 'pourcentage = (suivis / donnés) × 100',
+					desc: "Le pourcentage exact est affiché avec une décimale. Les établissements ne s'accordent pas sur si 74,6% doit être arrondi à 74% ou à 75% — ce suivi n'arrondit jamais silencieusement une valeur limite vers le haut ; il la signale plutôt, pour que vous vérifiiez la politique de votre établissement.",
+				},
+				{
+					title: 'Cours que vous pouvez manquer dès maintenant',
+					formula: 'absences = floor(suivis / objectif% − donnés)',
+					desc: "Affiché pour chaque matière où vous êtes dans les temps — le même chiffre « dès maintenant » que donne le calculateur de la page d'accueil, sans avoir besoin du nombre total de cours.",
+				},
+				{
+					title: 'Cours nécessaires pour rattraper',
+					formula: 'nécessaires = ceil((objectif% × donnés − suivis) / (1 − objectif%))',
+					desc: "Affiché lorsque vous êtes en dessous de l'objectif. Chaque cours suivi s'ajoute à la fois au numérateur et au dénominateur, donc une estimation naïve qui n'augmente que le numérateur sous-estime le nombre réellement nécessaire — cette formule en tient compte.",
+				},
+				{
+					title: 'Prévision de fin de semestre',
+					formula: 'pourcentageMax = (suivis + restants) / totalCoursDuSemestre × 100',
+					desc: "Affiché uniquement une fois que vous avez saisi le Total des Cours du Semestre — projette où vous en serez à la fin du semestre, plafonnant le chiffre d'absences « dès maintenant » à ce qui reste réellement, et signalant quand l'objectif est mathématiquement hors de portée.",
+				},
+			],
+		},
+		footerNote: '© {year} Attendance 75 Calculator • Calculateur de Présence Universitaire Gratuit en Ligne',
+		footerCalculatorLink: 'Calculateur',
 	},
 };
 

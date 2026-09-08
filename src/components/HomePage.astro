@@ -133,9 +133,12 @@ const howToSchema = {
 		<div class="content-wrapper">
 			<!-- Top Bar with Brand Badge, Language Switcher & Theme Toggle -->
 			<nav class="top-nav">
-				<div class="inline-badge">
-					<span class="badge-dot"></span>
-					<span class="badge-text">{t.nav.badge}</span>
+				<div class="nav-brand">
+					<div class="inline-badge">
+						<span class="badge-dot"></span>
+						<span class="badge-text">{t.nav.badge}</span>
+					</div>
+					<a href={`${localePrefix(lang)}/tracker`} class="nav-tracker-link">{t.nav.trackerLink}</a>
 				</div>
 
 				<div class="top-nav-right">
@@ -155,14 +158,6 @@ const howToSchema = {
 					{t.header.title}
 				</h1>
 				<p class="page-subtitle" set:html={t.header.subtitleHtml} />
-
-				<!-- Quick Links -->
-				<nav class="hero-links">
-					<a href="/about-us" class="hero-link">{t.nav.aboutUs}</a>
-					<a href="/privacy-policy" class="hero-link">{t.nav.privacyPolicy}</a>
-					<a href="/terms-and-conditions" class="hero-link">{t.nav.termsAndConditions}</a>
-					<a href="/contact-us" class="hero-link">{t.nav.contactUs}</a>
-				</nav>
 			</header>
 
 			<!-- Main Calculator Card -->
@@ -313,6 +308,13 @@ const howToSchema = {
 								<span id="share-btn-text">{t.results.shareButtonText}</span>
 							</button>
 						</div>
+
+						<!-- Upsell to the multi-subject tracker page. Static link only —
+						no script — so it can't touch the calculator's behavior or page
+						weight. -->
+						<p class="tracker-upsell">
+							<a href={`${localePrefix(lang)}/tracker`} class="tracker-upsell-link" set:html={t.results.trackerUpsellHtml} />
+						</p>
 					</div>
 				</div>
 			</div>
@@ -320,6 +322,18 @@ const howToSchema = {
 
 			<!-- Comprehensive SEO Guide & Information Section -->
 			<article class="seo-article">
+				<!-- Legal / utility links — quiet, low-priority, placed directly
+				     above the first prose heading. -->
+				<nav class="legal-links-row">
+					<a href="/about-us" class="legal-link">{t.nav.aboutUs}</a>
+					<span class="legal-link-separator">•</span>
+					<a href="/privacy-policy" class="legal-link">{t.nav.privacyPolicy}</a>
+					<span class="legal-link-separator">•</span>
+					<a href="/terms-and-conditions" class="legal-link">{t.nav.termsAndConditions}</a>
+					<span class="legal-link-separator">•</span>
+					<a href="/contact-us" class="legal-link">{t.nav.contactUs}</a>
+				</nav>
+
 				<!-- Section 1: Overview -->
 				<section class="seo-section">
 					<h2 class="seo-h2">{t.article.overview.h2}</h2>
@@ -395,6 +409,8 @@ const howToSchema = {
 			<!-- Footer -->
 			<footer class="footer text-center">
 				<nav class="footer-nav">
+					<a href={`${localePrefix(lang)}/tracker`} class="footer-link">{t.tracker.header.title}</a>
+					<span class="footer-separator">•</span>
 					<a href="/about-us" class="footer-link">{t.nav.aboutUs}</a>
 					<span class="footer-separator">•</span>
 					<a href="/privacy-policy" class="footer-link">{t.nav.privacyPolicy}</a>
@@ -423,119 +439,15 @@ const howToSchema = {
 </Layout>
 
 <style>
-	/* CSS Variables for Light & Dark Theme */
-	:root {
-		--bg-canvas: #fafafa;
-		--bg-card: #ffffff;
-		--bg-input: #ffffff;
-		--bg-subtle: #fafafa;
-		--bg-pill: #ffffff;
-		--bg-pill-hover: #f2f2f2;
-		--bg-pill-active: #171717;
-		--text-pill-active: #ffffff;
-		--text-ink: #171717;
-		--text-body: #4d4d4d;
-		--text-muted: #8f8f8f;
-		--border-hairline: #ebebeb;
-		--border-focus: #171717;
-		--track-bg: #f2f2f2;
-		--target-marker-bg: #171717;
-		--shadow-card: 0 2px 8px rgba(0,0,0,0.04);
-		--badge-target-bg: #d3e5ff;
-		--badge-target-text: #0070f3;
+	/* CSS variables, the card container, form controls, pills, type scale,
+	   result-card treatment, legal links, footer and toast now live in
+	   src/styles/shared-ui.css (imported globally via app.css) so this page
+	   and /tracker can never drift apart. Only styles unique to this page's
+	   layout remain below. */
 
-		/* Vibe Colors Light */
-		--vibe-safe-bg: #f4fbf6;
-		--vibe-safe-border: #c7eed2;
-		--vibe-safe-text: #00703c;
-		--vibe-warn-bg: #fffdf5;
-		--vibe-warn-border: #fde8b3;
-		--vibe-warn-text: #ab570a;
-		--vibe-danger-bg: #fff8f8;
-		--vibe-danger-border: #fcd5d5;
-		--vibe-danger-text: #ee0000;
-		--vibe-cooked-bg: #171717;
-		--vibe-cooked-border: #000000;
-		--vibe-cooked-text: #ffffff;
-
-		/* SEO Article Light */
-		--code-bg: #f3f3f3;
-		--code-border: #e5e5e5;
-	}
-
-	html.dark {
-		--bg-canvas: #0a0a0a;
-		--bg-card: #121212;
-		--bg-input: #1a1a1a;
-		--bg-subtle: #171717;
-		--bg-pill: #1a1a1a;
-		--bg-pill-hover: #262626;
-		--bg-pill-active: #ffffff;
-		--text-pill-active: #000000;
-		--text-ink: #ededed;
-		--text-body: #a1a1a1;
-		--text-muted: #707070;
-		--border-hairline: #262626;
-		--border-focus: #ffffff;
-		--track-bg: #262626;
-		--target-marker-bg: #ffffff;
-		--shadow-card: 0 4px 20px rgba(0,0,0,0.3);
-		--badge-target-bg: #072a5a;
-		--badge-target-text: #52a8ff;
-
-		/* Vibe Colors Dark */
-		--vibe-safe-bg: #0b2214;
-		--vibe-safe-border: #164e29;
-		--vibe-safe-text: #4ade80;
-		--vibe-warn-bg: #291a03;
-		--vibe-warn-border: #593907;
-		--vibe-warn-text: #fbbf24;
-		--vibe-danger-bg: #2b0b0b;
-		--vibe-danger-border: #5c1818;
-		--vibe-danger-text: #f87171;
-		--vibe-cooked-bg: #000000;
-		--vibe-cooked-border: #404040;
-		--vibe-cooked-text: #ffffff;
-
-		/* SEO Article Dark */
-		--code-bg: #1c1c1c;
-		--code-border: #2a2a2a;
-	}
-
-	/* Layout & Base */
-	.page-container {
-		min-height: 100vh;
-		background-color: var(--bg-canvas);
-		color: var(--text-ink);
-		display: flex;
-		justify-content: center;
-		padding: 28px 16px;
-		font-family: 'Geist', Arial, sans-serif;
-		box-sizing: border-box;
-		transition: background-color 0.2s ease, color 0.2s ease;
-	}
-
-	.content-wrapper {
-		width: 100%;
-		max-width: 640px;
-		display: flex;
-		flex-direction: column;
-	}
-
-	/* Desktop: wider container and better spacing */
-	@media (min-width: 1024px) {
-		.content-wrapper {
-			max-width: 1200px;
-		}
-
-		.page-container {
-			padding: 40px 24px;
-		}
-
-		.calculator-card {
-			padding: 40px;
-		}
-	}
+	/* .page-container / .content-wrapper (width, padding, gutters) now live in
+	   src/styles/shared-ui.css so the homepage and /tracker can never drift
+	   apart on content width — only layout unique to this page remains here. */
 
 	/* Top Nav Bar with Theme Toggle */
 	.top-nav {
@@ -545,10 +457,18 @@ const howToSchema = {
 		margin-bottom: 20px;
 	}
 
+	.nav-brand {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		min-width: 0;
+	}
+
 	.top-nav-right {
 		display: flex;
 		align-items: center;
 		gap: 8px;
+		flex-shrink: 0;
 	}
 
 	.inline-badge {
@@ -563,6 +483,7 @@ const howToSchema = {
 		font-weight: 500;
 		color: var(--text-body);
 		box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+		min-width: 0;
 	}
 
 	.badge-dot {
@@ -570,6 +491,36 @@ const howToSchema = {
 		height: 6px;
 		background-color: #00c851;
 		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	.badge-text {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.nav-tracker-link {
+		display: inline-flex;
+		align-items: center;
+		padding: 5px 12px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-hairline);
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--text-body);
+		text-decoration: none;
+		white-space: nowrap;
+		flex-shrink: 0;
+		transition: all 0.15s ease;
+	}
+
+	.nav-tracker-link:hover {
+		background: var(--bg-pill-hover);
+		border-color: var(--text-muted);
+		color: var(--text-ink);
 	}
 
 	/* Theme Toggle Button */
@@ -604,164 +555,6 @@ const howToSchema = {
 		font-weight: 500;
 	}
 
-	/* Header */
-	.page-title {
-		font-size: 30px;
-		font-weight: 700;
-		color: var(--text-ink);
-		margin: 6px 0;
-		letter-spacing: -0.8px;
-		line-height: 1.2;
-	}
-
-	.page-subtitle {
-		font-size: 14px;
-		color: var(--text-body);
-		line-height: 1.5;
-		margin: 0 auto 16px auto;
-		max-width: 520px;
-	}
-
-	.hero-links {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: 12px;
-		margin-top: 16px;
-	}
-
-	.hero-link {
-		font-size: 13px;
-		font-weight: 500;
-		color: var(--text-body);
-		text-decoration: none;
-		padding: 6px 14px;
-		border: 1px solid var(--border-hairline);
-		border-radius: 100px;
-		background: var(--bg-card);
-		transition: all 0.15s ease;
-	}
-
-	.hero-link:hover {
-		color: var(--text-ink);
-		border-color: var(--border-focus);
-		background: var(--bg-subtle);
-	}
-
-	/* Card */
-	.calculator-card {
-		background: var(--bg-card);
-		border: 1px solid var(--border-hairline);
-		border-radius: 16px;
-		padding: 28px;
-		box-shadow: var(--shadow-card);
-		margin-bottom: 24px;
-		transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-	}
-
-	.field-label {
-		display: block;
-		font-size: 13px;
-		font-weight: 600;
-		color: var(--text-ink);
-		margin-bottom: 6px;
-	}
-
-	.label-muted {
-		font-weight: 400;
-		color: var(--text-muted);
-		font-size: 11px;
-	}
-
-	.label-optional {
-		font-weight: 500;
-		color: var(--badge-target-text);
-		font-size: 11px;
-	}
-
-	.flex-between {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.target-indicator {
-		font-size: 12px;
-		font-weight: 600;
-		color: var(--badge-target-text);
-		background: var(--badge-target-bg);
-		padding: 2px 8px;
-		border-radius: 100px;
-	}
-
-	/* Target Pills Grid */
-	.pills-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 6px;
-		align-items: center;
-	}
-
-	.target-btn {
-		padding: 7px 14px;
-		font-size: 13px;
-		font-weight: 500;
-		border: 1px solid var(--border-hairline);
-		border-radius: 100px;
-		background: var(--bg-pill);
-		color: var(--text-body);
-		cursor: pointer;
-		transition: all 0.15s ease;
-		font-family: inherit;
-	}
-
-	.target-btn:hover {
-		background: var(--bg-pill-hover);
-		color: var(--text-ink);
-	}
-
-	.target-btn.active {
-		background: var(--bg-pill-active);
-		color: var(--text-pill-active);
-		border-color: var(--bg-pill-active);
-		font-weight: 600;
-	}
-
-	.custom-target-wrap {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-		background: var(--bg-input);
-		border: 1px solid var(--border-hairline);
-		border-radius: 100px;
-		padding: 2px 10px;
-		transition: border-color 0.15s ease, box-shadow 0.15s ease;
-	}
-
-	.custom-target-wrap.input-error {
-		border-color: var(--vibe-danger-text);
-		box-shadow: 0 0 0 1px var(--vibe-danger-text);
-	}
-
-	.custom-target-input {
-		width: 68px;
-		border: none;
-		outline: none;
-		font-size: 13px;
-		font-family: inherit;
-		color: var(--text-ink);
-		background: transparent;
-		text-align: center;
-		padding: 3px 0;
-	}
-
-	.custom-target-unit {
-		font-size: 12px;
-		color: var(--text-muted);
-		font-weight: 500;
-	}
-
 	/* Inputs Grid */
 	.inputs-grid {
 		display: grid;
@@ -776,42 +569,6 @@ const howToSchema = {
 	.input-block {
 		display: flex;
 		flex-direction: column;
-	}
-
-	.text-input {
-		width: 100%;
-		padding: 11px 14px;
-		font-size: 15px;
-		border: 1px solid var(--border-hairline);
-		border-radius: 8px;
-		font-family: inherit;
-		color: var(--text-ink);
-		background: var(--bg-input);
-		box-sizing: border-box;
-		transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
-	}
-
-	.text-input:focus {
-		outline: none;
-		border-color: var(--border-focus);
-		box-shadow: 0 0 0 1px var(--border-focus);
-	}
-
-	/* Field-level validation error (matches the Input Error / status-danger palette) */
-	.text-input.input-error {
-		border-color: var(--vibe-danger-text);
-	}
-
-	.text-input.input-error:focus {
-		border-color: var(--vibe-danger-text);
-		box-shadow: 0 0 0 1px var(--vibe-danger-text);
-	}
-
-	.field-error-msg {
-		margin: 6px 0 0 0;
-		font-size: 12px;
-		font-weight: 500;
-		color: var(--vibe-danger-text);
 	}
 
 	/* Results Box */
@@ -854,34 +611,6 @@ const howToSchema = {
 		align-items: flex-start;
 		justify-content: space-between;
 		margin-bottom: 14px;
-	}
-
-	.result-eyebrow {
-		font-size: 11px;
-		font-weight: 600;
-		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-	}
-
-	.percentage-row {
-		display: flex;
-		align-items: baseline;
-		gap: 8px;
-		margin-top: 2px;
-	}
-
-	.percentage-val {
-		font-size: 34px;
-		font-weight: 700;
-		color: var(--text-ink);
-		letter-spacing: -1px;
-		line-height: 1;
-	}
-
-	.ratio-val {
-		font-size: 13px;
-		color: var(--text-muted);
 	}
 
 	.status-badge {
@@ -1008,40 +737,6 @@ const howToSchema = {
 		gap: 12px;
 	}
 
-	.detail-card {
-		background: var(--bg-subtle);
-		border: 1px solid var(--border-hairline);
-		border-radius: 10px;
-		padding: 14px;
-		display: flex;
-		flex-direction: column;
-		transition: background-color 0.2s ease, border-color 0.2s ease;
-	}
-
-	.detail-eyebrow {
-		font-size: 10px;
-		font-weight: 600;
-		color: var(--text-muted);
-		letter-spacing: 0.5px;
-		text-transform: uppercase;
-		margin-bottom: 4px;
-	}
-
-	.detail-headline {
-		font-size: 14px;
-		font-weight: 700;
-		color: var(--text-ink);
-		margin: 0 0 4px 0;
-		line-height: 1.3;
-	}
-
-	.detail-desc {
-		font-size: 12px;
-		color: var(--text-body);
-		line-height: 1.4;
-		margin: 0;
-	}
-
 	/* Copy / Share Button Row */
 	.result-actions {
 		display: flex;
@@ -1069,6 +764,31 @@ const howToSchema = {
 	.result-actions .btn-copy {
 		width: auto;
 		flex: 1;
+	}
+
+	.tracker-upsell {
+		margin: 10px 0 0 0;
+		text-align: center;
+	}
+
+	.tracker-upsell-link {
+		font-size: 12.5px;
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.tracker-upsell-link:hover {
+		color: var(--badge-target-text);
+	}
+
+	.tracker-upsell-link strong {
+		color: var(--text-body);
+		font-weight: 600;
+	}
+
+	.tracker-upsell-link:hover strong {
+		color: var(--badge-target-text);
 	}
 
 	.btn-copy:hover {
@@ -1261,142 +981,20 @@ const howToSchema = {
 		margin: 0;
 	}
 
-	/* Footer Note */
-	.footer {
-		padding: 12px 0 24px 0;
-	}
-
-	.footer-nav {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: 8px;
-		margin-bottom: 12px;
-	}
-
-	.footer-link {
-		font-size: 13px;
-		color: var(--text-body);
-		text-decoration: none;
-		transition: color 0.15s ease;
-	}
-
-	.footer-link:hover {
-		color: var(--text-ink);
-		text-decoration: underline;
-	}
-
-	.footer-separator {
-		color: var(--text-muted);
-		font-size: 13px;
-	}
-
-	.footer-note {
-		font-size: 12px;
-		color: var(--text-muted);
-		margin: 0;
-		line-height: 1.5;
-	}
-
-	/* Toast */
-	.toast {
-		position: fixed;
-		bottom: 24px;
-		left: 50%;
-		transform: translateX(-50%);
-		background: var(--text-ink);
-		color: var(--bg-canvas);
-		padding: 10px 20px;
-		border-radius: 100px;
-		font-size: 13px;
-		font-weight: 500;
-		box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-		z-index: 100;
-	}
-
-	.hidden {
-		display: none !important;
-	}
-
 	/* Mobile responsive */
 	@media (max-width: 640px) {
-		.page-container {
-			padding: 16px 12px;
-			padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-		}
-
 		.top-nav {
 			margin-bottom: 16px;
 		}
 
-		.page-title {
-			font-size: 24px;
-			letter-spacing: -0.5px;
-		}
-
-		.page-subtitle {
-			font-size: 13px;
-			padding: 0 4px;
-			margin-bottom: 12px;
-		}
-
-		.hero-links {
-			gap: 8px;
-			margin-top: 12px;
-		}
-
-		.hero-link {
-			font-size: 12px;
-			padding: 6px 12px;
-		}
-
-		.calculator-card,
 		.seo-article {
 			padding: 20px 16px;
 			border-radius: 14px;
 		}
 
-		/* Prevent iOS Safari 16px auto-zoom on focus */
-		.text-input,
-		.custom-target-input {
-			font-size: 16px !important;
-		}
-
-		.text-input {
-			padding: 12px 14px;
-		}
-
 		.inputs-grid {
 			grid-template-columns: 1fr;
 			gap: 12px;
-		}
-
-		/* Mobile Touch-Friendly Pills */
-		.pills-grid {
-			gap: 6px;
-		}
-
-		.target-btn {
-			padding: 8px 13px;
-			min-height: 40px;
-			font-size: 13px;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			flex: 1 1 auto;
-			min-width: 52px;
-		}
-
-		.custom-target-wrap {
-			min-height: 40px;
-			flex: 1 1 auto;
-			justify-content: center;
-			padding: 2px 12px;
-		}
-
-		.custom-target-input {
-			width: 84px;
 		}
 
 		/* Results Box on Mobile */
@@ -1409,15 +1007,6 @@ const howToSchema = {
 			align-items: center;
 			gap: 8px;
 			margin-bottom: 12px;
-		}
-
-		.percentage-val {
-			font-size: 28px;
-			letter-spacing: -0.8px;
-		}
-
-		.ratio-val {
-			font-size: 12px;
 		}
 
 		.status-badge {
@@ -1464,22 +1053,6 @@ const howToSchema = {
 		.seo-h2 {
 			font-size: 18px;
 		}
-
-		.footer-nav {
-			flex-direction: column;
-			gap: 6px;
-		}
-
-		.footer-separator {
-			display: none;
-		}
-
-		.toast {
-			width: calc(100% - 32px);
-			max-width: 340px;
-			text-align: center;
-			bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-		}
 	}
 
 	@media (max-width: 380px) {
@@ -1509,9 +1082,49 @@ const howToSchema = {
 </style>
 
 <script>
+	import { getAttendanceStatus, type AttendanceTier, type AttendanceStatusStrings } from '../lib/attendanceStatus';
+	import { buildSemesterForecast, computeImmediateSkips, computeImmediateNeeded, type SemesterForecast } from '../lib/attendanceMath';
+
 	// --- i18n strings for the calculator ---
-	interface I18nJsStrings {
+	// Intersected with AttendanceStatusStrings because this bundle (built from
+	// t.js in the frontmatter) really does carry every key that shape needs —
+	// the index signature alone doesn't tell TypeScript that.
+	interface I18nJsStrings extends AttendanceStatusStrings {
 		[key: string]: string;
+	}
+
+	// Maps a shared status tier to this page's existing vibe-box / status-badge
+	// visual tones, so the shared module only owns copy, never CSS.
+	function vibeBoxClass(tier: AttendanceTier): string {
+		switch (tier) {
+			case 'safe-room':
+			case 'safe-edge':
+			case 'complete-met':
+				return 'vibe-safe';
+			case 'borderline':
+				return 'vibe-warning';
+			case 'cooked':
+			case 'unrecoverable-100':
+				return 'vibe-cooked';
+			default:
+				return 'vibe-danger';
+		}
+	}
+
+	function statusBadgeClass(tier: AttendanceTier): string {
+		switch (tier) {
+			case 'safe-room':
+			case 'safe-edge':
+			case 'complete-met':
+				return 'status-safe';
+			case 'borderline':
+				return 'status-warning';
+			case 'cooked':
+			case 'unrecoverable-100':
+				return 'status-cooked';
+			default:
+				return 'status-danger';
+		}
 	}
 
 	const i18nEl = document.getElementById('i18n-js-strings');
@@ -1690,40 +1303,10 @@ const howToSchema = {
 		}
 	}
 
-	interface SemesterForecast {
-		isCooked: boolean;
-		isComplete: boolean;
-		metTarget: boolean;
-		remaining: number;
-		needed: number;
-		bunksRemaining: number;
-		maxPct: number;
-	}
-
-	// Pure semester-forecast math, factored out of calculate() so the Copy
-	// and Share outputs can compute the exact same numbers the card shows,
-	// without re-parsing already-formatted DOM text.
-	function buildSemesterForecast(attended: number, totalHeld: number, target: number, semTotal: number): SemesterForecast {
-		const targetFrac = target / 100;
-		const remaining = Math.max(0, semTotal - totalHeld);
-		// F5: semTotal === totalHeld means 0 classes remain — the semester is
-		// over, not a warning state. That's "complete", never "cooked".
-		const isComplete = remaining === 0;
-		const maxPossibleAttended = attended + remaining;
-		const maxPossiblePct = semTotal > 0 ? (maxPossibleAttended / semTotal) * 100 : 0;
-		const semTotalTargetAttended = Math.ceil(targetFrac * semTotal);
-		const needed = Math.max(0, semTotalTargetAttended - attended);
-		const bunksRemaining = remaining - needed;
-		return {
-			isCooked: !isComplete && maxPossiblePct < target,
-			isComplete,
-			metTarget: maxPossiblePct >= target,
-			remaining,
-			needed,
-			bunksRemaining,
-			maxPct: maxPossiblePct,
-		};
-	}
+	// buildSemesterForecast() itself now lives in ../lib/attendanceMath so the
+	// tracker page can import the exact same function — see that module for
+	// the formula. F5: semTotal === totalHeld means 0 classes remain, which
+	// that function treats as "complete", never "cooked".
 
 	// Recomputes the semester forecast fresh from whatever's currently in the
 	// inputs. Returns null whenever there is nothing valid to show — no
@@ -1871,7 +1454,7 @@ const howToSchema = {
 					: format(i18n.semCompleteMissedDesc, { pct: Math.round(forecast.maxPct), target });
 			}
 		} else if (currentPercentage >= target) {
-			immediateBunks = Math.floor((attended / targetFrac) - totalHeld);
+			immediateBunks = computeImmediateSkips(attended, totalHeld, target);
 			// F1 FIX: the safe-bunk count ignored the semester cap and could
 			// suggest bunking more classes than actually remain. Cap it to
 			// what's left, and say so in the headline when the cap is binding.
@@ -1882,9 +1465,9 @@ const howToSchema = {
 			}
 			const classWord = pluralize(immediateBunks, i18n.classSingular, i18n.classPlural);
 			// Verb agreement for the "(only N left this semester)" parenthetical
-			// in the capped case — es/it/pt need "queda/rimane/resta" at n===1,
-			// not the hardcoded plural. Harmless no-op for locales whose
-			// template doesn't reference {cappedVerb}.
+			// in the capped case — es needs "queda" at n===1, not the hardcoded
+			// plural. Harmless no-op for locales whose template doesn't
+			// reference {cappedVerb}.
 			const cappedVerb = pluralize(immediateBunks, i18n.remainVerbSingular, i18n.remainVerbPlural);
 			if (currentHeadline) {
 				currentHeadline.textContent = immediateBunks > 0
@@ -1910,7 +1493,7 @@ const howToSchema = {
 				if (currentHeadline) currentHeadline.textContent = i18n.cookedHeadline;
 				if (currentDesc) currentDesc.textContent = format(i18n.cookedDesc, { remaining: forecast.remaining, maxPct: Math.round(forecast.maxPct), classWordRemaining });
 			} else {
-				immediateAttend = Math.ceil(((targetFrac * totalHeld) - attended) / (1 - targetFrac));
+				immediateAttend = computeImmediateNeeded(attended, totalHeld, target);
 				const classWord = pluralize(immediateAttend, i18n.classSingular, i18n.classPlural);
 				if (currentHeadline) currentHeadline.textContent = format(i18n.attendNextPrefix, { n: immediateAttend, classWord });
 				if (currentDesc) currentDesc.textContent = format(i18n.attendNextDesc, { n: immediateAttend, target, classWord });
@@ -1949,53 +1532,19 @@ const howToSchema = {
 		}
 
 		// --- STUDENT SLANG VIBE MESSAGING ---
+		// Tier + copy come from the shared attendanceStatus module (also used by
+		// the tracker) so the two pages' wording can never drift apart. This
+		// page's own i18n strings are passed straight through, so every locale's
+		// existing translation keeps working unchanged.
 		if (vibeBox && vibeMessage && statusBadge) {
-			if (forecast?.isComplete) {
-				// F5: semester is over — report the final result, not a
-				// "keep going" nudge that no longer applies.
-				if (forecast.metTarget) {
-					vibeBox.className = 'vibe-box vibe-safe';
-					statusBadge.textContent = i18n.vibeCompleteStatus;
-					statusBadge.className = 'status-badge status-safe';
-					vibeMessage.textContent = format(i18n.semCompleteMetDesc, { pct: Math.round(forecast.maxPct), target });
-				} else {
-					vibeBox.className = 'vibe-box vibe-danger';
-					statusBadge.textContent = i18n.vibeCompleteStatus;
-					statusBadge.className = 'status-badge status-danger';
-					vibeMessage.textContent = format(i18n.semCompleteMissedDesc, { pct: Math.round(forecast.maxPct), target });
-				}
-			} else if (isCooked && forecast) {
-				// COOKED STATE
-				vibeBox.className = 'vibe-box vibe-cooked';
-				statusBadge.textContent = i18n.vibeCookedStatus;
-				statusBadge.className = 'status-badge status-cooked';
-				vibeMessage.innerHTML = format(i18n.vibeCookedMessageHtml, { maxPct: Math.round(forecast.maxPct) });
-			} else if (currentPercentage >= target) {
-				// SAFE STATE
-				vibeBox.className = 'vibe-box vibe-safe';
-				statusBadge.textContent = i18n.vibeSafeStatus;
-				statusBadge.className = 'status-badge status-safe';
-				if (immediateBunks > 0) {
-					const bunkWord = pluralize(immediateBunks, i18n.bunkSingular, i18n.bunkPlural);
-					vibeMessage.innerHTML = format(i18n.vibeSafeWithBunksHtml, { n: immediateBunks, bunkWord });
-				} else {
-					vibeMessage.innerHTML = format(i18n.vibeSafeOnEdgeHtml, { pct: Math.round(currentPercentage), target });
-				}
-			} else if (currentPercentage >= target - 5) {
-				// BORDERLINE STATE
-				const classWord = pluralize(immediateAttend, i18n.classSingular, i18n.classPlural);
-				vibeBox.className = 'vibe-box vibe-warning';
-				statusBadge.textContent = i18n.vibeBorderlineStatus;
-				statusBadge.className = 'status-badge status-warning';
-				vibeMessage.innerHTML = format(i18n.vibeBorderlineMessageHtml, { n: immediateAttend, classWord });
-			} else {
-				// SHORTAGE RECOVERABLE STATE
-				const classWord = pluralize(immediateAttend, i18n.classSingular, i18n.classPlural);
-				vibeBox.className = 'vibe-box vibe-danger';
-				statusBadge.textContent = i18n.vibeShortageStatus;
-				statusBadge.className = 'status-badge status-danger';
-				vibeMessage.innerHTML = format(i18n.vibeShortageMessageHtml, { n: immediateAttend, classWord });
-			}
+			const vibeStatus = getAttendanceStatus(
+				{ attended, held: totalHeld, target, totalPlanned: hasSemTotal ? semEval.value : null },
+				i18n
+			);
+			vibeBox.className = `vibe-box ${vibeBoxClass(vibeStatus.tier)}`;
+			statusBadge.textContent = vibeStatus.label;
+			statusBadge.className = `status-badge ${statusBadgeClass(vibeStatus.tier)}`;
+			vibeMessage.innerHTML = vibeStatus.message;
 		}
 	}
 

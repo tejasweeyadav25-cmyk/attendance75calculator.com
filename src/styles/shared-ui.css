@@ -1,0 +1,601 @@
+/*
+ * Shared design-system tokens and component classes, extracted from the
+ * homepage calculator card so the homepage and the tracker page can never
+ * visually drift apart. The homepage is the reference: every value here
+ * matches what HomePage.astro already rendered before this file existed.
+ */
+
+:root {
+	--bg-canvas: #fafafa;
+	--bg-card: #ffffff;
+	--bg-input: #ffffff;
+	--bg-subtle: #fafafa;
+	--bg-pill: #ffffff;
+	--bg-pill-hover: #f2f2f2;
+	--bg-pill-active: #171717;
+	--text-pill-active: #ffffff;
+	--text-ink: #171717;
+	--text-body: #4d4d4d;
+	--text-muted: #8f8f8f;
+	--border-hairline: #ebebeb;
+	--border-focus: #171717;
+	--track-bg: #f2f2f2;
+	--target-marker-bg: #171717;
+	--shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+	--badge-target-bg: #d3e5ff;
+	--badge-target-text: #0070f3;
+	--link-color: #0070f3;
+	--link-hover: #0051cc;
+
+	/* Vibe / status colors (light) — canonical names, plus the tracker's
+	   shorter aliases pointing at the same values so neither page's
+	   selectors need to reference a different variable name. */
+	--vibe-safe-bg: #f4fbf6;
+	--vibe-safe-border: #c7eed2;
+	--vibe-safe-text: #00703c;
+	--vibe-warn-bg: #fffdf5;
+	--vibe-warn-border: #fde8b3;
+	--vibe-warn-text: #ab570a;
+	--vibe-danger-bg: #fff8f8;
+	--vibe-danger-border: #fcd5d5;
+	--vibe-danger-text: #ee0000;
+	--vibe-cooked-bg: #171717;
+	--vibe-cooked-border: #000000;
+	--vibe-cooked-text: #ffffff;
+
+	--safe-bg: var(--vibe-safe-bg);
+	--safe-border: var(--vibe-safe-border);
+	--safe-text: var(--vibe-safe-text);
+	--warn-bg: var(--vibe-warn-bg);
+	--warn-border: var(--vibe-warn-border);
+	--warn-text: var(--vibe-warn-text);
+	--danger-bg: var(--vibe-danger-bg);
+	--danger-border: var(--vibe-danger-border);
+	--danger-text: var(--vibe-danger-text);
+	--cooked-bg: var(--vibe-cooked-bg);
+	--cooked-border: var(--vibe-cooked-border);
+	--cooked-text: var(--vibe-cooked-text);
+	--info-bg: #f2f8ff;
+	--info-border: #cfe4ff;
+	--info-text: #0761d1;
+
+	/* SEO Article */
+	--code-bg: #f3f3f3;
+	--code-border: #e5e5e5;
+}
+
+html.dark {
+	--bg-canvas: #0a0a0a;
+	--bg-card: #121212;
+	--bg-input: #1a1a1a;
+	--bg-subtle: #171717;
+	--bg-pill: #1a1a1a;
+	--bg-pill-hover: #262626;
+	--bg-pill-active: #ffffff;
+	--text-pill-active: #000000;
+	--text-ink: #ededed;
+	--text-body: #a1a1a1;
+	--text-muted: #707070;
+	--border-hairline: #262626;
+	--border-focus: #ffffff;
+	--track-bg: #262626;
+	--target-marker-bg: #ffffff;
+	--shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+	--badge-target-bg: #072a5a;
+	--badge-target-text: #52a8ff;
+	--link-color: #52a8ff;
+	--link-hover: #80c0ff;
+
+	--vibe-safe-bg: #0b2214;
+	--vibe-safe-border: #164e29;
+	--vibe-safe-text: #4ade80;
+	--vibe-warn-bg: #291a03;
+	--vibe-warn-border: #593907;
+	--vibe-warn-text: #fbbf24;
+	--vibe-danger-bg: #2b0b0b;
+	--vibe-danger-border: #5c1818;
+	--vibe-danger-text: #f87171;
+	--vibe-cooked-bg: #000000;
+	--vibe-cooked-border: #404040;
+	--vibe-cooked-text: #ffffff;
+
+	--info-bg: #071d3b;
+	--info-border: #123a70;
+	--info-text: #7ab8ff;
+
+	--code-bg: #1c1c1c;
+	--code-border: #2a2a2a;
+}
+
+/* Page shell — shared by the homepage and the tracker page so both sit on
+   the exact same content width. Page-specific <style> blocks must never
+   redefine .page-container or .content-wrapper's width/padding — only this
+   file owns those numbers. */
+.page-container {
+	min-height: 100vh;
+	background-color: var(--bg-canvas);
+	color: var(--text-ink);
+	display: flex;
+	justify-content: center;
+	padding: 28px 16px;
+	font-family: 'Geist', Arial, sans-serif;
+	box-sizing: border-box;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.content-wrapper {
+	width: 100%;
+	max-width: 640px;
+	display: flex;
+	flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+	.content-wrapper {
+		max-width: 1200px;
+	}
+
+	.page-container {
+		padding: 40px 24px;
+	}
+}
+
+@media (max-width: 640px) {
+	.page-container {
+		padding: 16px 12px;
+		padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+	}
+}
+
+/* Page heading / subtitle type scale */
+.page-title {
+	font-size: 30px;
+	font-weight: 700;
+	color: var(--text-ink);
+	margin: 6px 0;
+	letter-spacing: -0.8px;
+	line-height: 1.2;
+}
+
+.page-subtitle {
+	font-size: 14px;
+	color: var(--text-body);
+	line-height: 1.5;
+	margin: 0 auto 16px auto;
+	max-width: 520px;
+}
+
+@media (max-width: 640px) {
+	.page-title {
+		font-size: 24px;
+		letter-spacing: -0.5px;
+	}
+
+	.page-subtitle {
+		font-size: 13px;
+		padding: 0 4px;
+		margin-bottom: 12px;
+	}
+}
+
+/* Card container — the homepage's calculator card treatment, shared by the
+   tracker's target/status/add-subject/subjects cards. */
+.calculator-card,
+.tracker-card {
+	background: var(--bg-card);
+	border: 1px solid var(--border-hairline);
+	border-radius: 16px;
+	padding: 28px;
+	box-shadow: var(--shadow-card);
+	transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (min-width: 1024px) {
+	.calculator-card,
+	.tracker-card {
+		padding: 40px;
+	}
+}
+
+@media (max-width: 640px) {
+	.calculator-card,
+	.tracker-card {
+		padding: 20px 16px;
+		border-radius: 14px;
+	}
+}
+
+/* Field labels / helper text */
+.field-label {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--text-ink);
+	margin-bottom: 6px;
+}
+
+.label-muted {
+	font-weight: 400;
+	color: var(--text-muted);
+	font-size: 11px;
+}
+
+.label-optional {
+	font-weight: 500;
+	color: var(--badge-target-text);
+	font-size: 11px;
+}
+
+.flex-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.target-indicator {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--badge-target-text);
+	background: var(--badge-target-bg);
+	padding: 2px 8px;
+	border-radius: 100px;
+}
+
+/* Target pills */
+.pills-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+}
+
+.target-btn {
+	padding: 7px 14px;
+	font-size: 13px;
+	font-weight: 500;
+	border: 1px solid var(--border-hairline);
+	border-radius: 100px;
+	background: var(--bg-pill);
+	color: var(--text-body);
+	cursor: pointer;
+	transition: all 0.15s ease;
+	font-family: inherit;
+}
+
+.target-btn:hover {
+	background: var(--bg-pill-hover);
+	color: var(--text-ink);
+}
+
+.target-btn.active {
+	background: var(--bg-pill-active);
+	color: var(--text-pill-active);
+	border-color: var(--bg-pill-active);
+	font-weight: 600;
+}
+
+.custom-target-wrap {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: var(--bg-input);
+	border: 1px solid var(--border-hairline);
+	border-radius: 100px;
+	padding: 2px 10px;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.custom-target-wrap.input-error {
+	border-color: var(--vibe-danger-text);
+	box-shadow: 0 0 0 1px var(--vibe-danger-text);
+}
+
+.custom-target-input {
+	width: 68px;
+	border: none;
+	outline: none;
+	font-size: 13px;
+	font-family: inherit;
+	color: var(--text-ink);
+	background: transparent;
+	text-align: center;
+	padding: 3px 0;
+}
+
+.custom-target-unit {
+	font-size: 12px;
+	color: var(--text-muted);
+	font-weight: 500;
+}
+
+@media (max-width: 640px) {
+	.pills-grid {
+		gap: 6px;
+	}
+
+	.target-btn {
+		padding: 8px 13px;
+		min-height: 40px;
+		font-size: 13px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 1 1 auto;
+		min-width: 52px;
+	}
+
+	.custom-target-wrap {
+		min-height: 40px;
+		flex: 1 1 auto;
+		justify-content: center;
+		padding: 2px 12px;
+	}
+
+	.custom-target-input {
+		width: 84px;
+	}
+}
+
+/* Text inputs */
+.text-input {
+	width: 100%;
+	padding: 11px 14px;
+	font-size: 15px;
+	border: 1px solid var(--border-hairline);
+	border-radius: 8px;
+	font-family: inherit;
+	color: var(--text-ink);
+	background: var(--bg-input);
+	box-sizing: border-box;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+}
+
+.text-input:focus {
+	outline: none;
+	border-color: var(--border-focus);
+	box-shadow: 0 0 0 1px var(--border-focus);
+}
+
+.text-input.input-error {
+	border-color: var(--vibe-danger-text);
+}
+
+.text-input.input-error:focus {
+	border-color: var(--vibe-danger-text);
+	box-shadow: 0 0 0 1px var(--vibe-danger-text);
+}
+
+.field-error-msg {
+	margin: 6px 0 0 0;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--vibe-danger-text);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@media (max-width: 640px) {
+	.text-input,
+	.custom-target-input {
+		font-size: 16px !important;
+	}
+
+	.text-input {
+		padding: 12px 14px;
+	}
+}
+
+/* Big result figure (homepage's percentage-val, the tracker's rollup-pct) */
+.result-eyebrow {
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.percentage-row {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	margin-top: 2px;
+	flex-wrap: wrap;
+}
+
+.percentage-val {
+	font-size: 34px;
+	font-weight: 700;
+	color: var(--text-ink);
+	letter-spacing: -1px;
+	line-height: 1;
+}
+
+.ratio-val {
+	font-size: 13px;
+	color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+	.percentage-val {
+		font-size: 28px;
+		letter-spacing: -0.8px;
+	}
+
+	.ratio-val {
+		font-size: 12px;
+	}
+}
+
+/* Result-card treatment — the homepage's "Right now" / "Semester forecast"
+   detail cards. */
+.detail-card {
+	background: var(--bg-subtle);
+	border: 1px solid var(--border-hairline);
+	border-radius: 10px;
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.detail-eyebrow {
+	font-size: 10px;
+	font-weight: 600;
+	color: var(--text-muted);
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	margin-bottom: 4px;
+}
+
+.detail-headline {
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--text-ink);
+	margin: 0 0 4px 0;
+	line-height: 1.3;
+}
+
+.detail-desc {
+	font-size: 12px;
+	color: var(--text-body);
+	line-height: 1.4;
+	margin: 0;
+}
+
+/* Legal links row — a deliberate divider strip between the tool and the
+   article, not throwaway text: bordered/tinted band, accent-colored links
+   with a permanent underline (so it doesn't rely on color alone), and a
+   visible hover/focus state. Shared by the homepage and the tracker so both
+   pages get the identical treatment. */
+.legal-links-row {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 10px 18px;
+	margin: 0 0 24px 0;
+	padding: 16px 20px;
+	border: 1px solid var(--border-hairline);
+	border-radius: 12px;
+	background: var(--bg-subtle);
+}
+
+.legal-link {
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--link-color);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	border-radius: 4px;
+	transition: color 0.15s ease;
+}
+
+.legal-link:hover,
+.legal-link:focus-visible {
+	color: var(--link-hover);
+}
+
+.legal-link:focus-visible {
+	outline: 2px solid var(--link-color);
+	outline-offset: 2px;
+}
+
+.legal-link-separator {
+	color: var(--text-muted);
+	font-size: 13px;
+}
+
+@media (max-width: 480px) {
+	.legal-links-row {
+		gap: 8px 14px;
+		padding: 14px 16px;
+	}
+}
+
+/* Footer */
+.footer {
+	padding: 12px 0 24px 0;
+}
+
+.footer-nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.footer-link {
+	font-size: 13px;
+	color: var(--text-body);
+	text-decoration: none;
+	transition: color 0.15s ease;
+}
+
+.footer-link:hover {
+	color: var(--text-ink);
+	text-decoration: underline;
+}
+
+.footer-separator {
+	color: var(--text-muted);
+	font-size: 13px;
+}
+
+.footer-note {
+	font-size: 12px;
+	color: var(--text-muted);
+	margin: 0;
+	line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+	.footer-nav {
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.footer-separator {
+		display: none;
+	}
+}
+
+.hidden {
+	display: none !important;
+}
+
+/* Toast */
+.toast {
+	position: fixed;
+	bottom: 24px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: var(--text-ink);
+	color: var(--bg-canvas);
+	padding: 10px 20px;
+	border-radius: 100px;
+	font-size: 13px;
+	font-weight: 500;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+	z-index: 100;
+}
+
+@media (max-width: 640px) {
+	.toast {
+		width: calc(100% - 32px);
+		max-width: 340px;
+		text-align: center;
+		bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+	}
+}

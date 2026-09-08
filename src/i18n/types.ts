@@ -25,6 +25,7 @@ export interface Translations {
 	};
 	nav: {
 		badge: string;
+		trackerLink: string;
 		themeDark: string;
 		themeLight: string;
 		themeToggleAria: string;
@@ -65,6 +66,7 @@ export interface Translations {
 		shareCopiedText: string;
 		shareStatAttendedLabel: string;
 		shareStatTargetLabel: string;
+		trackerUpsellHtml: string;
 	};
 	js: {
 		noDataStatus: string;
@@ -126,6 +128,19 @@ export interface Translations {
 		vibeCompleteStatus: string;
 		remainVerbSingular: string;
 		remainVerbPlural: string;
+		unrecoverable100Status: string;
+		unrecoverable100MessageHtml: string;
+		shortNoData: string;
+		shortInvalid: string;
+		shortCompleteMet: string;
+		shortCompleteMissed: string;
+		shortSafeEdgeZero: string;
+		shortSafeEdgeOne: string;
+		shortSafeRoom: string;
+		shortUnrecoverable100: string;
+		shortCooked: string;
+		shortBorderline: string;
+		shortShortage: string;
 	};
 	article: {
 		overview: {
@@ -161,5 +176,129 @@ export interface Translations {
 	};
 	footer: {
 		note: string;
+	};
+	tracker: {
+		meta: {
+			title: string;
+			description: string;
+			keywords: string;
+		};
+		header: {
+			title: string;
+			subtitle: string;
+		};
+		targetLabel: string;
+		emptyHint: string;
+		sharedBanner: {
+			text: string;
+			saveBtn: string;
+			dismissBtn: string;
+		};
+		storageWarning: string;
+		addSubject: {
+			heading: string;
+			nameLabel: string;
+			namePlaceholder: string;
+			attendedLabel: string;
+			attendedSub: string;
+			heldLabel: string;
+			heldSub: string;
+			plannedLabel: string;
+			plannedPlaceholder: string;
+			submitBtn: string;
+		};
+		stats: {
+			overall: string;
+			weakest: string;
+			strongest: string;
+		};
+		subjectsHeading: string;
+		copyVibeBtn: string;
+		copyLinkBtn: string;
+		printBtn: string;
+		row: {
+			totalThisSemester: string;
+			present: string;
+			absent: string;
+			edit: string;
+			delete: string;
+			editNameLabel: string;
+			editAttendedLabel: string;
+			editHeldLabel: string;
+			editPlannedLabel: string;
+			save: string;
+			cancel: string;
+		};
+		notes: {
+			invalid: string;
+			unrecoverable: string;
+			cooked: string;
+			termCompleteMet: string;
+			termCompleteMissed: string;
+			forecastBudget: string;
+			forecastMustAttend: string;
+			borderline: string;
+			semesterOver: string;
+		};
+		validation: {
+			nameRequired: string;
+			duplicateName: string;
+			attendedInvalid: string;
+			heldInvalid: string;
+			plannedInvalid: string;
+			attendedExceedsHeld: string;
+			plannedBelowHeld: string;
+		};
+		toasts: {
+			vibeCopied: string;
+			linkCopied: string;
+			copyFailed: string;
+			addressBarFallback: string;
+			savedToBrowser: string;
+			undone: string;
+			undoBtn: string;
+		};
+		undo: {
+			present: string;
+			absent: string;
+			deleted: string;
+			updated: string;
+		};
+		rollup: {
+			noClassesRecorded: string;
+			heldAcross: string;
+			subjectSingular: string;
+			subjectPlural: string;
+			noData: string;
+			noDataDetail: string;
+			detailComplete: string;
+			detailUnrecoverable: string;
+			detailCooked: string;
+			detailShort: string;
+			detailSkip: string;
+			detailSafe: string;
+			detailLowest: string;
+			forecastUnavailable: string;
+			forecastMet: string;
+			forecastMissed: string;
+			forecastBudget: string;
+			forecastMustAttend: string;
+		};
+		copySummary: {
+			targetLine: string;
+			overallLine: string;
+			noClassesRecorded: string;
+			noSubjectsSaved: string;
+		};
+		faq: FaqItem[];
+		article: {
+			introH2: string;
+			introP1: string;
+			introP2: string;
+			calcH2: string;
+			formulas: { title: string; formula: string; desc: string }[];
+		};
+		footerNote: string;
+		footerCalculatorLink: string;
 	};
 }

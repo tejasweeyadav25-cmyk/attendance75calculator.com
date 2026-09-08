@@ -14,12 +14,7 @@ export const defaultLocale = 'en';
 export const locales: LocaleInfo[] = [
 	{ code: 'en', hreflang: 'en', nativeName: 'English', ogLocale: 'en_US' },
 	{ code: 'es', hreflang: 'es', nativeName: 'Español', ogLocale: 'es_ES' },
-	{ code: 'ja', hreflang: 'ja', nativeName: '日本語', ogLocale: 'ja_JP' },
 	{ code: 'fr', hreflang: 'fr', nativeName: 'Français', ogLocale: 'fr_FR' },
-	{ code: 'de', hreflang: 'de', nativeName: 'Deutsch', ogLocale: 'de_DE' },
-	{ code: 'pt', hreflang: 'pt', nativeName: 'Português', ogLocale: 'pt_PT' },
-	{ code: 'ko', hreflang: 'ko', nativeName: '한국어', ogLocale: 'ko_KR' },
-	{ code: 'it', hreflang: 'it', nativeName: 'Italiano', ogLocale: 'it_IT' },
 ];
 
 export const localeCodes = locales.map((l) => l.code);
