@@ -1,5 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const breadcrumbSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Attendance 75 Calculator', item: 'https://attendance75calculator.com/' },
+		{ '@type': 'ListItem', position: 2, name: 'Contact Us', item: 'https://attendance75calculator.com/contact-us' },
+	],
+};
 ---
 
 <Layout
@@ -8,6 +17,10 @@ import Layout from '../layouts/Layout.astro';
 	keywords="contact us, feedback, support, attendance calculator contact"
 	canonicalUrl="https://attendance75calculator.com/contact-us"
 >
+	<Fragment slot="head-extra">
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)} />
+	</Fragment>
+
 	<div class="page-container">
 		<div class="content-wrapper">
 			<!-- Top Bar with Brand Badge & Theme Toggle -->

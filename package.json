@@ -9,9 +9,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "astro build && npx wrangler pages deploy ./dist --project-name attendance75calculator --commit-dirty=true",
+    "deploy": "astro build && npx wrangler pages deploy ./dist --project-name attendance75calculator --commit-dirty=true && node scripts/indexnow-ping.mjs",
     "astro": "astro",
-    "og:build": "node scripts/generate-og-image.mjs"
+    "og:build": "node scripts/generate-og-image.mjs",
+    "seo:ping-indexnow": "node scripts/indexnow-ping.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

@@ -4,9 +4,9 @@ const en: Translations = {
 	meta: {
 		title: '75% Attendance Calculator - Free College Tool',
 		description:
-			'Free attendance calculator for the 75% rule. Check safe bunks, classes needed, and semester projections instantly.',
+			'Free 75% attendance calculator for college students. Check your attendance percentage, how many classes you can miss, and how many you must attend to recover.',
 		keywords:
-			'attendance calculator, 75 attendance calculator, attendance calculator 75, attendance calculator app, 75 percent attendance calculator, college attendance calculator, attendance calculator college',
+			'attendance calculator, 75 attendance calculator, attendance percentage calculator, 75 percent attendance calculator, attendance shortage calculator, required attendance calculator, college attendance calculator, university attendance calculator, how many classes can I miss',
 		ogLocale: 'en_US',
 	},
 	nav: {
@@ -154,7 +154,7 @@ const en: Translations = {
 				'Year Back or Semester Detention: Severe shortages below 60% can result in semester detention, forcing students to repeat the entire academic term.',
 			],
 			p3Html:
-				'Using a dedicated <strong>college attendance calculator</strong> allows you to stay ahead of attendance shortfalls before they become critical emergencies.',
+				'A dedicated <strong>attendance shortage calculator</strong> — one that doubles as a <strong>required attendance calculator</strong> for whatever percentage your department enforces — helps you stay ahead of these shortfalls before they become critical emergencies.',
 		},
 		formulas: {
 			h2: 'How to Calculate 75% Attendance: Formulas & Logic',
@@ -226,59 +226,44 @@ const en: Translations = {
 			h2: 'Frequently Asked Questions (FAQ)',
 			items: [
 				{
-					question: 'What is a Monthly Attendance Calculator and how to use it?',
-					answerHtml:
-						'A <strong>monthly attendance calculator</strong> allows students and employees to calculate attendance percentage over a specific calendar month. Simply input the number of days or classes attended in that month and divide by the total working days or scheduled lectures held in that month, then multiply by 100.',
-				},
-				{
-					question: 'What is the Attendance Calculator Formula?',
-					answerHtml:
-						'The basic <strong>attendance formula</strong> is: <code>Attendance (%) = (Classes Attended / Total Classes Held) × 100</code>. To find safe bunks above a target percentage (P%): <code>Safe Bunks = ⌊(Attended / (P/100)) - Total Held⌋</code>. To find classes needed to recover to target (P%): <code>Classes to Attend = ⌈((P/100 × Total Held) - Attended) / (1 - P/100)⌉</code>.',
-				},
-				{
-					question: 'What is the Attendance Calculator App and does it work offline?',
-					answerHtml:
-						'The <strong>Attendance Calculator App</strong> is a free, web-based mobile-friendly tool that runs directly in your browser. It calculates attendance percentage, safe bunks, and recovery classes instantly without requiring app store downloads, logins, or server storage.',
-				},
-				{
-					question: 'What is a Student Attendance Calculator?',
-					answerHtml:
-						'A <strong>student attendance calculator</strong> is a specialized educational calculator designed for school and university students to keep track of lecture and laboratory attendance. It prevents examination debarment by alerting students when attendance drops near or below mandatory thresholds like 75% or 80%.',
-				},
-				{
-					question: 'Can you use the Attendance Calculator for 100 Percent?',
-					answerHtml:
-						'Yes, you can set the attendance target to <strong>100%</strong> using our custom target input. Note that achieving 100% attendance requires attending every single class held from day one. If even one class has been missed, reaching a 100.0% final attendance is mathematically impossible.',
-				},
-				{
-					question: 'How does the Attendance Calculator 80 percent target work?',
-					answerHtml:
-						'The <strong>Attendance Calculator 80</strong> feature sets your target threshold to 80% (common in premier universities and professional degree courses). To maintain 80%, you must attend at least 4 out of every 5 classes held (Attended ≥ 0.8 × Total Classes).',
-				},
-				{
-					question: 'How does the Attendance Calculator 75 percent target work?',
-					answerHtml:
-						'The <strong>Attendance Calculator 75</strong> helps students satisfy the standard 75% attendance rule mandated by UGC and colleges. If your current attendance is ≥ 75%, it calculates how many classes you can skip. If it is &lt; 75%, it computes the exact number of consecutive classes you must attend to return to 75%.',
-				},
-				{
-					question: 'For a 75 percent attendance calculator, how many days can you miss?',
-					answerHtml:
-						'For a standard semester with 100 classes, you need to attend at least 75 classes and can miss a maximum of 25 classes. If you have currently attended 30 out of 40 classes held, you can miss 0 immediate classes without dropping below 75%, but out of the remaining 60 semester classes, you can skip up to 15 classes.',
-				},
-				{
-					question: 'How to use an attendance percentage calculator?',
-					answerHtml:
-						'To use an <strong>attendance percentage calculator</strong>: 1) Select your target attendance (e.g., 75% or 80%), 2) Enter the number of classes or days you attended, 3) Enter the total classes or days conducted so far. The calculator immediately shows your current percentage, status badge, and safe bunk quota.',
-				},
-				{
 					question: 'How is attendance percentage calculated?',
 					answerHtml:
-						'Attendance percentage is calculated by dividing the total number of present sessions by the total number of delivered sessions, and multiplying that fraction by 100. For instance, attending 45 out of 60 lectures gives <code>(45 / 60) × 100 = 75%</code>.',
+						'Attendance percentage is calculated by dividing the classes you attended by the total classes held so far, then multiplying by 100: <code>Attendance % = (Classes Attended / Total Classes Held) × 100</code>. For example, attending 30 out of 40 classes held gives <code>(30 / 40) × 100 = 75%</code>.',
 				},
 				{
-					question: 'How to calculate attendance percentage with a calculator?',
+					question: 'How many classes can I miss and still have 75% attendance?',
 					answerHtml:
-						'On any calculator: type your attended classes, press divide (÷), enter total classes held, press multiply (×), enter 100, and press equals (=). Or simply use our free online <strong>attendance calculator app</strong> to get instant calculations with bunk suggestions automatically.',
+						'Once your current attendance is at or above 75%, the number of classes you can safely miss is <code>⌊(Attended / 0.75) − Total Held⌋</code>. For example, if you have attended 36 out of 40 classes, you can miss the next 8 in a row and still finish exactly at 75%. Enter your own numbers above for your exact safe-bunk count.',
+				},
+				{
+					question: 'How many classes do I need to attend to reach 75% attendance?',
+					answerHtml:
+						'If your attendance has dropped below 75%, the number of consecutive classes you need to attend without missing any is <code>⌈(0.75 × Total Held − Attended) / 0.25⌉</code>. For example, attending 20 out of 35 classes held means you need the next 25 classes in a row to bring your attendance back up to 75%.',
+				},
+				{
+					question: 'What happens if my attendance is below 75%?',
+					answerHtml:
+						'Most colleges treat 75% as the minimum required to sit for end-semester exams. Falling short can mean exam debarment, condonation fines for attendance roughly between 65–75% (often with a medical certificate), loss of internal assessment marks, or, below 60%, being held back for the semester. Rules vary by institution, so always confirm with your own college.',
+				},
+				{
+					question: 'Can I calculate attendance for any percentage, not just 75%?',
+					answerHtml:
+						'Yes. Alongside 75%, you can select 60%, 65%, 70%, 80%, 85%, 90%, or enter any custom target from 1–100% using the target selector above. The safe-bunk and recovery numbers update instantly for whichever percentage your college requires.',
+				},
+				{
+					question: 'Is this attendance calculator free to use?',
+					answerHtml:
+						'Yes, completely free — no sign-ups, premium tiers, or hidden costs. Use it as often as you like, for as many subjects or semesters as you need.',
+				},
+				{
+					question: 'Does the attendance calculator work on mobile?',
+					answerHtml:
+						'Yes. It is fully responsive on phones, tablets, and desktops, with a dark mode for late-night checks. It runs entirely in your browser with no app to install.',
+				},
+				{
+					question: 'Is my attendance data private?',
+					answerHtml:
+						'Yes. Every calculation happens directly in your browser — nothing you type is sent to a server or tracked. Closing the tab clears the session unless you use the <a href="/tracker" class="legal-link">Attendance Tracker</a> to save your subjects on your own device.',
 				},
 			],
 		},

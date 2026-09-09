@@ -4,9 +4,9 @@ const fr: Translations = {
 	meta: {
 		title: 'Calculateur de Présence 75% - Gratuit',
 		description:
-			'Calculateur de présence gratuit pour le seuil de 75%. Calculez absences autorisées, cours nécessaires et prévisions de semestre.',
+			'Calculateur de présence à 75% gratuit pour étudiants. Vérifiez votre pourcentage de présence, combien de cours vous pouvez manquer et combien suivre pour vous rattraper.',
 		keywords:
-			"calculateur de présence, calculateur de présence 75, calculateur d'assiduité 75, calculateur de présence application, calculateur de présence 75 pourcent, calculateur de présence universitaire, calculateur de présence étudiant",
+			"calculateur de présence, calculateur de présence 75, calculateur de pourcentage de présence, calculateur de présence 75 pourcent, calculateur d'absences, calculateur de présence requise, calculateur de présence universitaire, combien de cours puis-je manquer",
 		ogLocale: 'fr_FR',
 	},
 	nav: {
@@ -226,59 +226,44 @@ const fr: Translations = {
 			h2: 'Questions fréquemment posées (FAQ)',
 			items: [
 				{
-					question: "Qu'est-ce qu'un calculateur de présence mensuel et comment l'utiliser ?",
-					answerHtml:
-						"Un <strong>calculateur de présence mensuel</strong> permet aux étudiants et employés de calculer leur pourcentage de présence sur un mois calendaire spécifique. Il suffit d'indiquer le nombre de jours ou de cours suivis ce mois-là et de diviser par le total des jours ouvrés ou des cours prévus ce mois-là, puis de multiplier par 100.",
-				},
-				{
-					question: 'Quelle est la formule du calculateur de présence ?',
-					answerHtml:
-						"La <strong>formule de présence</strong> de base est : <code>Présence (%) = (Cours Suivis / Total des Cours Donnés) × 100</code>. Pour trouver les absences sécurisées au-dessus d'un pourcentage cible (P%) : <code>Absences Sécurisées = ⌊(Suivis / (P/100)) - Total Donné⌋</code>. Pour trouver le nombre de cours nécessaires pour revenir à l'objectif (P%) : <code>Cours à Suivre = ⌈((P/100 × Total Donné) - Suivis) / (1 - P/100)⌉</code>.",
-				},
-				{
-					question: "Qu'est-ce qu'une application de calculateur de présence et fonctionne-t-elle hors ligne ?",
-					answerHtml:
-						"L'<strong>application de calculateur de présence</strong> est un outil gratuit, basé sur le web et adapté aux mobiles, qui fonctionne directement dans votre navigateur. Elle calcule le pourcentage de présence, les absences sécurisées et les cours de rattrapage instantanément, sans téléchargement depuis un store d'applications, sans connexion, et sans stockage sur serveur.",
-				},
-				{
-					question: "Qu'est-ce qu'un calculateur de présence étudiant ?",
-					answerHtml:
-						"Un <strong>calculateur de présence étudiant</strong> est un calculateur pédagogique spécialisé conçu pour les élèves et étudiants d'école et d'université afin de suivre leur présence aux cours magistraux et travaux pratiques. Il évite l'exclusion des examens en alertant les étudiants lorsque leur présence approche ou descend en dessous des seuils obligatoires comme 75% ou 80%.",
-				},
-				{
-					question: 'Peut-on utiliser le calculateur de présence pour un objectif de 100% ?',
-					answerHtml:
-						"Oui, vous pouvez définir l'objectif de présence à <strong>100%</strong> grâce à notre champ d'objectif personnalisé. Notez qu'atteindre 100% de présence nécessite d'assister à absolument tous les cours donnés depuis le premier jour. Si ne serait-ce qu'un seul cours a été manqué, atteindre une présence finale de 100.0% devient mathématiquement impossible.",
-				},
-				{
-					question: "Comment fonctionne l'objectif de 80 pourcent du calculateur de présence ?",
-					answerHtml:
-						'La fonction <strong>calculateur de présence 80</strong> fixe votre seuil cible à 80% (courant dans les universités de premier plan et les filières professionnelles). Pour maintenir 80%, vous devez suivre au moins 4 cours sur 5 donnés (Suivis ≥ 0.8 × Total des Cours).',
-				},
-				{
-					question: "Comment fonctionne l'objectif de 75 pourcent du calculateur de présence ?",
-					answerHtml:
-						"Le <strong>calculateur de présence 75</strong> aide les étudiants à respecter la règle standard des 75% de présence imposée par l'UGC et les établissements. Si votre présence actuelle est ≥ 75%, il calcule combien de cours vous pouvez manquer. Si elle est &lt; 75%, il calcule le nombre exact de cours consécutifs que vous devez suivre pour revenir à 75%.",
-				},
-				{
-					question: 'Pour un calculateur de présence à 75 pourcent, combien de jours peut-on manquer ?',
-					answerHtml:
-						"Pour un semestre standard de 100 cours, vous devez suivre au moins 75 cours et pouvez en manquer un maximum de 25. Si vous avez actuellement suivi 30 cours sur 40 donnés, vous ne pouvez manquer aucun cours immédiatement sans descendre en dessous de 75%, mais sur les 60 cours restants du semestre, vous pouvez en sauter jusqu'à 15.",
-				},
-				{
-					question: 'Comment utiliser un calculateur de pourcentage de présence ?',
-					answerHtml:
-						"Pour utiliser un <strong>calculateur de pourcentage de présence</strong> : 1) Choisissez votre objectif de présence (par exemple, 75% ou 80%), 2) Entrez le nombre de cours ou de jours que vous avez suivis, 3) Entrez le nombre total de cours ou de jours effectués jusqu'à présent. Le calculateur affiche immédiatement votre pourcentage actuel, votre badge de statut, et votre quota d'absences sécurisées.",
-				},
-				{
 					question: 'Comment est calculé le pourcentage de présence ?',
 					answerHtml:
-						'Le pourcentage de présence est calculé en divisant le nombre total de séances présentes par le nombre total de séances données, puis en multipliant cette fraction par 100. Par exemple, suivre 45 cours sur 60 donne <code>(45 / 60) × 100 = 75%</code>.',
+						'Le pourcentage de présence se calcule en divisant les cours suivis par le total des cours donnés jusqu\'à présent, puis en multipliant par 100 : <code>Présence % = (Cours Suivis / Total des Cours Donnés) × 100</code>. Par exemple, suivre 30 cours sur 40 donne <code>(30 / 40) × 100 = 75%</code>.',
 				},
 				{
-					question: 'Comment calculer le pourcentage de présence avec une calculatrice ?',
+					question: 'Combien de cours puis-je manquer en gardant 75% de présence ?',
 					answerHtml:
-						"Sur n'importe quelle calculatrice : saisissez vos cours suivis, appuyez sur diviser (÷), entrez le total des cours donnés, appuyez sur multiplier (×), entrez 100, puis appuyez sur égal (=). Ou utilisez simplement notre <strong>application de calculateur de présence</strong> en ligne gratuite pour obtenir des calculs instantanés avec des suggestions d'absences automatiquement.",
+						"Une fois votre présence actuelle à 75% ou plus, le nombre de cours que vous pouvez manquer sans risque est <code>⌊(Suivis / 0.75) − Total Donné⌋</code>. Par exemple, avec 36 cours suivis sur 40, vous pouvez manquer les 8 prochains d'affilée et finir exactement à 75%. Entrez vos propres chiffres ci-dessus pour votre quota exact.",
+				},
+				{
+					question: 'Combien de cours dois-je suivre pour atteindre 75% de présence ?',
+					answerHtml:
+						"Si votre présence est passée sous les 75%, le nombre de cours consécutifs à suivre sans en manquer un seul est <code>⌈(0.75 × Total Donné − Suivis) / 0.25⌉</code>. Par exemple, avoir suivi 20 cours sur 35 donnés signifie qu'il faut suivre les 25 prochains cours d'affilée pour revenir à 75%.",
+				},
+				{
+					question: 'Que se passe-t-il si ma présence est inférieure à 75% ?',
+					answerHtml:
+						"La plupart des établissements exigent 75% de présence minimum pour se présenter aux examens de fin de semestre. En dessous, cela peut entraîner une exclusion des examens, des pénalités de régularisation pour une présence entre environ 65 et 75% (souvent avec certificat médical), une perte de points de contrôle continu, ou, sous 60%, un redoublement du semestre. Les règles varient selon l'établissement — vérifiez toujours auprès du vôtre.",
+				},
+				{
+					question: "Puis-je calculer la présence pour n'importe quel pourcentage, pas seulement 75% ?",
+					answerHtml:
+						"Oui. En plus de 75%, vous pouvez choisir 60%, 65%, 70%, 80%, 85%, 90%, ou saisir un objectif personnalisé de 1 à 100% avec le sélecteur ci-dessus. Les absences sécurisées et les cours de rattrapage se mettent à jour instantanément pour le pourcentage exigé par votre établissement.",
+				},
+				{
+					question: 'Ce calculateur de présence est-il gratuit ?',
+					answerHtml:
+						'Oui, entièrement gratuit — sans inscription, sans offre premium, sans frais cachés. Utilisez-le aussi souvent que vous le souhaitez, pour autant de matières ou de semestres que nécessaire.',
+				},
+				{
+					question: 'Le calculateur de présence fonctionne-t-il sur mobile ?',
+					answerHtml:
+						"Oui. Il est entièrement adapté aux téléphones, tablettes et ordinateurs, avec un mode sombre pour les vérifications tardives. Tout fonctionne dans votre navigateur, sans aucune application à installer.",
+				},
+				{
+					question: 'Mes données de présence sont-elles privées ?',
+					answerHtml:
+						'Oui. Chaque calcul se fait directement dans votre navigateur — rien de ce que vous saisissez n\'est envoyé à un serveur ni suivi. Fermer l\'onglet efface la session, sauf si vous utilisez le <a href="/fr/tracker" class="legal-link">suivi de présence</a> pour enregistrer vos matières sur votre propre appareil.',
 				},
 			],
 		},

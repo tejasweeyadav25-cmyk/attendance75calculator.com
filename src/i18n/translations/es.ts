@@ -4,9 +4,9 @@ const es: Translations = {
 	meta: {
 		title: 'Calculadora de Asistencia 75% - Gratis',
 		description:
-			'Calculadora de asistencia gratuita para el 75%. Calcula faltas permitidas, clases necesarias y proyecciones del semestre al instante.',
+			'Calculadora de asistencia del 75% gratis para estudiantes universitarios. Revisa tu porcentaje de asistencia, cuántas clases puedes faltar y cuántas debes asistir para recuperarte.',
 		keywords:
-			'calculadora de asistencia, calculadora de asistencia 75, calculadora de asistencia del 75, calculadora de asistencia app, calculadora de asistencia del 75 por ciento, calculadora de asistencia universitaria, calculadora de asistencia para la universidad',
+			'calculadora de asistencia, calculadora de asistencia 75, calculadora de porcentaje de asistencia, calculadora de asistencia del 75 por ciento, calculadora de faltas de asistencia, calculadora de asistencia requerida, calculadora de asistencia universitaria, cuántas clases puedo faltar',
 		ogLocale: 'es_ES',
 	},
 	nav: {
@@ -226,59 +226,44 @@ const es: Translations = {
 			h2: 'Preguntas Frecuentes (FAQ)',
 			items: [
 				{
-					question: '¿Qué es una Calculadora de Asistencia Mensual y cómo se usa?',
-					answerHtml:
-						'Una <strong>calculadora de asistencia mensual</strong> permite a estudiantes y empleados calcular el porcentaje de asistencia durante un mes calendario específico. Simplemente ingresa el número de días o clases a los que asististe ese mes y divídelo entre el total de días laborables o clases programadas ese mes, luego multiplícalo por 100.',
-				},
-				{
-					question: '¿Cuál es la Fórmula de la Calculadora de Asistencia?',
-					answerHtml:
-						'La <strong>fórmula de asistencia</strong> básica es: <code>Asistencia (%) = (Clases Asistidas / Total de Clases Realizadas) × 100</code>. Para saber cuántas faltas puedes permitirte sin bajar de un porcentaje objetivo (P%): <code>Faltas Seguras = ⌊(Asistidas / (P/100)) - Total Realizadas⌋</code>. Para saber cuántas clases necesitas para recuperar el objetivo (P%): <code>Clases a Asistir = ⌈((P/100 × Total Realizadas) - Asistidas) / (1 - P/100)⌉</code>.',
-				},
-				{
-					question: '¿Qué es la Aplicación de Calculadora de Asistencia y funciona sin conexión?',
-					answerHtml:
-						'La <strong>Aplicación de Calculadora de Asistencia</strong> es una herramienta gratuita, web y compatible con móviles que funciona directamente en tu navegador. Calcula el porcentaje de asistencia, las faltas seguras y las clases de recuperación al instante, sin necesidad de descargas desde tiendas de aplicaciones, inicios de sesión ni almacenamiento en servidores.',
-				},
-				{
-					question: '¿Qué es una Calculadora de Asistencia para Estudiantes?',
-					answerHtml:
-						'Una <strong>calculadora de asistencia para estudiantes</strong> es una calculadora educativa especializada, diseñada para que los estudiantes de escuela y universidad hagan seguimiento de su asistencia a clases y laboratorios. Evita la exclusión de exámenes al alertar a los estudiantes cuando su asistencia se acerca o cae por debajo de los umbrales obligatorios, como el 75% u 80%.',
-				},
-				{
-					question: '¿Se puede usar la Calculadora de Asistencia para el 100 Por Ciento?',
-					answerHtml:
-						'Sí, puedes establecer el objetivo de asistencia en <strong>100%</strong> usando nuestro campo de objetivo personalizado. Ten en cuenta que lograr el 100% de asistencia requiere asistir a absolutamente todas las clases realizadas desde el primer día. Si has faltado aunque sea a una sola clase, alcanzar una asistencia final del 100.0% es matemáticamente imposible.',
-				},
-				{
-					question: '¿Cómo funciona el objetivo del 80 por ciento en la Calculadora de Asistencia?',
-					answerHtml:
-						'La función de <strong>Calculadora de Asistencia 80</strong> establece tu umbral objetivo en 80% (común en universidades de prestigio y carreras profesionales). Para mantener el 80%, debes asistir al menos a 4 de cada 5 clases realizadas (Asistidas ≥ 0.8 × Total de Clases).',
-				},
-				{
-					question: '¿Cómo funciona el objetivo del 75 por ciento en la Calculadora de Asistencia?',
-					answerHtml:
-						'La <strong>Calculadora de Asistencia 75</strong> ayuda a los estudiantes a cumplir con la norma estándar del 75% de asistencia exigida por la UGC y las universidades. Si tu asistencia actual es ≥ 75%, calcula cuántas clases puedes faltar. Si es &lt; 75%, calcula el número exacto de clases consecutivas a las que debes asistir para volver al 75%.',
-				},
-				{
-					question: 'En una calculadora de asistencia del 75 por ciento, ¿cuántos días se pueden faltar?',
-					answerHtml:
-						'Para un semestre estándar de 100 clases, necesitas asistir al menos a 75 clases y puedes faltar como máximo a 25 clases. Si actualmente has asistido a 30 de 40 clases realizadas, no puedes faltar a ninguna clase inmediata sin bajar del 75%, pero de las 60 clases restantes del semestre, puedes faltar hasta 15.',
-				},
-				{
-					question: '¿Cómo usar una calculadora de porcentaje de asistencia?',
-					answerHtml:
-						'Para usar una <strong>calculadora de porcentaje de asistencia</strong>: 1) Selecciona tu objetivo de asistencia (por ejemplo, 75% u 80%), 2) Ingresa el número de clases o días a los que asististe, 3) Ingresa el total de clases o días realizados hasta ahora. La calculadora muestra de inmediato tu porcentaje actual, tu estado y tu cuota de faltas seguras.',
-				},
-				{
 					question: '¿Cómo se calcula el porcentaje de asistencia?',
 					answerHtml:
-						'El porcentaje de asistencia se calcula dividiendo el número total de sesiones presentes entre el número total de sesiones impartidas, y multiplicando esa fracción por 100. Por ejemplo, asistir a 45 de 60 clases da <code>(45 / 60) × 100 = 75%</code>.',
+						'El porcentaje de asistencia se calcula dividiendo las clases a las que asististe entre el total de clases realizadas hasta ahora, y multiplicando por 100: <code>Asistencia % = (Clases Asistidas / Total de Clases Realizadas) × 100</code>. Por ejemplo, asistir a 30 de 40 clases da <code>(30 / 40) × 100 = 75%</code>.',
 				},
 				{
-					question: '¿Cómo calcular el porcentaje de asistencia con una calculadora?',
+					question: '¿Cuántas clases puedo faltar y mantener el 75% de asistencia?',
 					answerHtml:
-						'En cualquier calculadora: escribe tus clases asistidas, presiona dividir (÷), ingresa el total de clases realizadas, presiona multiplicar (×), ingresa 100, y presiona igual (=). O simplemente usa nuestra <strong>aplicación de calculadora de asistencia</strong> gratuita en línea para obtener cálculos instantáneos con sugerencias de faltas automáticamente.',
+						'Cuando tu asistencia actual ya está en 75% o por encima, el número de clases que puedes faltar sin riesgo es <code>⌊(Asistidas / 0.75) − Total Realizadas⌋</code>. Por ejemplo, si has asistido a 36 de 40 clases, puedes faltar a las próximas 8 seguidas y terminar exactamente en 75%. Ingresa tus propios números arriba para tu cuota exacta.',
+				},
+				{
+					question: '¿Cuántas clases necesito asistir para llegar al 75% de asistencia?',
+					answerHtml:
+						'Si tu asistencia bajó del 75%, el número de clases consecutivas que necesitas asistir sin faltar a ninguna es <code>⌈(0.75 × Total Realizadas − Asistidas) / 0.25⌉</code>. Por ejemplo, haber asistido a 20 de 35 clases realizadas significa que necesitas las próximas 25 clases seguidas para volver al 75%.',
+				},
+				{
+					question: '¿Qué pasa si mi asistencia está por debajo del 75%?',
+					answerHtml:
+						'La mayoría de universidades exige un mínimo de 75% de asistencia para poder presentarse a los exámenes finales. No llegar a ese mínimo puede significar exclusión de exámenes, multas de condonación para asistencia entre aproximadamente 65–75% (a menudo con certificado médico), pérdida de puntos de evaluación interna o, por debajo del 60%, repetir el semestre. Las reglas varían según la institución, así que confirma siempre con tu universidad.',
+				},
+				{
+					question: '¿Puedo calcular la asistencia para cualquier porcentaje, no solo 75%?',
+					answerHtml:
+						'Sí. Además del 75%, puedes elegir 60%, 65%, 70%, 80%, 85%, 90%, o ingresar cualquier objetivo personalizado del 1 al 100% con el selector de arriba. Las faltas seguras y las clases de recuperación se actualizan al instante para el porcentaje que exija tu universidad.',
+				},
+				{
+					question: '¿Es gratuita esta calculadora de asistencia?',
+					answerHtml:
+						'Sí, totalmente gratuita — sin registros, planes premium ni costos ocultos. Úsala tantas veces como quieras, para tantas materias o semestres como necesites.',
+				},
+				{
+					question: '¿Funciona la calculadora de asistencia en el móvil?',
+					answerHtml:
+						'Sí. Es totalmente responsiva en teléfonos, tablets y computadoras, con modo oscuro para revisar tu asistencia de noche. Funciona por completo en tu navegador, sin ninguna app que instalar.',
+				},
+				{
+					question: '¿Mis datos de asistencia son privados?',
+					answerHtml:
+						'Sí. Cada cálculo ocurre directamente en tu navegador — nada de lo que escribes se envía a un servidor ni se rastrea. Cerrar la pestaña borra la sesión, a menos que uses el <a href="/es/tracker" class="legal-link">Rastreador de Asistencia</a> para guardar tus materias en tu propio dispositivo.',
 				},
 			],
 		},

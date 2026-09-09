@@ -77,6 +77,15 @@ const organizationSchema = {
 	logo: `${siteUrl}/apple-touch-icon.png`,
 };
 
+// JSON-LD Structured Data for WebSite (establishes the site's canonical identity/name for search)
+const websiteSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	url: `${siteUrl}/`,
+	name: 'Attendance 75 Calculator',
+	inLanguage: lang,
+};
+
 // JSON-LD Structured Data for FAQPage
 const faqSchema = {
 	'@context': 'https://schema.org',
@@ -124,6 +133,7 @@ const howToSchema = {
 >
 	<Fragment slot="head-extra">
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(websiteSchema)} />
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
 		<script type="application/ld+json" is:inline set:html={JSON.stringify(howToSchema)} />
