@@ -263,7 +263,7 @@ const es: Translations = {
 				{
 					question: '¿Mis datos de asistencia son privados?',
 					answerHtml:
-						'Sí. Cada cálculo ocurre directamente en tu navegador — nada de lo que escribes se envía a un servidor ni se rastrea. Cerrar la pestaña borra la sesión, a menos que uses el <a href="/es/tracker" class="legal-link">Rastreador de Asistencia</a> para guardar tus materias en tu propio dispositivo.',
+						'Sí. Cada cálculo ocurre directamente en tu navegador — nada de lo que escribes se envía a un servidor ni se rastrea. Cerrar la pestaña borra la sesión, a menos que uses el <a href="/es/tracker/" class="legal-link">Rastreador de Asistencia</a> para guardar tus materias en tu propio dispositivo.',
 				},
 			],
 		},

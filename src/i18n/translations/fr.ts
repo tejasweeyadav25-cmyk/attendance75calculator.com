@@ -263,7 +263,7 @@ const fr: Translations = {
 				{
 					question: 'Mes données de présence sont-elles privées ?',
 					answerHtml:
-						'Oui. Chaque calcul se fait directement dans votre navigateur — rien de ce que vous saisissez n\'est envoyé à un serveur ni suivi. Fermer l\'onglet efface la session, sauf si vous utilisez le <a href="/fr/tracker" class="legal-link">suivi de présence</a> pour enregistrer vos matières sur votre propre appareil.',
+						'Oui. Chaque calcul se fait directement dans votre navigateur — rien de ce que vous saisissez n\'est envoyé à un serveur ni suivi. Fermer l\'onglet efface la session, sauf si vous utilisez le <a href="/fr/tracker/" class="legal-link">suivi de présence</a> pour enregistrer vos matières sur votre propre appareil.',
 				},
 			],
 		},
