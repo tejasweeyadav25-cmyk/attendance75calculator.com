@@ -148,7 +148,7 @@ const howToSchema = {
 						<span class="badge-dot"></span>
 						<span class="badge-text">{t.nav.badge}</span>
 					</div>
-					<a href={`${localePrefix(lang)}/tracker`} class="nav-tracker-link">{t.nav.trackerLink}</a>
+					<a href={`${localePrefix(lang)}/tracker/`} class="nav-tracker-link">{t.nav.trackerLink}</a>
 				</div>
 
 				<div class="top-nav-right">
@@ -323,7 +323,7 @@ const howToSchema = {
 						no script — so it can't touch the calculator's behavior or page
 						weight. -->
 						<p class="tracker-upsell">
-							<a href={`${localePrefix(lang)}/tracker`} class="tracker-upsell-link" set:html={t.results.trackerUpsellHtml} />
+							<a href={`${localePrefix(lang)}/tracker/`} class="tracker-upsell-link" set:html={t.results.trackerUpsellHtml} />
 						</p>
 					</div>
 				</div>
@@ -335,13 +335,13 @@ const howToSchema = {
 				<!-- Legal / utility links — quiet, low-priority, placed directly
 				     above the first prose heading. -->
 				<nav class="legal-links-row">
-					<a href="/about-us" class="legal-link">{t.nav.aboutUs}</a>
+					<a href="/about-us/" class="legal-link">{t.nav.aboutUs}</a>
 					<span class="legal-link-separator">•</span>
-					<a href="/privacy-policy" class="legal-link">{t.nav.privacyPolicy}</a>
+					<a href="/privacy-policy/" class="legal-link">{t.nav.privacyPolicy}</a>
 					<span class="legal-link-separator">•</span>
-					<a href="/terms-and-conditions" class="legal-link">{t.nav.termsAndConditions}</a>
+					<a href="/terms-and-conditions/" class="legal-link">{t.nav.termsAndConditions}</a>
 					<span class="legal-link-separator">•</span>
-					<a href="/contact-us" class="legal-link">{t.nav.contactUs}</a>
+					<a href="/contact-us/" class="legal-link">{t.nav.contactUs}</a>
 				</nav>
 
 				<!-- Section 1: Overview -->
@@ -419,15 +419,15 @@ const howToSchema = {
 			<!-- Footer -->
 			<footer class="footer text-center">
 				<nav class="footer-nav">
-					<a href={`${localePrefix(lang)}/tracker`} class="footer-link">{t.tracker.header.title}</a>
+					<a href={`${localePrefix(lang)}/tracker/`} class="footer-link">{t.tracker.header.title}</a>
 					<span class="footer-separator">•</span>
-					<a href="/about-us" class="footer-link">{t.nav.aboutUs}</a>
+					<a href="/about-us/" class="footer-link">{t.nav.aboutUs}</a>
 					<span class="footer-separator">•</span>
-					<a href="/privacy-policy" class="footer-link">{t.nav.privacyPolicy}</a>
+					<a href="/privacy-policy/" class="footer-link">{t.nav.privacyPolicy}</a>
 					<span class="footer-separator">•</span>
-					<a href="/terms-and-conditions" class="footer-link">{t.nav.termsAndConditions}</a>
+					<a href="/terms-and-conditions/" class="footer-link">{t.nav.termsAndConditions}</a>
 					<span class="footer-separator">•</span>
-					<a href="/contact-us" class="footer-link">{t.nav.contactUs}</a>
+					<a href="/contact-us/" class="footer-link">{t.nav.contactUs}</a>
 				</nav>
 				<p class="footer-note">
 					{footerNote}

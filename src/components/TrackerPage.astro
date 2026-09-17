@@ -13,14 +13,14 @@ const t = getTranslations(lang);
 const currentLocale = locales.find((l) => l.code === lang) ?? locales[0];
 
 const siteUrl = 'https://attendance75calculator.com';
-const canonicalUrl = `${siteUrl}${localePrefix(lang)}/tracker`;
+const canonicalUrl = `${siteUrl}${localePrefix(lang)}/tracker/`;
 
 const alternates = [
 	...locales.map((l) => ({
 		hreflang: l.hreflang,
-		href: `${siteUrl}${localePrefix(l.code)}/tracker`,
+		href: `${siteUrl}${localePrefix(l.code)}/tracker/`,
 	})),
-	{ hreflang: 'x-default', href: `${siteUrl}/tracker` },
+	{ hreflang: 'x-default', href: `${siteUrl}/tracker/` },
 ];
 
 const faqSchema = {
@@ -105,7 +105,7 @@ const trackerStringsJson = JSON.stringify(t.tracker).replace(/</g, '\\u003c');
 						<span class="badge-dot"></span>
 						<a href={`${localePrefix(lang)}/`} class="badge-link">{t.nav.badge}</a>
 					</div>
-					<a href={`${localePrefix(lang)}/tracker`} class="nav-tracker-link active" aria-current="page">{t.nav.trackerLink}</a>
+					<a href={`${localePrefix(lang)}/tracker/`} class="nav-tracker-link active" aria-current="page">{t.nav.trackerLink}</a>
 				</div>
 				<div class="top-nav-right">
 					<LangSwitcher lang={lang} path="tracker" />
@@ -254,13 +254,13 @@ const trackerStringsJson = JSON.stringify(t.tracker).replace(/</g, '\\u003c');
 				<!-- Legal / utility links — quiet, low-priority, placed directly
 				     above the first prose heading. -->
 				<nav class="legal-links-row">
-					<a href="/about-us" class="legal-link">{t.nav.aboutUs}</a>
+					<a href="/about-us/" class="legal-link">{t.nav.aboutUs}</a>
 					<span class="legal-link-separator">•</span>
-					<a href="/privacy-policy" class="legal-link">{t.nav.privacyPolicy}</a>
+					<a href="/privacy-policy/" class="legal-link">{t.nav.privacyPolicy}</a>
 					<span class="legal-link-separator">•</span>
-					<a href="/terms-and-conditions" class="legal-link">{t.nav.termsAndConditions}</a>
+					<a href="/terms-and-conditions/" class="legal-link">{t.nav.termsAndConditions}</a>
 					<span class="legal-link-separator">•</span>
-					<a href="/contact-us" class="legal-link">{t.nav.contactUs}</a>
+					<a href="/contact-us/" class="legal-link">{t.nav.contactUs}</a>
 				</nav>
 
 				<section class="seo-section reveal">
@@ -298,15 +298,15 @@ const trackerStringsJson = JSON.stringify(t.tracker).replace(/</g, '\\u003c');
 				<nav class="footer-nav">
 					<a href={`${localePrefix(lang)}/`} class="footer-link">{t.tracker.footerCalculatorLink}</a>
 					<span class="footer-separator">•</span>
-					<a href={`${localePrefix(lang)}/tracker`} class="footer-link">{t.nav.trackerLink}</a>
+					<a href={`${localePrefix(lang)}/tracker/`} class="footer-link">{t.nav.trackerLink}</a>
 					<span class="footer-separator">•</span>
-					<a href="/about-us" class="footer-link">{t.nav.aboutUs}</a>
+					<a href="/about-us/" class="footer-link">{t.nav.aboutUs}</a>
 					<span class="footer-separator">•</span>
-					<a href="/privacy-policy" class="footer-link">{t.nav.privacyPolicy}</a>
+					<a href="/privacy-policy/" class="footer-link">{t.nav.privacyPolicy}</a>
 					<span class="footer-separator">•</span>
-					<a href="/terms-and-conditions" class="footer-link">{t.nav.termsAndConditions}</a>
+					<a href="/terms-and-conditions/" class="footer-link">{t.nav.termsAndConditions}</a>
 					<span class="footer-separator">•</span>
-					<a href="/contact-us" class="footer-link">{t.nav.contactUs}</a>
+					<a href="/contact-us/" class="footer-link">{t.nav.contactUs}</a>
 				</nav>
 				<p class="footer-note">{t.tracker.footerNote.replace('{year}', String(new Date().getFullYear()))}</p>
 			</footer>

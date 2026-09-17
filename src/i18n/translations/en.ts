@@ -263,7 +263,7 @@ const en: Translations = {
 				{
 					question: 'Is my attendance data private?',
 					answerHtml:
-						'Yes. Every calculation happens directly in your browser — nothing you type is sent to a server or tracked. Closing the tab clears the session unless you use the <a href="/tracker" class="legal-link">Attendance Tracker</a> to save your subjects on your own device.',
+						'Yes. Every calculation happens directly in your browser — nothing you type is sent to a server or tracked. Closing the tab clears the session unless you use the <a href="/tracker/" class="legal-link">Attendance Tracker</a> to save your subjects on your own device.',
 				},
 			],
 		},
